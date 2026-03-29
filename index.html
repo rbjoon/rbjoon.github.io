@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeRabbit - 사용자 중심의 모바일 앱</title>
+    <style>
+        /* 기본 스타일 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: center;
+        }
+
+        /* 헤더 스타일 (대문) */
+        header {
+            background-color: #ffffff;
+            padding: 80px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        /* 앱 리스트 섹션 */
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .app-card {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .app-card h2 {
+            font-size: 1.8rem;
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+
+        .app-card p {
+            font-size: 1rem;
+            color: #95a5a6;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-terms {
+            background-color: #95a5a6;
+        }
+
+        .btn-terms:hover {
+            background-color: #7f8c8d;
+        }
+
+        /* 하단 (푸터) */
+        footer {
+            margin-top: 50px;
+            padding: 30px 20px;
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CodeRabbit</h1>
+        <p>코드로 그리는 즐거운 세상, 코드래빗입니다.</p>
+    </header>
+
+    <div class="container">
+        <div class="app-card">
+            <h2>얌플래너 (YumPlanner)</h2>
+            <p>오늘 뭐 먹지? 레시피를 미리 계획하고, 스마트하게 요리하세요.</p>
+            <a href="https://rbjoon.github.io/yum-planner/privacy.html" class="btn">개인정보처리방침</a>
+            <a href="https://rbjoon.github.io/yum-planner/terms.html" class="btn btn-terms">이용약관</a>
+        </div>
+
+        <div class="app-card">
+            <h2>로또무당</h2>
+            <p>손금 분석으로 보는 오늘의 운세와 로또 번호 추천, 가볍게 즐겨보세요!</p>
+            <a href="https://rbjoon.github.io/lotto-mudang/privacy.html" class="btn">개인정보처리방침</a>
+            <a href="https://rbjoon.github.io/lotto-mudang/terms.html" class="btn btn-terms">이용약관</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 CodeRabbit. All rights reserved.</p>
+        <p>Contact: [내 이메일 주소 입력]</p> </footer>
+
+</body>
+</html>
