@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.arin.babyfood",
+      "sha256_cert_fingerprints": [
+        "A5:1F:39:6E:28:E9:6D:16:29:68:47:1F:F2:AF:DA:E2:40:7D:86:CC:56:6A:F8:F9:7B:2B:FF:B7:04:1B:1A:55"
+      ]
+    }
+  }
+]
