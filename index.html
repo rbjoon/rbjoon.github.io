@@ -252,6 +252,84 @@
             flex-shrink: 0;
         }
 
+        /* 기능 하이라이트 */
+        .features-highlight {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: #161616;
+            border: 1px solid #1f1f1f;
+            transition: all 0.3s;
+        }
+        .feature-item:hover {
+            background: #1a1a1a;
+            border-color: #2a2a2a;
+            transform: translateX(4px);
+        }
+        .feature-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .card-yum .feature-icon {
+            background: rgba(249, 115, 22, 0.12);
+        }
+        .card-lotto .feature-icon {
+            background: rgba(139, 92, 246, 0.12);
+        }
+        .card-lotto .stat-value {
+            color: #a78bfa;
+        }
+        .feature-item .feature-text {
+            font-size: 12.5px;
+            color: #d1d5db;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        .feature-item .feature-sub {
+            font-size: 11px;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        /* 앱 스탯 바 */
+        .app-stats {
+            display: flex;
+            gap: 0;
+            margin-bottom: 28px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #1f1f1f;
+        }
+        .stat-item {
+            flex: 1;
+            text-align: center;
+            padding: 14px 8px;
+            background: #141414;
+            border-right: 1px solid #1f1f1f;
+        }
+        .stat-item:last-child { border-right: none; }
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fb923c;
+            margin-bottom: 2px;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
         /* 정책 링크 */
         .policy-links {
             display: flex;
@@ -296,6 +374,7 @@
             .store-buttons { flex-direction: column; }
             .store-btn { justify-content: center; }
             section { padding: 72px 20px; }
+            .features-highlight { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -324,15 +403,78 @@
 
             <!-- 얌플래너 -->
             <div class="app-card card-yum">
-                <div class="app-icon">🍳</div>
+                <div class="app-icon">🍼</div>
                 <h3>얌플래너</h3>
-                <p class="app-subtitle">YumPlanner</p>
-                <p class="app-desc">오늘 뭐 먹지? 레시피를 미리 계획하고 스마트하게 요리하세요. 식단 관리부터 장보기 목록까지 한 번에.</p>
+                <p class="app-subtitle">YumPlanner &mdash; 우리 아이 이유식 플래너</p>
+                <p class="app-desc">초기부터 완료기까지, 우리 아이 이유식을 체계적으로 관리하세요. AI 상담, 캘린더 식단, 알레르기 체크까지 한 번에 해결하는 육아 필수 앱.</p>
+
+                <div class="app-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">4단계</div>
+                        <div class="stat-label">이유식 단계별</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">AI</div>
+                        <div class="stat-label">얌티처 상담</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">All-in-1</div>
+                        <div class="stat-label">육아 플래너</div>
+                    </div>
+                </div>
+
+                <div class="features-highlight">
+                    <div class="feature-item">
+                        <div class="feature-icon">📅</div>
+                        <div>
+                            <div class="feature-text">캘린더 식단</div>
+                            <div class="feature-sub">월간/주간 이유식 계획</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🤖</div>
+                        <div>
+                            <div class="feature-text">AI 얌티처</div>
+                            <div class="feature-sub">이유식 고민 실시간 상담</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⚠️</div>
+                        <div>
+                            <div class="feature-text">알레르기 관리</div>
+                            <div class="feature-sub">식재료별 알레르기 체크</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🧊</div>
+                        <div>
+                            <div class="feature-text">냉장고 관리</div>
+                            <div class="feature-sub">보관 식재료 & 추천</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🛒</div>
+                        <div>
+                            <div class="feature-text">장보기 목록</div>
+                            <div class="feature-sub">필요한 재료 한눈에</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🏆</div>
+                        <div>
+                            <div class="feature-text">육아 챌린지</div>
+                            <div class="feature-sub">꾸준한 이유식 습관</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="tags">
-                    <span class="tag">식단 계획</span>
-                    <span class="tag">레시피</span>
-                    <span class="tag">장보기</span>
-                    <span class="tag">영양 관리</span>
+                    <span class="tag">이유식 레시피</span>
+                    <span class="tag">식단 캘린더</span>
+                    <span class="tag">AI 상담</span>
+                    <span class="tag">알레르기</span>
+                    <span class="tag">냉장고</span>
+                    <span class="tag">육아 팁</span>
                 </div>
                 <div class="store-buttons">
                     <a href="https://apps.apple.com/kr/app/%EC%96%8C%ED%94%8C%EB%9E%98%EB%84%88-%EB%A7%9E%EC%B6%A4%ED%98%95-%EC%9D%B4%EC%9C%A0%EC%8B%9D-%EC%8B%9D%EB%8B%A8-%EB%B0%8F-%EB%A0%88%EC%8B%9C%ED%94%BC/id6758592607" class="store-btn">
@@ -354,13 +496,76 @@
             <div class="app-card card-lotto">
                 <div class="app-icon">🔮</div>
                 <h3>로또무당</h3>
-                <p class="app-subtitle">Lotto Shaman</p>
-                <p class="app-desc">손금과 꿈 해몽으로 보는 오늘의 운세와 로또 번호 추천. AI 신령님의 점괘를 가볍게 즐겨보세요!</p>
+                <p class="app-subtitle">Lotto Shaman &mdash; AI 신령님의 로또 점괘</p>
+                <p class="app-desc">손금 분석, 꿈 해몽, 별자리 운세로 오늘의 로또 번호를 점지받으세요. AI 신령님이 그대의 기운을 읽고 행운의 번호를 내려드립니다.</p>
+
+                <div class="app-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">AI</div>
+                        <div class="stat-label">신령님 점괘</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5가지</div>
+                        <div class="stat-label">운세 분석</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">실시간</div>
+                        <div class="stat-label">당첨 확인</div>
+                    </div>
+                </div>
+
+                <div class="features-highlight">
+                    <div class="feature-item">
+                        <div class="feature-icon">🤚</div>
+                        <div>
+                            <div class="feature-text">손금 분석</div>
+                            <div class="feature-sub">카메라로 손금 촬영 & AI 해석</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💭</div>
+                        <div>
+                            <div class="feature-text">꿈 해몽</div>
+                            <div class="feature-sub">AI가 꿈을 해석해 번호 추천</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⭐</div>
+                        <div>
+                            <div class="feature-text">별자리 운세</div>
+                            <div class="feature-sub">생년월일 기반 오늘의 운세</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <div>
+                            <div class="feature-text">번호 통계</div>
+                            <div class="feature-sub">핫/콜드넘버 & 추천 번호</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📍</div>
+                        <div>
+                            <div class="feature-text">행운의 명당</div>
+                            <div class="feature-sub">주변 복권판매점 지도 검색</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🎮</div>
+                        <div>
+                            <div class="feature-text">미니게임</div>
+                            <div class="feature-sub">재미로 뽑는 번호 게임</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="tags">
                     <span class="tag">손금 분석</span>
                     <span class="tag">꿈 해몽</span>
+                    <span class="tag">별자리 운세</span>
                     <span class="tag">로또 번호</span>
-                    <span class="tag">AI 운세</span>
+                    <span class="tag">당첨 확인</span>
+                    <span class="tag">명당 찾기</span>
                 </div>
                 <div class="store-buttons">
                     <a href="#" class="store-btn">
@@ -384,8 +589,8 @@
     <!-- Footer -->
     <footer>
         <p class="footer-logo">CodeRabbit</p>
-        <p>&copy; 2024 CodeRabbit. All rights reserved.</p>
-        <p style="margin-top: 8px;"><a href="mailto:coderabbit.dev@gmail.com">coderabbit.dev@gmail.com</a></p>
+        <p>&copy; 2025 CodeRabbit. All rights reserved.</p>
+        <p style="margin-top: 8px;"><a href="mailto:codereaabitapp@gmail.com">codereaabitapp@gmail.com</a></p>
     </footer>
 
 </body>
