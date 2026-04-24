@@ -127,7 +127,7 @@
         /* ── App Cards ── */
         .apps-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 32px;
         }
 
@@ -163,6 +163,19 @@
             background: linear-gradient(135deg, #f97316, #fbbf24);
             box-shadow: 0 8px 24px rgba(249, 115, 22, 0.25);
         }
+
+        /* 콕 카드 */
+        .card-kok::before {
+            background: linear-gradient(90deg, #0ea5e9, #06b6d4, #22d3ee);
+        }
+        .card-kok:hover::before { height: 4px; }
+        .card-kok .app-icon {
+            background: linear-gradient(135deg, #0284c7, #06b6d4);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.25);
+        }
+        .card-kok .tag { color: #22d3ee; border-color: rgba(6, 182, 212, 0.2); background: rgba(6, 182, 212, 0.08); }
+        .card-kok .feature-icon { background: rgba(6, 182, 212, 0.12); }
+        .card-kok .stat-value { color: #22d3ee; }
 
         /* 로또무당 카드 */
         .card-lotto::before {
@@ -580,6 +593,98 @@
                 <div class="policy-links">
                     <a href="https://rbjoon.github.io/lottomudang/privacy.html" class="policy-link">개인정보처리방침</a>
                     <a href="https://rbjoon.github.io/lottomudang/terms_use.html" class="policy-link">이용약관</a>
+                </div>
+            </div>
+
+            <!-- 콕 -->
+            <div class="app-card card-kok">
+                <!-- 앱 아이콘 이미지 준비 후 아래 주석 교체: <img src="image/kok_app.png" ...> -->
+                <div class="app-icon" style="font-size: 30px;">📌</div>
+                <h3>콕</h3>
+                <p class="app-subtitle">Kok &mdash; 콕 찍어서 복사</p>
+                <p class="app-desc">자주 쓰는 문구를 저장해두고 한 번의 탭으로 클립보드에 복사하세요. 카테고리 관리, 템플릿 가져오기, 다국어 지원까지. 타이핑 시간을 줄여주는 스마트 상용구 앱.</p>
+
+                <div class="app-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">1탭</div>
+                        <div class="stat-label">즉시 복사</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">4개</div>
+                        <div class="stat-label">지원 언어</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">무제한</div>
+                        <div class="stat-label">상용구 등록</div>
+                    </div>
+                </div>
+
+                <div class="features-highlight">
+                    <div class="feature-item">
+                        <div class="feature-icon">📋</div>
+                        <div>
+                            <div class="feature-text">한 탭 복사</div>
+                            <div class="feature-sub">탭 한 번으로 클립보드 복사</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📁</div>
+                        <div>
+                            <div class="feature-text">카테고리 관리</div>
+                            <div class="feature-sub">목적별 상용구 분류 & 정리</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🗂️</div>
+                        <div>
+                            <div class="feature-text">템플릿 갤러리</div>
+                            <div class="feature-sub">자주 쓰는 문구 한 번에 가져오기</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🌐</div>
+                        <div>
+                            <div class="feature-text">다국어 지원</div>
+                            <div class="feature-sub">한/영/일/중 4개 언어</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">☁️</div>
+                        <div>
+                            <div class="feature-text">백업 & 복원</div>
+                            <div class="feature-sub">데이터를 파일로 안전하게 보관</div>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🔍</div>
+                        <div>
+                            <div class="feature-text">빠른 검색</div>
+                            <div class="feature-sub">키워드로 상용구 즉시 탐색</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tags">
+                    <span class="tag">상용구</span>
+                    <span class="tag">클립보드</span>
+                    <span class="tag">텍스트 관리</span>
+                    <span class="tag">카테고리</span>
+                    <span class="tag">템플릿</span>
+                    <span class="tag">다국어</span>
+                </div>
+                <div class="store-buttons">
+                    <a href="#" class="store-btn">
+                        <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                        App Store
+                    </a>
+                    <a href="#" class="store-btn">
+                        <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
+                        Google Play
+                    </a>
+                </div>
+                <div class="policy-links">
+                    <a href="https://rbjoon.github.io/kok/privacy_policy.html" class="policy-link">개인정보처리방침</a>
+                    <a href="https://rbjoon.github.io/kok/terms_of_service.html" class="policy-link">이용약관</a>
                 </div>
             </div>
 
