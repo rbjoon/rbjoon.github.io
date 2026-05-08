@@ -1,398 +1,842 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>개인정보처리방침 — 콕(Kok)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kok 개인정보처리방침 / Privacy Policy / プライバシーポリシー / 隐私政策</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #3182F6;
+      --text: #191F28;
+      --text-secondary: #4E5968;
+      --border: #E5E8EB;
+      --bg: #F9FAFB;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
-      background: #f9f9f9;
-      color: #1a1a1a;
-      line-height: 1.7;
+      margin: 0;
+      padding: 24px 20px 80px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Pretendard", "Noto Sans KR", "Hiragino Sans", "Yu Gothic", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.65;
+      font-size: 15px;
     }
+
     .container {
-      max-width: 720px;
+      max-width: 760px;
       margin: 0 auto;
-      padding: 48px 24px 80px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
     }
-    .badge {
-      display: inline-block;
-      background: #5B4CF6;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      padding: 4px 10px;
-      border-radius: 100px;
-      margin-bottom: 16px;
-    }
+
     h1 {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      color: #111;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 8px;
+      letter-spacing: -0.3px;
     }
+
     .meta {
+      color: var(--text-secondary);
       font-size: 13px;
-      color: #888;
-      margin-bottom: 40px;
+      margin-bottom: 24px;
     }
-    .summary-box {
-      background: #eef2ff;
-      border-left: 4px solid #5B4CF6;
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-bottom: 40px;
-      font-size: 14px;
-      color: #3730a3;
-    }
-    .summary-box strong { display: block; margin-bottom: 6px; font-size: 15px; }
-    section { margin-bottom: 36px; }
+
     h2 {
       font-size: 17px;
       font-weight: 700;
-      margin-bottom: 10px;
-      color: #111;
-      padding-bottom: 6px;
-      border-bottom: 1px solid #e5e5e5;
+      margin: 32px 0 10px;
+      letter-spacing: -0.2px;
     }
-    p { font-size: 14px; color: #444; margin-bottom: 10px; }
-    ul { padding-left: 20px; margin-bottom: 10px; }
-    li { font-size: 14px; color: #444; margin-bottom: 6px; }
-    a { color: #5B4CF6; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .highlight {
-      background: #fffbeb;
-      border: 1px solid #fcd34d;
-      border-radius: 8px;
-      padding: 12px 16px;
-      font-size: 13px;
-      color: #92400e;
-      margin-bottom: 10px;
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 18px 0 6px;
+      color: var(--text-secondary);
     }
-    .contact-box {
-      background: #f3f4f6;
-      border-radius: 10px;
-      padding: 16px 20px;
+
+    p,
+    li {
+      color: var(--text-secondary);
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 4px;
       font-size: 14px;
-      color: #374151;
     }
-    footer {
-      margin-top: 60px;
-      font-size: 12px;
-      color: #bbb;
-      text-align: center;
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
     }
-    .lang-bar {
+
+    th {
+      background: var(--bg);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .notice {
+      background: #F0F6FF;
+      border: 1px solid #D2E3FC;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin: 16px 0;
+      color: var(--text);
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+
+    .lang-switch {
       display: flex;
       gap: 8px;
-      margin-bottom: 32px;
       flex-wrap: wrap;
+      margin-bottom: 20px;
+      font-size: 13px;
     }
-    .lang-btn {
-      font-size: 12px;
-      padding: 4px 12px;
-      border: 1px solid #ddd;
-      border-radius: 100px;
+
+    .lang-switch button {
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
       background: #fff;
+      color: var(--text);
       cursor: pointer;
-      color: #555;
+      font: inherit;
     }
-    .lang-btn.active {
-      background: #5B4CF6;
-      border-color: #5B4CF6;
+
+    .lang-switch button.active {
+      background: var(--primary);
       color: #fff;
+      border-color: var(--primary);
     }
-    [data-lang] { display: none; }
-    [data-lang].visible { display: block; }
+
+    section.lang {
+      display: none;
+    }
+
+    section.lang.active {
+      display: block;
+    }
   </style>
 </head>
+
 <body>
-<div class="container">
-
-  <div class="lang-bar">
-    <button class="lang-btn active" onclick="setLang('ko')">한국어</button>
-    <button class="lang-btn" onclick="setLang('en')">English</button>
-    <button class="lang-btn" onclick="setLang('ja')">日本語</button>
-    <button class="lang-btn" onclick="setLang('zh')">中文</button>
-  </div>
-
-  <!-- 한국어 -->
-  <div data-lang="ko" class="visible">
-    <div class="badge">Privacy Policy</div>
-    <h1>개인정보처리방침</h1>
-    <p class="meta">최종 업데이트: 2026년 4월 24일 &nbsp;·&nbsp; 앱: 콕(Kok) &nbsp;·&nbsp; rbjoon.github.io</p>
-
-    <div class="summary-box">
-      <strong>한눈에 보기</strong>
-      콕 앱은 사용자의 개인 정보를 직접 수집하지 않습니다. 입력한 상용구는 기기에만 저장되며 외부로 전송되지 않습니다. 광고 제공을 위해 Google AdMob이 광고 식별자를 사용합니다.
+  <div class="container">
+    <div class="lang-switch" role="tablist">
+      <button type="button" data-lang="ko" class="active">한국어</button>
+      <button type="button" data-lang="en">English</button>
+      <button type="button" data-lang="ja">日本語</button>
+      <button type="button" data-lang="zh">中文</button>
     </div>
 
-    <section>
-      <h2>1. 수집하는 정보</h2>
-      <p><strong>앱이 직접 수집하는 정보: 없음</strong></p>
-      <p>콕 앱은 이름, 이메일, 전화번호 등 어떠한 개인 식별 정보도 수집하지 않습니다. 사용자가 입력하는 상용구, 카테고리 이름 등 모든 데이터는 오직 사용자의 기기 내에만 저장됩니다.</p>
-      <p><strong>기기에 저장되는 데이터:</strong></p>
+    <!-- ===== 한국어 ===== -->
+    <section class="lang active" data-lang="ko" lang="ko">
+      <h1>Kok 개인정보처리방침</h1>
+      <p class="meta">시행일자: 2026년 5월 7일</p>
+
+      <p>Kok(이하 "서비스")는 이용자의 개인정보를 중요하게 생각하며, 「개인정보 보호법」 등 관련 법령을 준수합니다. 본 방침은 서비스가 어떤 정보를 수집·이용·보관·파기하는지 설명합니다.</p>
+
+      <div class="notice">
+        <strong>요약:</strong> Kok는 이용자가 등록한 상용구·카테고리를 이용자 기기에만 저장하며, 외부 서버로 전송하지 않습니다. 다만 무료 운영을 위해 Google AdMob 광고가
+        표시되며, 해당 서비스가 광고 식별자를 수집할 수 있습니다.
+      </div>
+
+      <h2>1. 수집하는 개인정보 항목 및 수집 방법</h2>
+      <h3>가. 서비스 자체가 수집하는 정보</h3>
+      <p>서비스는 회원가입을 받지 않으며, 이름·이메일·전화번호 등 식별정보를 수집하지 않습니다. 아래 정보는 <strong>이용자 기기 내부에만 저장</strong>되며 외부 서버로 전송되지 않습니다.
+      </p>
       <ul>
-        <li>상용구 제목, 내용, 카테고리</li>
-        <li>사용 횟수 (자주 사용 정렬 기능용)</li>
-        <li>앱 언어 설정</li>
+        <li>이용자가 직접 입력한 상용구 제목/본문, 카테고리 이름</li>
+        <li>상용구별 사용 빈도(복사 횟수) 및 최근 사용 일시</li>
+        <li>앱 설정값(선택 언어, 잠금 카테고리 상태 등)</li>
       </ul>
-      <p>위 데이터는 앱을 삭제하면 모두 영구적으로 삭제됩니다.</p>
-    </section>
 
-    <section>
-      <h2>2. 광고 및 제3자 서비스</h2>
-      <p>콕 앱은 Google AdMob을 통해 광고를 제공합니다. Google AdMob은 관련 법령에 따라 다음 정보를 수집할 수 있습니다:</p>
+      <h3>나. 자동 수집 정보 (외부 서비스 제공 목적)</h3>
+      <p>무료 서비스 제공을 위해 Google AdMob 광고가 표시되며, AdMob이 아래 정보를 수집·처리할 수 있습니다. 자세한 내용은 <a
+          href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google 개인정보처리방침</a>을 참고하세요.</p>
       <ul>
-        <li>광고 식별자 (Android 광고 ID / iOS IDFA)</li>
-        <li>기기 정보 (모델, OS 버전)</li>
-        <li>IP 주소 및 대략적인 위치</li>
-        <li>광고 클릭·노출 등 광고 상호작용 데이터</li>
+        <li>광고 식별자(Android Advertising ID, iOS IDFA)</li>
+        <li>기기·OS 정보, 대략적인 위치 정보(국가 단위), IP 주소</li>
+        <li>광고 노출·클릭 이벤트</li>
       </ul>
-      <div class="highlight">
-        iOS에서는 앱 설치 후 첫 실행 시 광고 추적 동의(ATT) 팝업이 표시됩니다. 동의하지 않을 경우 개인화되지 않은 광고가 표시됩니다.
+      <p>앱 안정성 향상을 위해 Firebase Analytics 및 Firebase Crashlytics가 운영되며, 아래 정보를 수집할 수 있습니다.</p>
+      <ul>
+        <li>Firebase Analytics: 앱 실행 이벤트, 기기·OS 정보, 국가 정보 (익명 통계)</li>
+        <li>Firebase Crashlytics: 충돌 발생 시 스택 트레이스, 기기 정보, 앱 버전</li>
+      </ul>
+
+      <h3>다. 선택 권한 (기기 권한)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>권한</th>
+            <th>사용 목적</th>
+            <th>필수 여부</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>파일/문서 접근</td>
+            <td>백업 파일 내보내기·불러오기</td>
+            <td>선택</td>
+          </tr>
+          <tr>
+            <td>광고 ID (Android 13+)</td>
+            <td>광고 서비스 제공</td>
+            <td>선택</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2. 개인정보의 처리 목적</h2>
+      <ul>
+        <li>서비스 기능 제공: 이용자가 등록한 상용구의 저장·조회·복사</li>
+        <li>광고 서비스 운영: Google AdMob을 통한 맞춤형/비맞춤형 광고 제공</li>
+        <li>앱 안정성 향상: Firebase Crashlytics를 통한 충돌 분석 및 수정</li>
+        <li>익명 사용 통계: Firebase Analytics를 통한 앱 개선</li>
+        <li>서비스 개선: 로컬 사용 통계 기반 정렬(빈도순 등)</li>
+      </ul>
+
+      <h2>3. 개인정보의 보유 및 이용기간</h2>
+      <ul>
+        <li>이용자가 직접 입력한 데이터: 이용자가 앱에서 삭제하거나 앱을 제거할 때까지(기기 내부 저장)</li>
+        <li>광고 식별자: Google의 정책에 따름 (<a href="https://policies.google.com/technologies/ads" target="_blank"
+            rel="noopener">Google 광고 정책</a>)</li>
+      </ul>
+
+      <h2>4. 개인정보의 제3자 제공</h2>
+      <p>서비스는 이용자가 입력한 상용구·카테고리를 어떠한 제3자에게도 제공하지 않습니다. 다만 아래와 같이 광고 서비스 제공을 위해 필요한 최소한의 정보가 처리위탁 형태로 전달됩니다.</p>
+
+      <h2>5. 개인정보 처리 위탁</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>수탁업체</th>
+            <th>위탁 목적</th>
+            <th>위탁 항목</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google LLC (Google AdMob)</td>
+            <td>광고 게재 및 성과 측정</td>
+            <td>광고 식별자, 기기 정보, 대략적 위치, IP 주소, 광고 이벤트</td>
+          </tr>
+          <tr>
+            <td>Google LLC (Firebase Analytics)</td>
+            <td>익명 사용 통계 수집 및 앱 개선</td>
+            <td>앱 실행 이벤트, 기기·OS 정보, 국가 정보</td>
+          </tr>
+          <tr>
+            <td>Google LLC (Firebase Crashlytics)</td>
+            <td>충돌 로그 수집 및 앱 안정성 향상</td>
+            <td>충돌 스택 트레이스, 기기 정보, 앱 버전</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>6. 이용자 및 법정대리인의 권리와 행사 방법</h2>
+      <ul>
+        <li>앱 내에서 상용구·카테고리의 열람·수정·삭제가 가능합니다.</li>
+        <li>앱 삭제 시 기기에 저장된 이용자 데이터는 전부 제거됩니다.</li>
+        <li>광고 맞춤형 여부는 기기 설정에서 관리할 수 있습니다.
+          <ul>
+            <li>Android: 설정 → Google → 광고 → "광고 ID 삭제" 또는 "맞춤 광고 사용 중지"</li>
+            <li>iOS: 설정 → 개인정보 보호 및 보안 → 추적 → "앱이 추적을 요청하도록 허용" 끄기</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>7. 개인정보의 파기 절차 및 방법</h2>
+      <p>이용자가 앱에서 데이터를 삭제하거나 앱을 제거하면 해당 데이터는 즉시 기기에서 파기됩니다. 서비스는 별도의 원격 저장소를 운영하지 않으므로 서버상에 남는 정보가 없습니다.</p>
+
+      <h2>8. 개인정보의 안전성 확보 조치</h2>
+      <ul>
+        <li>이용자 입력 데이터는 기기 내부 전용 저장 경로에 보관되며, 외부 애플리케이션에서 직접 접근할 수 없습니다.</li>
+        <li>서비스는 이용자 입력 데이터를 네트워크로 전송하지 않습니다.</li>
+        <li>광고 서비스 제공업체(Google)는 업계 표준 암호화 및 접근 통제를 적용합니다.</li>
+      </ul>
+
+      <h2>9. 만 14세 미만 아동의 개인정보</h2>
+      <p>서비스는 만 14세 미만 아동의 개인정보를 의도적으로 수집하지 않습니다. 법정대리인의 동의 없이 아동의 개인정보가 수집된 사실이 확인될 경우 지체 없이 파기합니다.</p>
+
+      <h2>10. 자동 수집 장치 설치·운영 및 거부</h2>
+      <p>서비스는 쿠키를 사용하지 않습니다. 단, Google AdMob 광고 SDK가 광고 식별자를 통해 유사한 기능을 수행할 수 있으며, 앞서 안내드린 기기 설정을 통해 거부하실 수 있습니다.</p>
+
+      <h2>11. 개인정보 보호책임자</h2>
+      <ul>
+        <li>개발자: 코드래빗</li>
+        <li>이메일: <a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a></li>
+      </ul>
+      <p>개인정보 관련 문의, 불만 처리, 피해 구제 요청은 위 이메일로 접수해주시면 성실히 답변드리겠습니다.</p>
+
+      <h2>12. 권익침해 구제 방법</h2>
+      <ul>
+        <li>개인정보분쟁조정위원회: 1833-6972 (<a href="https://www.kopico.go.kr" target="_blank" rel="noopener">kopico.go.kr</a>)
+        </li>
+        <li>개인정보침해신고센터: 118 (<a href="https://privacy.kisa.or.kr" target="_blank" rel="noopener">privacy.kisa.or.kr</a>)
+        </li>
+        <li>대검찰청 사이버수사과: 1301</li>
+        <li>경찰청 사이버수사국: 182</li>
+      </ul>
+
+      <h2>13. 개정에 관한 사항</h2>
+      <p>본 방침은 법령·정책의 변경에 따라 수정될 수 있으며, 변경 시 앱 내 공지 또는 본 페이지를 통해 고지합니다.</p>
+
+      <hr />
+      <p class="meta">최종 개정일: 2026년 5월 7일</p>
+    </section>
+
+    <!-- ===== English ===== -->
+    <section class="lang" data-lang="en" lang="en">
+      <h1>Kok Privacy Policy</h1>
+      <p class="meta">Effective Date: May 7, 2026</p>
+
+      <p>Kok ("the Service") values user privacy and complies with applicable data protection laws. This policy explains
+        what information the Service collects, uses, retains, and deletes.</p>
+
+      <div class="notice">
+        <strong>Summary:</strong> Kok stores user-created snippets and categories only on the user's device and does not
+        transmit them to external servers. To support free operation, Google AdMob ads are displayed and may collect
+        advertising identifiers.
       </div>
-      <p>Google의 개인정보처리방침: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a></p>
-      <p>AdMob 파트너 정책: <a href="https://support.google.com/admob/answer/6128543" target="_blank">AdMob 파트너 정책 보기</a></p>
+
+      <h2>1. Information Collected and Methods</h2>
+      <h3>a. Information collected by the Service itself</h3>
+      <p>The Service does not require account registration and does not collect identifying information such as name,
+        email, or phone number. The following data is <strong>stored only on the user's device</strong> and is not
+        transmitted to external servers.</p>
+      <ul>
+        <li>Snippet titles/bodies and category names entered by the user</li>
+        <li>Per-snippet usage frequency (copy count) and last used timestamp</li>
+        <li>App settings (selected language, locked category state, etc.)</li>
+      </ul>
+
+      <h3>b. Automatically collected information (for external services)</h3>
+      <p>To provide the Service free of charge, Google AdMob ads are displayed, and AdMob may collect and process the
+        following. For details, see the <a href="https://policies.google.com/privacy" target="_blank"
+          rel="noopener">Google Privacy Policy</a>.</p>
+      <ul>
+        <li>Advertising identifiers (Android Advertising ID, iOS IDFA)</li>
+        <li>Device/OS information, approximate location (country level), IP address</li>
+        <li>Ad impression and click events</li>
+      </ul>
+      <p>To improve app stability, Firebase Analytics and Firebase Crashlytics are used and may collect the following.
+      </p>
+      <ul>
+        <li>Firebase Analytics: app launch events, device/OS information, country (anonymous statistics)</li>
+        <li>Firebase Crashlytics: crash stack traces, device information, app version</li>
+      </ul>
+
+      <h3>c. Optional permissions</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Permission</th>
+            <th>Purpose</th>
+            <th>Required</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>File / document access</td>
+            <td>Backup file export and import</td>
+            <td>Optional</td>
+          </tr>
+          <tr>
+            <td>Advertising ID (Android 13+)</td>
+            <td>Ad service delivery</td>
+            <td>Optional</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2. Purposes of Processing</h2>
+      <ul>
+        <li>Service functionality: storing, viewing, and copying user-registered snippets</li>
+        <li>Ad service operation: serving personalized/non-personalized ads via Google AdMob</li>
+        <li>App stability: crash analysis and fixes via Firebase Crashlytics</li>
+        <li>Anonymous usage statistics: app improvement via Firebase Analytics</li>
+        <li>Service improvement: local usage statistics for sorting (e.g., by frequency)</li>
+      </ul>
+
+      <h2>3. Retention Period</h2>
+      <ul>
+        <li>User-entered data: until deleted by the user or until the app is uninstalled (stored on device)</li>
+        <li>Advertising identifiers: governed by Google's policies (<a
+            href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google Ads Policy</a>)
+        </li>
+      </ul>
+
+      <h2>4. Disclosure to Third Parties</h2>
+      <p>The Service does not provide user-entered snippets or categories to any third party. Only the minimum
+        information needed for ad delivery is processed by an entrusted partner as described below.</p>
+
+      <h2>5. Data Processing Entrustment</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Entrusted Party</th>
+            <th>Purpose</th>
+            <th>Items</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google LLC (Google AdMob)</td>
+            <td>Ad delivery and performance measurement</td>
+            <td>Advertising ID, device info, approximate location, IP address, ad events</td>
+          </tr>
+          <tr>
+            <td>Google LLC (Firebase Analytics)</td>
+            <td>Anonymous usage statistics and app improvement</td>
+            <td>App launch events, device/OS info, country</td>
+          </tr>
+          <tr>
+            <td>Google LLC (Firebase Crashlytics)</td>
+            <td>Crash log collection and app stability improvement</td>
+            <td>Crash stack traces, device info, app version</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>6. User Rights and How to Exercise Them</h2>
+      <ul>
+        <li>Users can view, edit, and delete snippets and categories within the app.</li>
+        <li>All user data stored on the device is removed when the app is uninstalled.</li>
+        <li>Ad personalization can be managed in device settings.
+          <ul>
+            <li>Android: Settings → Google → Ads → "Delete advertising ID" or "Opt out of Ads Personalization"</li>
+            <li>iOS: Settings → Privacy &amp; Security → Tracking → turn off "Allow Apps to Request to Track"</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>7. Data Destruction</h2>
+      <p>When a user deletes data within the app or uninstalls the app, the data is immediately destroyed on the device.
+        The Service does not operate any remote storage, so no information remains on a server.</p>
+
+      <h2>8. Security Measures</h2>
+      <ul>
+        <li>User-entered data is stored in app-private storage and cannot be accessed directly by other applications.
+        </li>
+        <li>The Service does not transmit user-entered data over the network.</li>
+        <li>Ad service providers (Google) apply industry-standard encryption and access controls.</li>
+      </ul>
+
+      <h2>9. Children's Privacy</h2>
+      <p>The Service does not knowingly collect personal information from children under 14. If we become aware that
+        such data has been collected without legal guardian consent, we will delete it without delay.</p>
+
+      <h2>10. Automatic Collection Devices and Opt-Out</h2>
+      <p>The Service does not use cookies. However, the Google AdMob SDK may perform similar functions through
+        advertising identifiers, which can be opted out via the device settings described above.</p>
+
+      <h2>11. Privacy Officer</h2>
+      <ul>
+        <li>Developer: Code Rabbit</li>
+        <li>Email: <a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a></li>
+      </ul>
+      <p>For privacy inquiries, complaints, or remediation requests, please contact us at the email above.</p>
+
+      <h2>12. Remedies (Korea)</h2>
+      <ul>
+        <li>Personal Information Dispute Mediation Committee: 1833-6972 (<a href="https://www.kopico.go.kr"
+            target="_blank" rel="noopener">kopico.go.kr</a>)</li>
+        <li>Privacy Violation Reporting Center: 118 (<a href="https://privacy.kisa.or.kr" target="_blank"
+            rel="noopener">privacy.kisa.or.kr</a>)</li>
+      </ul>
+
+      <h2>13. Amendments</h2>
+      <p>This policy may be amended in accordance with changes in laws or policies, and any changes will be announced
+        through the app or this page.</p>
+
+      <hr />
+      <p class="meta">Last updated: May 7, 2026</p>
     </section>
 
-    <section>
-      <h2>3. 키보드 기능 관련 안내</h2>
-      <div class="highlight">
-        Android에서 키보드를 활성화할 때 "입력한 모든 텍스트가 수집될 수 있음"이라는 시스템 경고가 표시됩니다. 이는 Android가 모든 서드파티 키보드에 자동으로 표시하는 표준 안내문입니다. <strong>콕 앱은 사용자가 키보드로 입력하는 내용을 수집하거나 외부로 전송하지 않습니다.</strong>
+    <!-- ===== 日本語 ===== -->
+    <section class="lang" data-lang="ja" lang="ja">
+      <h1>Kok プライバシーポリシー</h1>
+      <p class="meta">施行日:2026年5月7日</p>
+
+      <p>Kok(以下「本サービス」)はユーザーのプライバシーを尊重し、関連法令を遵守します。本ポリシーでは、本サービスがどのような情報を収集・利用・保管・破棄するかを説明します。</p>
+
+      <div class="notice">
+        <strong>要約:</strong> Kok はユーザーが登録した定型文・カテゴリーをユーザー端末内にのみ保存し、外部サーバーに送信しません。ただし無料運営のため Google AdMob
+        広告が表示され、当該サービスが広告識別子を収集することがあります。
       </div>
+
+      <h2>1. 収集する情報および方法</h2>
+      <h3>a. 本サービス自体が収集する情報</h3>
+      <p>本サービスは会員登録を求めず、氏名・メール・電話番号などの識別情報を収集しません。以下の情報は<strong>ユーザー端末内のみに保存</strong>され、外部サーバーには送信されません。</p>
+      <ul>
+        <li>ユーザーが入力した定型文のタイトル・本文、カテゴリー名</li>
+        <li>定型文ごとの利用頻度(コピー回数)および最終利用日時</li>
+        <li>アプリ設定値(選択言語、ロックカテゴリ状態など)</li>
+      </ul>
+
+      <h3>b. 自動的に収集される情報(外部サービス提供目的)</h3>
+      <p>無料サービス提供のため Google AdMob 広告が表示され、AdMob は以下の情報を収集・処理する場合があります。詳細は <a href="https://policies.google.com/privacy"
+          target="_blank" rel="noopener">Google プライバシーポリシー</a>をご参照ください。</p>
+      <ul>
+        <li>広告識別子(Android Advertising ID、iOS IDFA)</li>
+        <li>端末・OS 情報、おおよその位置(国レベル)、IP アドレス</li>
+        <li>広告表示・クリックイベント</li>
+      </ul>
+      <p>アプリの安定性向上のため Firebase Analytics および Firebase Crashlytics を利用しており、以下の情報を収集する場合があります。</p>
+      <ul>
+        <li>Firebase Analytics:アプリ起動イベント、端末・OS 情報、国情報(匿名統計)</li>
+        <li>Firebase Crashlytics:クラッシュ時のスタックトレース、端末情報、アプリバージョン</li>
+      </ul>
+
+      <h3>c. 任意の権限(端末権限)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>権限</th>
+            <th>使用目的</th>
+            <th>必須/任意</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ファイル/ドキュメントへのアクセス</td>
+            <td>バックアップファイルのエクスポート・インポート</td>
+            <td>任意</td>
+          </tr>
+          <tr>
+            <td>広告 ID(Android 13+)</td>
+            <td>広告サービス提供</td>
+            <td>任意</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2. 利用目的</h2>
+      <ul>
+        <li>サービス機能提供:登録された定型文の保存・閲覧・コピー</li>
+        <li>広告サービス運営:Google AdMob を通じたパーソナライズ/非パーソナライズ広告</li>
+        <li>アプリ安定性向上:Firebase Crashlytics によるクラッシュ分析・修正</li>
+        <li>匿名使用統計:Firebase Analytics によるアプリ改善</li>
+        <li>サービス改善:ローカル利用統計に基づく並べ替え(頻度順など)</li>
+      </ul>
+
+      <h2>3. 保有および利用期間</h2>
+      <ul>
+        <li>ユーザー入力データ:ユーザーがアプリ内で削除またはアプリを削除するまで(端末内保存)</li>
+        <li>広告識別子:Google のポリシーに従う(<a href="https://policies.google.com/technologies/ads" target="_blank"
+            rel="noopener">Google 広告ポリシー</a>)</li>
+      </ul>
+
+      <h2>4. 第三者提供</h2>
+      <p>本サービスはユーザーが入力した定型文・カテゴリーをいかなる第三者にも提供しません。ただし広告サービス提供のために必要最小限の情報が委託形式で処理されます。</p>
+
+      <h2>5. 個人情報の処理委託</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>受託者</th>
+            <th>目的</th>
+            <th>委託項目</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google LLC(Google AdMob)</td>
+            <td>広告配信および効果測定</td>
+            <td>広告識別子、端末情報、おおよその位置、IP アドレス、広告イベント</td>
+          </tr>
+          <tr>
+            <td>Google LLC(Firebase Analytics)</td>
+            <td>匿名使用統計収集およびアプリ改善</td>
+            <td>アプリ起動イベント、端末・OS 情報、国情報</td>
+          </tr>
+          <tr>
+            <td>Google LLC(Firebase Crashlytics)</td>
+            <td>クラッシュログ収集およびアプリ安定性向上</td>
+            <td>クラッシュスタックトレース、端末情報、アプリバージョン</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>6. ユーザーの権利および行使方法</h2>
+      <ul>
+        <li>アプリ内で定型文・カテゴリーの閲覧・編集・削除が可能です。</li>
+        <li>アプリ削除時、端末に保存されたユーザーデータはすべて削除されます。</li>
+        <li>広告のパーソナライズは端末設定で管理できます。
+          <ul>
+            <li>Android:設定 → Google → 広告 →「広告 ID を削除」または「広告のカスタマイズをオフ」</li>
+            <li>iOS:設定 → プライバシーとセキュリティ → トラッキング →「Appからのトラッキング要求を許可」をオフ</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>7. 個人情報の破棄</h2>
+      <p>ユーザーがアプリ内でデータを削除またはアプリを削除すると、当該データは直ちに端末から破棄されます。本サービスはリモートストレージを運営しないため、サーバー上に残る情報はありません。</p>
+
+      <h2>8. 安全性確保措置</h2>
+      <ul>
+        <li>ユーザー入力データは端末内のアプリ専用領域に保存され、他アプリから直接アクセスできません。</li>
+        <li>本サービスはユーザー入力データをネットワークで送信しません。</li>
+        <li>広告サービス提供業者(Google)は業界標準の暗号化・アクセス制御を適用しています。</li>
+      </ul>
+
+      <h2>9. 14 歳未満の児童の個人情報</h2>
+      <p>本サービスは 14 歳未満の児童の個人情報を意図的に収集しません。法定代理人の同意なく児童の個人情報が収集されたことが判明した場合、遅滞なく破棄します。</p>
+
+      <h2>10. 自動収集装置の設置・運営および拒否</h2>
+      <p>本サービスはクッキーを使用しません。ただし Google AdMob 広告 SDK が広告識別子を通じて類似機能を行う場合があり、前述の端末設定で拒否できます。</p>
+
+      <h2>11. 個人情報保護責任者</h2>
+      <ul>
+        <li>開発者: Code Rabbit</li>
+        <li>メール:<a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a></li>
+      </ul>
+      <p>個人情報に関するお問い合わせ、苦情、被害救済請求は上記メールにてお受けいたします。</p>
+
+      <h2>12. 権利侵害の救済方法(韓国)</h2>
+      <ul>
+        <li>個人情報紛争調停委員会:1833-6972(<a href="https://www.kopico.go.kr" target="_blank" rel="noopener">kopico.go.kr</a>)
+        </li>
+        <li>個人情報侵害申告センター:118(<a href="https://privacy.kisa.or.kr" target="_blank" rel="noopener">privacy.kisa.or.kr</a>)
+        </li>
+      </ul>
+
+      <h2>13. 改定について</h2>
+      <p>本ポリシーは法令・方針の変更により改定されることがあり、変更時にはアプリ内告知または本ページにて告知します。</p>
+
+      <hr />
+      <p class="meta">最終改定日:2026年5月7日</p>
     </section>
 
-    <section>
-      <h2>4. 백업 파일</h2>
-      <p>백업 기능을 사용하면 상용구 데이터가 JSON 파일(kok_backup_날짜.json)로 기기에 저장됩니다. 이 파일은 사용자가 직접 관리하며, 앱 서버로 전송되지 않습니다.</p>
-    </section>
+    <!-- ===== 中文 ===== -->
+    <section class="lang" data-lang="zh" lang="zh">
+      <h1>Kok 隐私政策</h1>
+      <p class="meta">生效日期:2026 年 5 月 7 日</p>
 
-    <section>
-      <h2>5. 네트워크 통신</h2>
-      <p>앱은 AdMob 광고 로드 외에는 외부 서버와 통신하지 않습니다. 별도의 회원가입이나 계정이 없으며, 클라우드 동기화 기능도 없습니다.</p>
-    </section>
+      <p>Kok(以下简称“本服务”)重视用户隐私,并遵守相关法律法规。本政策说明本服务收集、使用、保存和删除哪些信息。</p>
 
-    <section>
-      <h2>6. 아동 개인정보 보호</h2>
-      <p>콕 앱은 만 14세 미만 아동을 대상으로 하지 않으며, 아동으로부터 의도적으로 개인 정보를 수집하지 않습니다.</p>
-    </section>
-
-    <section>
-      <h2>7. 방침 변경</h2>
-      <p>본 방침이 변경될 경우 앱 스토어 업데이트 노트 또는 본 페이지를 통해 고지합니다. 변경 후 앱을 계속 사용하면 변경된 방침에 동의한 것으로 간주합니다.</p>
-    </section>
-
-    <section>
-      <h2>8. 문의</h2>
-      <div class="contact-box">
-        개인정보 처리에 관한 문의사항은 아래로 연락해 주세요.<br><br>
-        이메일: <a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a>
+      <div class="notice">
+        <strong>摘要:</strong>Kok 仅将用户创建的常用语和分类保存在用户设备中,不会传输到外部服务器。但为了维持免费运营,会展示 Google AdMob 广告,该服务可能会收集广告标识符。
       </div>
+
+      <h2>1. 收集的个人信息及收集方式</h2>
+      <h3>a. 本服务自身收集的信息</h3>
+      <p>本服务不需要注册账号,不收集姓名、邮箱、电话等身份信息。以下信息<strong>仅保存在用户设备内</strong>,不会传输到外部服务器。</p>
+      <ul>
+        <li>用户输入的常用语标题/正文、分类名称</li>
+        <li>每条常用语的使用频率(复制次数)及最后使用时间</li>
+        <li>应用设置(所选语言、锁定分类状态等)</li>
+      </ul>
+
+      <h3>b. 自动收集的信息(外部服务目的)</h3>
+      <p>为提供免费服务,会展示 Google AdMob 广告,AdMob 可能会收集和处理以下信息。详细内容请参阅 <a href="https://policies.google.com/privacy"
+          target="_blank" rel="noopener">Google 隐私政策</a>。</p>
+      <ul>
+        <li>广告标识符(Android Advertising ID、iOS IDFA)</li>
+        <li>设备/操作系统信息、大致位置(国家/地区级别)、IP 地址</li>
+        <li>广告展示和点击事件</li>
+      </ul>
+      <p>为提升应用稳定性,运营 Firebase Analytics 和 Firebase Crashlytics,可能会收集以下信息。</p>
+      <ul>
+        <li>Firebase Analytics:应用启动事件、设备/操作系统信息、国家/地区信息(匿名统计)</li>
+        <li>Firebase Crashlytics:崩溃时的堆栈跟踪、设备信息、应用版本</li>
+      </ul>
+
+      <h3>c. 可选权限(设备权限)</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>权限</th>
+            <th>用途</th>
+            <th>是否必需</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>文件 / 文档访问</td>
+            <td>导出和导入备份文件</td>
+            <td>可选</td>
+          </tr>
+          <tr>
+            <td>广告 ID(Android 13+)</td>
+            <td>广告服务提供</td>
+            <td>可选</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2. 个人信息的处理目的</h2>
+      <ul>
+        <li>服务功能提供:用户注册的常用语保存、查看、复制</li>
+        <li>广告服务运营:通过 Google AdMob 提供个性化/非个性化广告</li>
+        <li>应用稳定性提升:通过 Firebase Crashlytics 进行崩溃分析和修复</li>
+        <li>匿名使用统计:通过 Firebase Analytics 改进应用</li>
+        <li>服务改进:基于本地使用统计的排序(如按频率)</li>
+      </ul>
+
+      <h2>3. 保存及使用期限</h2>
+      <ul>
+        <li>用户输入的数据:在用户从应用中删除或卸载应用前一直保存(在设备内)</li>
+        <li>广告标识符:遵循 Google 政策(<a href="https://policies.google.com/technologies/ads" target="_blank"
+            rel="noopener">Google 广告政策</a>)</li>
+      </ul>
+
+      <h2>4. 向第三方提供</h2>
+      <p>本服务不会将用户输入的常用语和分类提供给任何第三方。但为提供广告服务,以下最少必要信息以委托形式传递。</p>
+
+      <h2>5. 个人信息处理委托</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>受托方</th>
+            <th>委托目的</th>
+            <th>委托项目</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google LLC(Google AdMob)</td>
+            <td>广告投放及效果衡量</td>
+            <td>广告标识符、设备信息、大致位置、IP 地址、广告事件</td>
+          </tr>
+          <tr>
+            <td>Google LLC(Firebase Analytics)</td>
+            <td>匿名使用统计收集及应用改进</td>
+            <td>应用启动事件、设备/操作系统信息、国家/地区信息</td>
+          </tr>
+          <tr>
+            <td>Google LLC(Firebase Crashlytics)</td>
+            <td>崩溃日志收集及应用稳定性提升</td>
+            <td>崩溃堆栈跟踪、设备信息、应用版本</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>6. 用户权利及行使方式</h2>
+      <ul>
+        <li>用户可在应用内查看、修改、删除常用语和分类。</li>
+        <li>卸载应用时,设备中保存的用户数据将全部删除。</li>
+        <li>可在设备设置中管理广告个性化。
+          <ul>
+            <li>Android:设置 → Google → 广告 →“删除广告 ID”或“关闭广告个性化”</li>
+            <li>iOS:设置 → 隐私与安全 → 跟踪 → 关闭“允许 App 请求跟踪”</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>7. 个人信息的销毁程序及方法</h2>
+      <p>用户在应用内删除数据或卸载应用后,相关数据将立即从设备销毁。本服务不运营独立的远程存储,因此服务器上不会留存任何信息。</p>
+
+      <h2>8. 个人信息安全保障措施</h2>
+      <ul>
+        <li>用户输入的数据保存在设备内应用专用存储路径中,其他应用无法直接访问。</li>
+        <li>本服务不会通过网络传输用户输入的数据。</li>
+        <li>广告服务提供商(Google)采用行业标准的加密和访问控制。</li>
+      </ul>
+
+      <h2>9. 不满 14 岁儿童的个人信息</h2>
+      <p>本服务不会有意收集 14 岁以下儿童的个人信息。如经确认在未取得法定代理人同意的情况下收集到儿童个人信息,将立即销毁。</p>
+
+      <h2>10. 自动收集装置的安装、运行及拒绝</h2>
+      <p>本服务不使用 Cookie。但 Google AdMob 广告 SDK 可能通过广告标识符执行类似功能,可通过上述设备设置进行拒绝。</p>
+
+      <h2>11. 个人信息保护负责人</h2>
+      <ul>
+        <li>开发者: Code Rabbit</li>
+        <li>邮箱:<a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a></li>
+      </ul>
+      <p>关于个人信息的咨询、投诉、损害救济请通过上述邮箱联系,我们将认真回复。</p>
+
+      <h2>12. 权益侵害救济方式(韩国)</h2>
+      <ul>
+        <li>个人信息纠纷调解委员会:1833-6972(<a href="https://www.kopico.go.kr" target="_blank" rel="noopener">kopico.go.kr</a>)
+        </li>
+        <li>个人信息侵害申报中心:118(<a href="https://privacy.kisa.or.kr" target="_blank" rel="noopener">privacy.kisa.or.kr</a>)
+        </li>
+      </ul>
+
+      <h2>13. 修订事项</h2>
+      <p>本政策可能因法律法规和政策变化而修订,变更时将通过应用内通知或本页面公告。</p>
+
+      <hr />
+      <p class="meta">最后修订日期:2026 年 5 月 7 日</p>
     </section>
   </div>
 
-  <!-- English -->
-  <div data-lang="en">
-    <div class="badge">Privacy Policy</div>
-    <h1>Privacy Policy</h1>
-    <p class="meta">Last updated: April 24, 2026 &nbsp;·&nbsp; App: Kok &nbsp;·&nbsp; rbjoon.github.io</p>
+  <script>
+    (function () {
+      var buttons = document.querySelectorAll('.lang-switch button');
+      var sections = document.querySelectorAll('section.lang');
 
-    <div class="summary-box">
-      <strong>At a Glance</strong>
-      Kok does not collect any personal information. All snippets you create are stored only on your device and never transmitted externally. Google AdMob uses an advertising identifier to serve ads.
-    </div>
+      function activate(lang) {
+        buttons.forEach(function (b) {
+          b.classList.toggle('active', b.dataset.lang === lang);
+        });
+        sections.forEach(function (s) {
+          s.classList.toggle('active', s.dataset.lang === lang);
+        });
+        document.documentElement.lang = lang;
+        try { localStorage.setItem('kok_legal_lang', lang); } catch (e) { }
+        if (history.replaceState) history.replaceState(null, '', '#' + lang);
+      }
 
-    <section>
-      <h2>1. Information We Collect</h2>
-      <p><strong>Information collected by the app: None</strong></p>
-      <p>Kok does not collect any personally identifiable information such as your name, email, or phone number. All data you enter — snippets, category names — is stored solely on your device.</p>
-      <p><strong>Data stored on your device:</strong></p>
-      <ul>
-        <li>Snippet titles, content, and categories</li>
-        <li>Usage count (for "most used" sorting)</li>
-        <li>App language preference</li>
-      </ul>
-      <p>All this data is permanently deleted when you uninstall the app.</p>
-    </section>
+      buttons.forEach(function (b) {
+        b.addEventListener('click', function () { activate(b.dataset.lang); });
+      });
 
-    <section>
-      <h2>2. Advertising &amp; Third-Party Services</h2>
-      <p>Kok uses Google AdMob to display ads. AdMob may collect:</p>
-      <ul>
-        <li>Advertising identifier (Android Ad ID / iOS IDFA)</li>
-        <li>Device information (model, OS version)</li>
-        <li>IP address and approximate location</li>
-        <li>Ad interaction data (clicks, impressions)</li>
-      </ul>
-      <div class="highlight">
-        On iOS, you will be shown an App Tracking Transparency (ATT) prompt on first launch. If you decline, non-personalized ads will be shown.
-      </div>
-      <p>Google Privacy Policy: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a></p>
-    </section>
-
-    <section>
-      <h2>3. Keyboard Notice</h2>
-      <div class="highlight">
-        When enabling the keyboard on Android, the system shows a warning: "This keyboard may collect all the text you type." This is a standard Android notice shown for all third-party keyboards. <strong>Kok does not collect or transmit anything you type.</strong>
-      </div>
-    </section>
-
-    <section>
-      <h2>4. Backup Files</h2>
-      <p>When you use the backup feature, your snippet data is saved as a JSON file (kok_backup_date.json) on your device. This file is managed by you and is never sent to any server.</p>
-    </section>
-
-    <section>
-      <h2>5. Network Communication</h2>
-      <p>The app only communicates with external servers to load AdMob ads. There are no user accounts, no registration, and no cloud sync.</p>
-    </section>
-
-    <section>
-      <h2>6. Children's Privacy</h2>
-      <p>Kok is not directed at children under 13, and we do not knowingly collect personal information from children.</p>
-    </section>
-
-    <section>
-      <h2>7. Changes to This Policy</h2>
-      <p>If we update this policy, we will notify you through the app store release notes or this page. Continued use of the app after changes constitutes acceptance of the updated policy.</p>
-    </section>
-
-    <section>
-      <h2>8. Contact</h2>
-      <div class="contact-box">
-        For any privacy-related questions, please contact:<br><br>
-        Email: <a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a>
-      </div>
-    </section>
-  </div>
-
-  <!-- 日本語 -->
-  <div data-lang="ja">
-    <div class="badge">Privacy Policy</div>
-    <h1>プライバシーポリシー</h1>
-    <p class="meta">最終更新日: 2026年4月24日 &nbsp;·&nbsp; アプリ: Kok &nbsp;·&nbsp; rbjoon.github.io</p>
-
-    <div class="summary-box">
-      <strong>概要</strong>
-      Kokアプリはユーザーの個人情報を直接収集しません。登録した定型文はデバイス上にのみ保存され、外部に送信されることはありません。広告配信のためにGoogle AdMobが広告識別子を使用します。
-    </div>
-
-    <section>
-      <h2>1. 収集する情報</h2>
-      <p><strong>アプリが直接収集する情報: なし</strong></p>
-      <p>Kokは氏名、メールアドレス、電話番号などの個人を特定できる情報を収集しません。入力した定型文やカテゴリ名はすべてお使いのデバイス内にのみ保存されます。</p>
-      <p><strong>デバイスに保存されるデータ:</strong></p>
-      <ul>
-        <li>定型文のタイトル・内容・カテゴリ</li>
-        <li>使用回数（「よく使う」並び順のため）</li>
-        <li>アプリの言語設定</li>
-      </ul>
-      <p>これらのデータはアプリをアンインストールすると完全に削除されます。</p>
-    </section>
-
-    <section>
-      <h2>2. 広告および第三者サービス</h2>
-      <p>KokはGoogle AdMobを通じて広告を配信しています。AdMobは以下の情報を収集する場合があります:</p>
-      <ul>
-        <li>広告識別子（Android広告ID / iOS IDFA）</li>
-        <li>端末情報（機種名、OSバージョン）</li>
-        <li>IPアドレスおよびおおよその位置情報</li>
-        <li>広告クリック・表示などのインタラクションデータ</li>
-      </ul>
-      <div class="highlight">
-        iOSでは初回起動時に広告トラッキング許可（ATT）ダイアログが表示されます。許可しない場合はパーソナライズされていない広告が表示されます。
-      </div>
-      <p>Googleプライバシーポリシー: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a></p>
-    </section>
-
-    <section>
-      <h2>3. キーボード機能に関する注意</h2>
-      <div class="highlight">
-        Androidでキーボードを有効化する際、「入力したテキストがすべて収集される可能性がある」という警告が表示されます。これはAndroidがすべてのサードパーティキーボードに自動表示する標準的な案内です。<strong>Kokアプリはキーボードで入力された内容を収集・送信しません。</strong>
-      </div>
-    </section>
-
-    <section>
-      <h2>4. バックアップファイル</h2>
-      <p>バックアップ機能を使用すると、定型文データがJSONファイル（kok_backup_日付.json）としてデバイスに保存されます。このファイルはユーザーが管理し、サーバーには送信されません。</p>
-    </section>
-
-    <section>
-      <h2>5. 通信について</h2>
-      <p>アプリはAdMob広告の読み込み以外に外部サーバーとの通信を行いません。ユーザーアカウントや会員登録は不要で、クラウド同期機能もありません。</p>
-    </section>
-
-    <section>
-      <h2>6. お問い合わせ</h2>
-      <div class="contact-box">
-        プライバシーに関するご質問は下記までご連絡ください。<br><br>
-        メール: <a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a>
-      </div>
-    </section>
-  </div>
-
-  <!-- 中文 -->
-  <div data-lang="zh">
-    <div class="badge">Privacy Policy</div>
-    <h1>隐私政策</h1>
-    <p class="meta">最后更新: 2026年4月24日 &nbsp;·&nbsp; 应用: Kok &nbsp;·&nbsp; rbjoon.github.io</p>
-
-    <div class="summary-box">
-      <strong>简介</strong>
-      Kok应用不会直接收集您的个人信息。您输入的短语仅存储在您的设备上，不会传输到外部。Google AdMob使用广告标识符投放广告。
-    </div>
-
-    <section>
-      <h2>1. 收集的信息</h2>
-      <p><strong>应用直接收集的信息: 无</strong></p>
-      <p>Kok不收集姓名、电子邮件、电话号码等任何个人身份信息。您输入的短语和分类名称仅存储在您的设备本地。</p>
-      <p><strong>存储在设备上的数据:</strong></p>
-      <ul>
-        <li>短语标题、内容和分类</li>
-        <li>使用次数（用于"最常使用"排序）</li>
-        <li>应用语言设置</li>
-      </ul>
-      <p>卸载应用后，上述所有数据将被永久删除。</p>
-    </section>
-
-    <section>
-      <h2>2. 广告及第三方服务</h2>
-      <p>Kok通过Google AdMob投放广告。AdMob可能收集以下信息:</p>
-      <ul>
-        <li>广告标识符（Android广告ID / iOS IDFA）</li>
-        <li>设备信息（型号、系统版本）</li>
-        <li>IP地址及大致位置</li>
-        <li>广告点击、展示等交互数据</li>
-      </ul>
-      <div class="highlight">
-        在iOS上，首次启动时将显示应用追踪透明度（ATT）弹窗。如果您拒绝，将显示非个性化广告。
-      </div>
-      <p>Google隐私政策: <a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a></p>
-    </section>
-
-    <section>
-      <h2>3. 联系我们</h2>
-      <div class="contact-box">
-        如有隐私相关问题，请联系:<br><br>
-        邮箱: <a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a>
-      </div>
-    </section>
-  </div>
-
-  <footer>© 2026 Kok (콕) · rbjoon.github.io</footer>
-</div>
-
-<script>
-  function setLang(lang) {
-    document.querySelectorAll('[data-lang]').forEach(el => el.classList.remove('visible'));
-    document.querySelector('[data-lang="' + lang + '"]').classList.add('visible');
-    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-  }
-</script>
+      var initial = (location.hash || '').replace('#', '');
+      if (!initial) {
+        try { initial = localStorage.getItem('kok_legal_lang') || ''; } catch (e) { }
+      }
+      if (!initial) {
+        var nav = (navigator.language || 'ko').toLowerCase();
+        if (nav.indexOf('en') === 0) initial = 'en';
+        else if (nav.indexOf('ja') === 0) initial = 'ja';
+        else if (nav.indexOf('zh') === 0) initial = 'zh';
+        else initial = 'ko';
+      }
+      if (['ko', 'en', 'ja', 'zh'].indexOf(initial) === -1) initial = 'ko';
+      activate(initial);
+    })();
+  </script>
 </body>
+
 </html>
