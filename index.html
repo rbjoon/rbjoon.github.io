@@ -1,617 +1,1398 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeRabbit - 코드로 그리는 즐거운 세상</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap"
+        rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #09090f;
+            --surface: rgba(255, 255, 255, 0.06);
+            --border: rgba(255, 255, 255, 0.11);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --text: #e2e8f0;
+            --muted: #8896aa;
+            --sub: #b0bdc9;
+            --accent: #818cf8;
+            --yum: #f97316;
+            --yum2: #fbbf24;
+            --lotto: #8b5cf6;
+            --lotto2: #c084fc;
+            --kok: #06b6d4;
+            --kok2: #67e8f9;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0a0a;
-            color: #e0e0e0;
+            background: var(--bg);
+            color: var(--text);
             overflow-x: hidden;
+        }
+
+        /* ── Background canvas ── */
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+        }
+
+        .orb-1 {
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.45), transparent 70%);
+            top: -250px;
+            left: -200px;
+            animation: orb-drift-1 22s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.32), transparent 70%);
+            bottom: 10%;
+            right: -150px;
+            animation: orb-drift-2 28s ease-in-out infinite;
+        }
+
+        .orb-3 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.38), transparent 70%);
+            top: 55%;
+            left: 35%;
+            animation: orb-drift-3 35s ease-in-out infinite;
+        }
+
+        .orb-4 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.22), transparent 70%);
+            top: 20%;
+            right: 20%;
+            animation: orb-drift-1 18s ease-in-out infinite reverse;
+        }
+
+        @keyframes orb-drift-1 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            33% {
+                transform: translate(50px, 40px) scale(1.08);
+            }
+
+            66% {
+                transform: translate(-30px, 20px) scale(0.94);
+            }
+        }
+
+        @keyframes orb-drift-2 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(-60px, -50px) scale(1.1);
+            }
+        }
+
+        @keyframes orb-drift-3 {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(40px, -40px);
+            }
+
+            75% {
+                transform: translate(-40px, 30px);
+            }
+        }
+
+        /* dot grid overlay */
+        .bg-canvas::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            background: rgba(6, 6, 12, 0.55);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-logo-icon {
+            width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+        }
+
+        nav a.nav-link {
+            font-size: 14px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        nav a.nav-link:hover {
+            color: var(--sub);
+        }
+
+        /* ── Content ── */
+        .page {
+            position: relative;
+            z-index: 1;
         }
 
         /* ── Hero ── */
         .hero {
-            position: relative;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 60px 24px;
-            background: radial-gradient(ellipse at 50% 0%, #1a1a3e 0%, #0a0a0a 70%);
+            padding: 100px 24px 80px;
+            position: relative;
         }
-        .hero::before {
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 18px;
+            border-radius: 100px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #a5b4fc;
+            margin-bottom: 40px;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #6366f1;
+            box-shadow: 0 0 8px rgba(99, 102, 241, 0.8);
+            animation: badge-pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes badge-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.75);
+            }
+        }
+
+        .hero-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 36px;
+            background: linear-gradient(135deg, #4338ca, #6d28d9, #7c3aed);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            position: relative;
+            animation: hero-float 4s ease-in-out infinite;
+        }
+
+        .hero-icon::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.5;
+            inset: -3px;
+            border-radius: 33px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.7), rgba(139, 92, 246, 0.3), transparent, rgba(139, 92, 246, 0.3));
+            z-index: -1;
+            animation: hero-ring 4s ease-in-out infinite;
         }
-        .hero-content { position: relative; z-index: 1; }
 
-        .logo-icon {
-            width: 80px; height: 80px;
-            margin: 0 auto 28px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
-            border-radius: 22px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
-            animation: float 3s ease-in-out infinite;
+        .hero-icon::after {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25), transparent 70%);
+            z-index: -2;
+            animation: hero-glow 4s ease-in-out infinite;
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+
+        @keyframes hero-float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-1deg);
+            }
+
+            50% {
+                transform: translateY(-14px) rotate(1.5deg);
+            }
+        }
+
+        @keyframes hero-ring {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes hero-glow {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
         }
 
         .hero h1 {
-            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-size: clamp(3.2rem, 9vw, 6rem);
             font-weight: 900;
-            background: linear-gradient(135deg, #fff 0%, #a78bfa 50%, #6366f1 100%);
+            letter-spacing: -3px;
+            line-height: 1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, #e0e7ff 35%, #a5b4fc 65%, #8b5cf6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            letter-spacing: -1px;
-            margin-bottom: 16px;
-        }
-        .hero .tagline {
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            color: #9ca3af;
-            font-weight: 300;
-            margin-bottom: 48px;
-            line-height: 1.7;
         }
 
-        .scroll-indicator {
+        .hero-tagline {
+            font-size: clamp(1rem, 2.2vw, 1.2rem);
+            color: var(--muted);
+            font-weight: 300;
+            line-height: 1.85;
+            margin-bottom: 48px;
+            max-width: 420px;
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 32px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 8px 40px rgba(99, 102, 241, 0.35), 0 0 0 1px rgba(99, 102, 241, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: -0.2px;
+        }
+
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 56px rgba(99, 102, 241, 0.5), 0 0 0 1px rgba(99, 102, 241, 0.35);
+        }
+
+        .cta-arrow {
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .hero-cta:hover .cta-arrow {
+            transform: translateY(3px);
+        }
+
+        .scroll-line-wrap {
             position: absolute;
-            bottom: 32px;
+            bottom: 36px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            color: #6b7280;
-            font-size: 12px;
-            letter-spacing: 2px;
-            animation: bounce 2s ease-in-out infinite;
-        }
-        .scroll-indicator .arrow {
-            width: 24px; height: 24px;
-            border-right: 2px solid #6b7280;
-            border-bottom: 2px solid #6b7280;
-            transform: rotate(45deg);
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(8px); }
+            gap: 6px;
         }
 
-        /* ── Section ── */
-        section {
+        .scroll-text {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: #4b5563;
+            text-transform: uppercase;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 48px;
+            background: linear-gradient(to bottom, rgba(99, 102, 241, 0.6), transparent);
+            animation: scroll-drop 2s ease-in-out infinite;
+            transform-origin: top;
+        }
+
+        @keyframes scroll-drop {
+            0% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+
+            30% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: scaleY(1);
+                opacity: 0;
+            }
+        }
+
+        /* ── Section wrapper ── */
+        .section {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 100px 24px;
+            padding: 120px 40px;
         }
-        .section-label {
-            font-size: 13px;
+
+        .section-top {
+            margin-bottom: 64px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11.5px;
             font-weight: 700;
-            letter-spacing: 4px;
+            letter-spacing: 3.5px;
             text-transform: uppercase;
-            color: #8b5cf6;
-            margin-bottom: 12px;
+            color: var(--accent);
+            margin-bottom: 14px;
         }
-        .section-title {
-            font-size: clamp(1.8rem, 4vw, 2.6rem);
+
+        .eyebrow::before {
+            content: '';
+            width: 28px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+        }
+
+        .sec-title {
+            font-size: clamp(2rem, 4.5vw, 3rem);
             font-weight: 900;
             color: #fff;
-            margin-bottom: 16px;
-            letter-spacing: -0.5px;
-        }
-        .section-desc {
-            font-size: 1.05rem;
-            color: #9ca3af;
-            line-height: 1.8;
-            max-width: 560px;
-            margin-bottom: 56px;
+            letter-spacing: -1.5px;
+            margin-bottom: 14px;
+            line-height: 1.1;
         }
 
-        /* ── App Cards ── */
+        .sec-desc {
+            font-size: 1rem;
+            color: var(--muted);
+            line-height: 1.85;
+            max-width: 500px;
+        }
+
+        /* ── Apps grid ── */
         .apps-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-            gap: 32px;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 28px;
         }
 
+        /* ── Glass card ── */
         .app-card {
             position: relative;
-            background: #111;
-            border: 1px solid #1f1f1f;
-            border-radius: 24px;
-            padding: 48px 40px 40px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 28px;
+            padding: 44px 40px 40px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--border);
             overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.4s,
+                box-shadow 0.4s;
         }
+
+        /* Gradient top accent line */
         .app-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            border-radius: 24px 24px 0 0;
-            transition: height 0.4s;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
         }
+
+        /* Inner glow blob */
+        .app-card::after {
+            content: '';
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            top: -140px;
+            right: -120px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
         .app-card:hover {
-            border-color: #2a2a2a;
-            transform: translateY(-6px);
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+            transform: translateY(-10px);
+            border-color: var(--border-hover);
         }
 
-        /* 얌플래너 카드 */
+        .app-card:hover::after {
+            opacity: 1;
+        }
+
+        /* Yum theme */
         .card-yum::before {
-            background: linear-gradient(90deg, #f97316, #fb923c, #fbbf24);
-        }
-        .card-yum:hover::before { height: 4px; }
-        .card-yum .app-icon {
-            background: linear-gradient(135deg, #f97316, #fbbf24);
-            box-shadow: 0 8px 24px rgba(249, 115, 22, 0.25);
+            background: linear-gradient(90deg, #f97316, #fbbf24, transparent);
         }
 
-        /* 로또무당 카드 */
+        .card-yum::after {
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.18), transparent 65%);
+        }
+
+        .card-yum:hover {
+            box-shadow: 0 32px 80px rgba(249, 115, 22, 0.12), 0 0 0 1px rgba(249, 115, 22, 0.18);
+        }
+
+        /* Lotto theme */
         .card-lotto::before {
-            background: linear-gradient(90deg, #8b5cf6, #a78bfa, #c084fc);
-        }
-        .card-lotto:hover::before { height: 4px; }
-        .card-lotto .app-icon {
-            background: linear-gradient(135deg, #7c3aed, #a78bfa);
-            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+            background: linear-gradient(90deg, #8b5cf6, #c084fc, transparent);
         }
 
+        .card-lotto::after {
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent 65%);
+        }
+
+        .card-lotto:hover {
+            box-shadow: 0 32px 80px rgba(139, 92, 246, 0.14), 0 0 0 1px rgba(139, 92, 246, 0.2);
+        }
+
+        /* Kok theme */
+        .card-kok::before {
+            background: linear-gradient(90deg, #06b6d4, #67e8f9, transparent);
+        }
+
+        .card-kok::after {
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.2), transparent 65%);
+        }
+
+        .card-kok:hover {
+            box-shadow: 0 32px 80px rgba(6, 182, 212, 0.14), 0 0 0 1px rgba(6, 182, 212, 0.2);
+        }
+
+        /* App icon */
         .app-icon {
-            width: 64px; height: 64px;
-            border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 30px;
+            width: 76px;
+            height: 76px;
+            border-radius: 20px;
+            overflow: hidden;
             margin-bottom: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            flex-shrink: 0;
         }
 
-        .app-card h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .app-name {
+            font-size: 1.8rem;
+            font-weight: 800;
             color: #fff;
-            margin-bottom: 4px;
+            letter-spacing: -0.8px;
+            margin-bottom: 3px;
         }
-        .app-card .app-subtitle {
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-bottom: 16px;
-            font-weight: 400;
+
+        .app-eng {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 14px;
+            font-style: italic;
         }
-        .app-card .app-desc {
-            font-size: 0.95rem;
-            color: #9ca3af;
-            line-height: 1.7;
+
+        .app-desc {
+            font-size: 0.93rem;
+            color: var(--sub);
+            line-height: 1.8;
             margin-bottom: 28px;
         }
 
-        /* 기능 태그 */
+        /* Stats */
+        .stats-bar {
+            display: flex;
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            margin-bottom: 24px;
+        }
+
+        .stat {
+            flex: 1;
+            padding: 14px 8px;
+            text-align: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat-val {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .card-yum .stat-val {
+            color: #fb923c;
+        }
+
+        .card-lotto .stat-val {
+            color: #a78bfa;
+        }
+
+        .card-kok .stat-val {
+            color: #22d3ee;
+        }
+
+        .stat-lbl {
+            font-size: 10.5px;
+            color: var(--muted);
+        }
+
+        /* Feature grid */
+        .feat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+            margin-bottom: 24px;
+        }
+
+        .feat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 13px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: background 0.25s, border-color 0.25s, transform 0.25s;
+        }
+
+        .feat-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.14);
+            transform: translateX(3px);
+        }
+
+        .feat-ico {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .card-yum .feat-ico {
+            background: rgba(249, 115, 22, 0.14);
+        }
+
+        .card-lotto .feat-ico {
+            background: rgba(139, 92, 246, 0.14);
+        }
+
+        .card-kok .feat-ico {
+            background: rgba(6, 182, 212, 0.14);
+        }
+
+        .feat-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #d1d5db;
+            line-height: 1.3;
+        }
+
+        .feat-sub {
+            font-size: 10.5px;
+            color: var(--muted);
+            margin-top: 1px;
+        }
+
+        /* Tags */
         .tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 32px;
+            gap: 7px;
+            margin-bottom: 28px;
         }
-        .tag {
-            font-size: 12px;
-            font-weight: 500;
-            padding: 5px 12px;
-            border-radius: 20px;
-            background: #1a1a1a;
-            color: #9ca3af;
-            border: 1px solid #2a2a2a;
-        }
-        .card-yum .tag { color: #fb923c; border-color: rgba(249, 115, 22, 0.2); background: rgba(249, 115, 22, 0.08); }
-        .card-lotto .tag { color: #a78bfa; border-color: rgba(167, 139, 250, 0.2); background: rgba(139, 92, 246, 0.08); }
 
-        /* 스토어 버튼 */
-        .store-buttons {
+        .tag {
+            font-size: 11.5px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 100px;
+        }
+
+        .card-yum .tag {
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            color: #fb923c;
+        }
+
+        .card-lotto .tag {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+        }
+
+        .card-kok .tag {
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            color: #22d3ee;
+        }
+
+        /* Store buttons */
+        .store-btns {
             display: flex;
             gap: 10px;
-            margin-bottom: 24px;
             flex-wrap: wrap;
+            margin-bottom: 22px;
         }
+
         .store-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
-            border-radius: 12px;
+            padding: 11px 22px;
+            border-radius: 14px;
             font-size: 13px;
             font-weight: 600;
             text-decoration: none;
+            color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.25s;
-            border: 1px solid #2a2a2a;
-            background: #161616;
-            color: #d1d5db;
+            letter-spacing: -0.1px;
         }
+
         .store-btn:hover {
-            background: #1f1f1f;
-            border-color: #3a3a3a;
+            background: rgba(255, 255, 255, 0.11);
+            border-color: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
         }
+
         .store-btn svg {
-            width: 18px; height: 18px;
+            width: 17px;
+            height: 17px;
             fill: currentColor;
             flex-shrink: 0;
         }
 
-        /* 기능 하이라이트 */
-        .features-highlight {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: 14px;
-            background: #161616;
-            border: 1px solid #1f1f1f;
-            transition: all 0.3s;
-        }
-        .feature-item:hover {
-            background: #1a1a1a;
-            border-color: #2a2a2a;
-            transform: translateX(4px);
-        }
-        .feature-icon {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-        .card-yum .feature-icon {
-            background: rgba(249, 115, 22, 0.12);
-        }
-        .card-lotto .feature-icon {
-            background: rgba(139, 92, 246, 0.12);
-        }
-        .card-lotto .stat-value {
-            color: #a78bfa;
-        }
-        .feature-item .feature-text {
-            font-size: 12.5px;
-            color: #d1d5db;
-            font-weight: 500;
-            line-height: 1.4;
-        }
-        .feature-item .feature-sub {
-            font-size: 11px;
-            color: #6b7280;
-            font-weight: 400;
-        }
-
-        /* 앱 스탯 바 */
-        .app-stats {
-            display: flex;
-            gap: 0;
-            margin-bottom: 28px;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1px solid #1f1f1f;
-        }
-        .stat-item {
-            flex: 1;
-            text-align: center;
-            padding: 14px 8px;
-            background: #141414;
-            border-right: 1px solid #1f1f1f;
-        }
-        .stat-item:last-child { border-right: none; }
-        .stat-value {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #fb923c;
-            margin-bottom: 2px;
-        }
-        .stat-label {
-            font-size: 11px;
-            color: #6b7280;
-        }
-
-        /* 정책 링크 */
+        /* Policy */
         .policy-links {
             display: flex;
-            gap: 16px;
+            gap: 18px;
         }
+
         .policy-link {
-            font-size: 12px;
-            color: #6b7280;
+            font-size: 11.5px;
+            color: var(--muted);
             text-decoration: none;
             transition: color 0.2s;
         }
-        .policy-link:hover { color: #9ca3af; }
+
+        .policy-link:hover {
+            color: var(--sub);
+        }
+
+        /* ── Support ── */
+        .support-wrap {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .support-inner {
+            text-align: center;
+        }
+
+        .support-card {
+            max-width: 520px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 52px 48px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .support-card:hover {
+            border-color: rgba(99, 102, 241, 0.2);
+            box-shadow: 0 24px 60px rgba(99, 102, 241, 0.08);
+        }
+
+        .support-ico {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.35);
+        }
+
+        .support-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .support-card .support-desc {
+            font-size: 0.95rem;
+            color: var(--muted);
+            line-height: 1.85;
+            margin-bottom: 28px;
+        }
+
+        .email-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            border-radius: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.22);
+            text-decoration: none;
+            transition: all 0.25s;
+            margin-bottom: 24px;
+        }
+
+        .email-btn:hover {
+            background: rgba(99, 102, 241, 0.18);
+            border-color: rgba(99, 102, 241, 0.38);
+            transform: translateY(-2px);
+            color: #c7d2fe;
+        }
+
+        .support-note {
+            font-size: 0.83rem;
+            color: var(--muted);
+            line-height: 1.9;
+        }
 
         /* ── Footer ── */
         footer {
-            border-top: 1px solid #1a1a1a;
-            padding: 48px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 44px 40px;
             text-align: center;
         }
-        .footer-logo {
-            font-size: 1.2rem;
+
+        .footer-brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
             font-weight: 700;
             color: #fff;
             margin-bottom: 12px;
         }
-        footer p {
-            font-size: 13px;
-            color: #4b5563;
-            line-height: 1.8;
+
+        .footer-brand-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
         }
+
+        footer p {
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.9;
+        }
+
         footer a {
             color: #6b7280;
             text-decoration: none;
             transition: color 0.2s;
         }
-        footer a:hover { color: #9ca3af; }
+
+        footer a:hover {
+            color: var(--sub);
+        }
+
+        /* ── Divider ── */
+        .glass-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent);
+            margin: 0;
+        }
 
         /* ── Responsive ── */
-        @media (max-width: 480px) {
-            .apps-grid { grid-template-columns: 1fr; }
-            .app-card { padding: 36px 28px 32px; }
-            .store-buttons { flex-direction: column; }
-            .store-btn { justify-content: center; }
-            section { padding: 72px 20px; }
-            .features-highlight { grid-template-columns: 1fr; }
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 20px;
+            }
+
+            .section {
+                padding: 80px 20px;
+            }
+
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .app-card {
+                padding: 36px 28px 32px;
+            }
+
+            .support-card {
+                padding: 40px 28px;
+            }
+
+            footer {
+                padding: 36px 20px;
+            }
+
+            .sec-title {
+                letter-spacing: -1px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .store-btns {
+                flex-direction: column;
+            }
+
+            .store-btn {
+                justify-content: center;
+            }
+
+            .feat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+        }
+
+        /* ── Scroll reveal (progressive enhancement) ── */
+        @supports (animation-timeline: scroll()) {
+            .app-card {
+                animation: card-reveal linear both;
+                animation-timeline: view();
+                animation-range: entry 0% entry 25%;
+            }
+
+            @keyframes card-reveal {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <!-- Hero -->
-    <div class="hero">
-        <div class="hero-content">
-            <div class="logo-icon">🐇</div>
-            <h1>CodeRabbit</h1>
-            <p class="tagline">코드로 그리는 즐거운 세상<br>일상을 더 스마트하게, 재미있게.</p>
-        </div>
-        <div class="scroll-indicator">
-            <span>SCROLL</span>
-            <div class="arrow"></div>
-        </div>
+    <!-- Background orbs -->
+    <div class="bg-canvas" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
     </div>
 
-    <!-- Apps Section -->
-    <section>
-        <p class="section-label">Our Apps</p>
-        <h2 class="section-title">우리가 만든 앱</h2>
-        <p class="section-desc">매일 쓰는 앱이 조금 더 즐거워지도록.<br>CodeRabbit이 만드는 모바일 경험을 만나보세요.</p>
+    <div class="page">
 
-        <div class="apps-grid">
+        <!-- Nav -->
+        <nav>
+            <a href="#" class="nav-logo">
+                <div class="nav-logo-icon">🐇</div>
+                CodeRabbit
+            </a>
+            <a href="#support" class="nav-link">Support</a>
+        </nav>
 
-            <!-- 얌플래너 -->
-            <div class="app-card card-yum">
-                <div class="app-icon" style="padding: 0; overflow: hidden;"><img src="image/yumplanner_app.png" alt="얌플래너" style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;"></div>
-                <h3>얌플래너</h3>
-                <p class="app-subtitle">YumPlanner &mdash; 우리 아이 이유식 플래너</p>
-                <p class="app-desc">초기부터 완료기까지, 우리 아이 이유식을 체계적으로 관리하세요. AI 상담, 캘린더 식단, 알레르기 체크까지 한 번에 해결하는 육아 필수 앱.</p>
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">
+                <div class="badge-dot"></div>
+                모바일 앱 개발사
+            </div>
+            <div class="hero-icon">🐇</div>
+            <h1>CodeRabbit</h1>
+            <p class="hero-tagline">코드로 그리는 즐거운 세상<br>일상을 더 스마트하게, 재미있게.</p>
+            <a href="#apps" class="hero-cta">
+                앱 살펴보기
+                <span class="cta-arrow">↓</span>
+            </a>
+            <div class="scroll-line-wrap" aria-hidden="true">
+                <span class="scroll-text">scroll</span>
+                <div class="scroll-line"></div>
+            </div>
+        </div>
 
-                <div class="app-stats">
-                    <div class="stat-item">
-                        <div class="stat-value">4단계</div>
-                        <div class="stat-label">이유식 단계별</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">AI</div>
-                        <div class="stat-label">얌티처 상담</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">All-in-1</div>
-                        <div class="stat-label">육아 플래너</div>
-                    </div>
-                </div>
+        <div class="glass-divider"></div>
 
-                <div class="features-highlight">
-                    <div class="feature-item">
-                        <div class="feature-icon">📅</div>
-                        <div>
-                            <div class="feature-text">캘린더 식단</div>
-                            <div class="feature-sub">월간/주간 이유식 계획</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🤖</div>
-                        <div>
-                            <div class="feature-text">AI 얌티처</div>
-                            <div class="feature-sub">이유식 고민 실시간 상담</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">⚠️</div>
-                        <div>
-                            <div class="feature-text">알레르기 관리</div>
-                            <div class="feature-sub">식재료별 알레르기 체크</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🧊</div>
-                        <div>
-                            <div class="feature-text">냉장고 관리</div>
-                            <div class="feature-sub">보관 식재료 & 추천</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🛒</div>
-                        <div>
-                            <div class="feature-text">장보기 목록</div>
-                            <div class="feature-sub">필요한 재료 한눈에</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🏆</div>
-                        <div>
-                            <div class="feature-text">육아 챌린지</div>
-                            <div class="feature-sub">꾸준한 이유식 습관</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tags">
-                    <span class="tag">이유식 레시피</span>
-                    <span class="tag">식단 캘린더</span>
-                    <span class="tag">AI 상담</span>
-                    <span class="tag">알레르기</span>
-                    <span class="tag">냉장고</span>
-                    <span class="tag">육아 팁</span>
-                </div>
-                <div class="store-buttons">
-                    <a href="https://apps.apple.com/kr/app/%EC%96%8C%ED%94%8C%EB%9E%98%EB%84%88-%EB%A7%9E%EC%B6%A4%ED%98%95-%EC%9D%B4%EC%9C%A0%EC%8B%9D-%EC%8B%9D%EB%8B%A8-%EB%B0%8F-%EB%A0%88%EC%8B%9C%ED%94%BC/id6758592607" class="store-btn">
-                        <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                        App Store
-                    </a>
-                    <a href="https://play.google.com/store/search?q=%EC%96%8C%ED%94%8C%EB%9E%98%EB%84%88&c=apps&hl=ko" class="store-btn">
-                        <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
-                        Google Play
-                    </a>
-                </div>
-                <div class="policy-links">
-                    <a href="https://rbjoon.github.io/yumplanner/privacy.html" class="policy-link">개인정보처리방침</a>
-                    <a href="https://rbjoon.github.io/yumplanner/terms_use.html" class="policy-link">이용약관</a>
-                </div>
+        <!-- Apps -->
+        <div id="apps" class="section">
+            <div class="section-top">
+                <div class="eyebrow">Our Apps</div>
+                <h2 class="sec-title">우리가 만든 앱</h2>
+                <p class="sec-desc">매일 쓰는 앱이 조금 더 즐거워지도록.<br>CodeRabbit이 만드는 모바일 경험을 만나보세요.</p>
             </div>
 
-            <!-- 로또무당 -->
-            <div class="app-card card-lotto">
-                <div class="app-icon" style="padding: 0; overflow: hidden;"><img src="image/lotto_app.png" alt="로또무당" style="width: 100%; height: 100%; object-fit: cover; border-radius: 16px;"></div>
-                <h3>로또무당</h3>
-                <p class="app-subtitle">Lotto Shaman &mdash; AI 신령님의 로또 점괘</p>
-                <p class="app-desc">손금 분석, 꿈 해몽, 별자리 운세로 오늘의 로또 번호를 점지받으세요. AI 신령님이 그대의 기운을 읽고 행운의 번호를 내려드립니다.</p>
+            <div class="apps-grid">
 
-                <div class="app-stats">
-                    <div class="stat-item">
-                        <div class="stat-value">AI</div>
-                        <div class="stat-label">신령님 점괘</div>
+                <!-- 얌플래너 -->
+                <div class="app-card card-yum">
+                    <div class="app-icon">
+                        <img src="image/yumplanner_app.png" alt="얌플래너 아이콘">
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value">5가지</div>
-                        <div class="stat-label">운세 분석</div>
+                    <div class="app-name">얌플래너</div>
+                    <div class="app-eng">YumPlanner &mdash; 우리 아이 이유식 플래너</div>
+                    <p class="app-desc">초기부터 완료기까지, 우리 아이 이유식을 체계적으로 관리하세요. AI 상담, 캘린더 식단, 알레르기 체크까지 한 번에 해결하는 육아 필수 앱.
+                    </p>
+
+                    <div class="stats-bar">
+                        <div class="stat">
+                            <div class="stat-val">4단계</div>
+                            <div class="stat-lbl">이유식 단계별</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val">AI</div>
+                            <div class="stat-lbl">얌티처 상담</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val">All-in-1</div>
+                            <div class="stat-lbl">육아 플래너</div>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value">실시간</div>
-                        <div class="stat-label">당첨 확인</div>
+
+                    <div class="feat-grid">
+                        <div class="feat-item">
+                            <div class="feat-ico">📅</div>
+                            <div>
+                                <div class="feat-name">캘린더 식단</div>
+                                <div class="feat-sub">월간/주간 이유식 계획</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🤖</div>
+                            <div>
+                                <div class="feat-name">AI 얌티처</div>
+                                <div class="feat-sub">이유식 고민 실시간 상담</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">⚠️</div>
+                            <div>
+                                <div class="feat-name">알레르기 관리</div>
+                                <div class="feat-sub">식재료별 알레르기 체크</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🧊</div>
+                            <div>
+                                <div class="feat-name">냉장고 관리</div>
+                                <div class="feat-sub">보관 식재료 & 추천</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🛒</div>
+                            <div>
+                                <div class="feat-name">장보기 목록</div>
+                                <div class="feat-sub">필요한 재료 한눈에</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🏆</div>
+                            <div>
+                                <div class="feat-name">육아 챌린지</div>
+                                <div class="feat-sub">꾸준한 이유식 습관</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag">이유식 레시피</span>
+                        <span class="tag">식단 캘린더</span>
+                        <span class="tag">AI 상담</span>
+                        <span class="tag">알레르기</span>
+                        <span class="tag">냉장고</span>
+                        <span class="tag">육아 팁</span>
+                    </div>
+
+                    <div class="store-btns">
+                        <a href="https://apps.apple.com/kr/app/%EC%96%8C%ED%94%8C%EB%9E%98%EB%84%88-%EB%A7%9E%EC%B6%A4%ED%98%95-%EC%9D%B4%EC%9C%A0%EC%8B%9D-%EC%8B%9D%EB%8B%A8-%EB%B0%8F-%EB%A0%88%EC%8B%9C%ED%94%BC/id6758592607"
+                            class="store-btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                            </svg>
+                            App Store
+                        </a>
+                        <a href="https://play.google.com/store/search?q=%EC%96%8C%ED%94%8C%EB%9E%98%EB%84%88&c=apps&hl=ko"
+                            class="store-btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z" />
+                            </svg>
+                            Google Play
+                        </a>
+                    </div>
+
+                    <div class="policy-links">
+                        <a href="https://rbjoon.github.io/yumplanner/privacy.html" class="policy-link">개인정보처리방침</a>
+                        <a href="https://rbjoon.github.io/yumplanner/terms_use.html" class="policy-link">이용약관</a>
                     </div>
                 </div>
 
-                <div class="features-highlight">
-                    <div class="feature-item">
-                        <div class="feature-icon">🤚</div>
-                        <div>
-                            <div class="feature-text">손금 분석</div>
-                            <div class="feature-sub">카메라로 손금 촬영 & AI 해석</div>
+                <!-- 로또무당 -->
+                <div class="app-card card-lotto">
+                    <div class="app-icon">
+                        <img src="image/lotto_app.png" alt="로또무당 아이콘">
+                    </div>
+                    <div class="app-name">로또무당</div>
+                    <div class="app-eng">Lotto Shaman &mdash; AI 신령님의 로또 점괘</div>
+                    <p class="app-desc">손금 분석, 꿈 해몽, 별자리 운세로 오늘의 로또 번호를 점지받으세요. AI 신령님이 그대의 기운을 읽고 행운의 번호를 내려드립니다.</p>
+
+                    <div class="stats-bar">
+                        <div class="stat">
+                            <div class="stat-val">AI</div>
+                            <div class="stat-lbl">신령님 점괘</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val">5가지</div>
+                            <div class="stat-lbl">운세 분석</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val">실시간</div>
+                            <div class="stat-lbl">당첨 확인</div>
                         </div>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">💭</div>
-                        <div>
-                            <div class="feature-text">꿈 해몽</div>
-                            <div class="feature-sub">AI가 꿈을 해석해 번호 추천</div>
+
+                    <div class="feat-grid">
+                        <div class="feat-item">
+                            <div class="feat-ico">🤚</div>
+                            <div>
+                                <div class="feat-name">손금 분석</div>
+                                <div class="feat-sub">카메라로 촬영 & AI 해석</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">💭</div>
+                            <div>
+                                <div class="feat-name">꿈 해몽</div>
+                                <div class="feat-sub">AI가 꿈 해석 & 번호 추천</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">⭐</div>
+                            <div>
+                                <div class="feat-name">별자리 운세</div>
+                                <div class="feat-sub">생년월일 기반 오늘의 운세</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">📊</div>
+                            <div>
+                                <div class="feat-name">번호 통계</div>
+                                <div class="feat-sub">핫/콜드넘버 & 추천 번호</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">📍</div>
+                            <div>
+                                <div class="feat-name">행운의 명당</div>
+                                <div class="feat-sub">주변 복권판매점 지도</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🎮</div>
+                            <div>
+                                <div class="feat-name">미니게임</div>
+                                <div class="feat-sub">재미로 뽑는 번호 게임</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">⭐</div>
-                        <div>
-                            <div class="feature-text">별자리 운세</div>
-                            <div class="feature-sub">생년월일 기반 오늘의 운세</div>
-                        </div>
+
+                    <div class="tags">
+                        <span class="tag">손금 분석</span>
+                        <span class="tag">꿈 해몽</span>
+                        <span class="tag">별자리 운세</span>
+                        <span class="tag">로또 번호</span>
+                        <span class="tag">당첨 확인</span>
+                        <span class="tag">명당 찾기</span>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">📊</div>
-                        <div>
-                            <div class="feature-text">번호 통계</div>
-                            <div class="feature-sub">핫/콜드넘버 & 추천 번호</div>
-                        </div>
+
+                    <div class="store-btns">
+                        <a href="https://play.google.com/store/apps/details?id=com.arin.lotto&hl=ko" class="store-btn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z" />
+                            </svg>
+                            Google Play
+                        </a>
                     </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">📍</div>
-                        <div>
-                            <div class="feature-text">행운의 명당</div>
-                            <div class="feature-sub">주변 복권판매점 지도 검색</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🎮</div>
-                        <div>
-                            <div class="feature-text">미니게임</div>
-                            <div class="feature-sub">재미로 뽑는 번호 게임</div>
-                        </div>
+
+                    <div class="policy-links">
+                        <a href="https://rbjoon.github.io/lottomudang/privacy_policy.html"
+                            class="policy-link">개인정보처리방침</a>
+                        <a href="https://rbjoon.github.io/lottomudang/terms_of_service.html"
+                            class="policy-link">이용약관</a>
                     </div>
                 </div>
 
-                <div class="tags">
-                    <span class="tag">손금 분석</span>
-                    <span class="tag">꿈 해몽</span>
-                    <span class="tag">별자리 운세</span>
-                    <span class="tag">로또 번호</span>
-                    <span class="tag">당첨 확인</span>
-                    <span class="tag">명당 찾기</span>
+
+                <!-- Kok -->
+                <div class="app-card card-kok">
+                    <div class="app-icon">
+                        <img src="image/quicktext_app.png" alt="Kok - 복사">
+                    </div>
+                    <div class="app-name">Kok - 복사</div>
+                    <div class="app-eng">Quick Text &amp; Snippets &mdash; 자주 쓰는 문구 빠른 복사</div>
+                    <p class="app-desc">자주 쓰는 문구를 카테고리별로 저장하고 한 번의 탭으로 복사하세요. 날짜·내 정보·입력값을 자동 치환하는 토큰 시스템으로 반복 타이핑을 끝내드립니다.</p>
+
+                    <div class="stats-bar">
+                        <div class="stat">
+                            <div class="stat-val">토큰</div>
+                            <div class="stat-lbl">자동 치환 시스템</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val">4개</div>
+                            <div class="stat-lbl">지원 언어</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val">무료</div>
+                            <div class="stat-lbl">기본 기능 무료</div>
+                        </div>
+                    </div>
+
+                    <div class="feat-grid">
+                        <div class="feat-item">
+                            <div class="feat-ico">⚡</div>
+                            <div>
+                                <div class="feat-name">빠른 복사</div>
+                                <div class="feat-sub">한 탭으로 클립보드 복사</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🔖</div>
+                            <div>
+                                <div class="feat-name">토큰 시스템</div>
+                                <div class="feat-sub">날짜·이름·입력값 자동 치환</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">📂</div>
+                            <div>
+                                <div class="feat-name">카테고리 관리</div>
+                                <div class="feat-sub">색상별 그룹 분류</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🔒</div>
+                            <div>
+                                <div class="feat-name">민감 정보 보호</div>
+                                <div class="feat-sub">복사 전까지 본문 마스킹</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">💾</div>
+                            <div>
+                                <div class="feat-name">백업 · 복원</div>
+                                <div class="feat-sub">JSON 내보내기 / 가져오기</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🌐</div>
+                            <div>
+                                <div class="feat-name">다국어 지원</div>
+                                <div class="feat-sub">한·영·일·중 4개 언어</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag">상용구</span>
+                        <span class="tag">빠른 복사</span>
+                        <span class="tag">토큰</span>
+                        <span class="tag">카테고리</span>
+                        <span class="tag">백업</span>
+                        <span class="tag">다국어</span>
+                    </div>
+
+                    <div class="store-btns">
+                        <span class="store-btn" style="opacity:0.45;cursor:default;">
+                            <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                            출시 예정
+                        </span>
+                        <span class="store-btn" style="opacity:0.45;cursor:default;">
+                            <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
+                            출시 예정
+                        </span>
+                    </div>
+                    
+                    <div class="policy-links">
+                        <a href="privacy-consent.html" class="policy-link">개인정보처리방침</a>
+                        <a href="terms_use.html" class="policy-link">이용약관</a>
+                    </div>
+                    <div class="policy-links">
+                        <a href="https://rbjoon.github.io/quicktext/privacy_policy.html"
+                            class="policy-link">개인정보처리방침</a>
+                        <a href="https://rbjoon.github.io/quicktext/terms_of_service.html"
+                            class="policy-link">이용약관</a>
+                    </div>
                 </div>
-                <div class="store-buttons">
-                    <a href="#" class="store-btn">
-                        <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                        App Store
+
+            </div>
+        </div>
+
+        <div class="glass-divider"></div>
+
+        <!-- Support -->
+        <div id="support" class="section support-wrap">
+            <div class="support-inner">
+                <div class="section-top" style="text-align:center;">
+                    <div class="eyebrow" style="justify-content:center;">Support</div>
+                    <h2 class="sec-title">고객 지원</h2>
+                </div>
+                <div class="support-card">
+                    <div class="support-ico">🐇</div>
+                    <h3>문의하기</h3>
+                    <p class="support-desc">앱 이용 중 문의사항이 있으시면<br>아래 이메일로 연락해 주세요.</p>
+                    <a href="mailto:coderabbitapp@gmail.com" class="email-btn">
+                        ✉ coderabbitapp@gmail.com
                     </a>
-                    <a href="#" class="store-btn">
-                        <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
-                        Google Play
-                    </a>
-                </div>
-                <div class="policy-links">
-                    <a href="https://rbjoon.github.io/lottomudang/privacy.html" class="policy-link">개인정보처리방침</a>
-                    <a href="https://rbjoon.github.io/lottomudang/terms_use.html" class="policy-link">이용약관</a>
+                    <p class="support-note">
+                        영업일 기준 1~2일 내 답변드립니다.<br>
+                        개인정보 관련 문의도 위 이메일로 접수해 주세요.
+                    </p>
                 </div>
             </div>
-
         </div>
-    </section>
 
-    <!-- Support Section -->
-    <section id="support" style="border-top: 1px solid #1a1a1a; text-align: center;">
-        <p class="section-label">Support</p>
-        <h2 class="section-title">고객 지원</h2>
-        <div style="max-width: 520px; margin: 0 auto; background: #111; border: 1px solid #1f1f1f; border-radius: 24px; padding: 48px 40px;">
-            <div style="width: 56px; height: 56px; margin: 0 auto 20px; background: linear-gradient(135deg, #6366f1, #a78bfa); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px;">🐇</div>
-            <p style="color: #9ca3af; font-size: 1rem; line-height: 1.8; margin-bottom: 24px;">
-                앱 이용 중 문의사항이 있으시면<br>아래 이메일로 연락해 주세요.
-            </p>
-            <p style="margin-bottom: 24px;">
-                <a href="mailto:coderabbitapp@gmail.com" style="color: #a78bfa; text-decoration: none; font-weight: 600; font-size: 1.1rem;">coderabbitapp@gmail.com</a>
-            </p>
-            <p style="color: #6b7280; font-size: 0.9rem; line-height: 1.8;">
-                영업일 기준 1~2일 내 답변드립니다.<br>
-                개인정보 관련 문의 또한 위 이메일로 접수해 주세요.<br><br>
-                감사합니다.
-            </p>
-        </div>
-    </section>
+        <!-- Footer -->
+        <footer>
+            <div class="footer-brand">
+                <div class="footer-brand-icon">🐇</div>
+                CodeRabbit
+            </div>
+            <p style="margin-bottom:10px;">&copy; 2025 코드래빗. All rights reserved.</p>
+            <p>상호: 코드래빗 &nbsp;|&nbsp; 대표자: 이현준 &nbsp;|&nbsp; 사업자등록번호: 740-69-00653</p>
+            <p><a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a></p>
+        </footer>
 
-    <!-- Footer -->
-    <footer>
-        <p class="footer-logo">CodeRabbit</p>
-        <p>&copy; 2025 CodeRabbit. All rights reserved.</p>
-        <p style="margin-top: 8px;"><a href="mailto:coderabbitapp@gmail.com">coderabbitapp@gmail.com</a></p>
-    </footer>
-
+    </div>
 </body>
+
 </html>
