@@ -97,47 +97,20 @@
         }
 
         @keyframes orb-drift-1 {
-
-            0%,
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            33% {
-                transform: translate(50px, 40px) scale(1.08);
-            }
-
-            66% {
-                transform: translate(-30px, 20px) scale(0.94);
-            }
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, 40px) scale(1.08); }
+            66% { transform: translate(-30px, 20px) scale(0.94); }
         }
 
         @keyframes orb-drift-2 {
-
-            0%,
-            100% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            50% {
-                transform: translate(-60px, -50px) scale(1.1);
-            }
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-60px, -50px) scale(1.1); }
         }
 
         @keyframes orb-drift-3 {
-
-            0%,
-            100% {
-                transform: translate(0, 0);
-            }
-
-            25% {
-                transform: translate(40px, -40px);
-            }
-
-            75% {
-                transform: translate(-40px, 30px);
-            }
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(40px, -40px); }
+            75% { transform: translate(-40px, 30px); }
         }
 
         /* dot grid overlay */
@@ -244,17 +217,8 @@
         }
 
         @keyframes badge-pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.5;
-                transform: scale(0.75);
-            }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.75); }
         }
 
         .hero-icon {
@@ -292,41 +256,18 @@
         }
 
         @keyframes hero-float {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(-1deg);
-            }
-
-            50% {
-                transform: translateY(-14px) rotate(1.5deg);
-            }
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-14px) rotate(1.5deg); }
         }
 
         @keyframes hero-ring {
-
-            0%,
-            100% {
-                opacity: 0.6;
-            }
-
-            50% {
-                opacity: 1;
-            }
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
         @keyframes hero-glow {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-
-            50% {
-                transform: scale(1.15);
-                opacity: 1;
-            }
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 1; }
         }
 
         .hero h1 {
@@ -407,19 +348,9 @@
         }
 
         @keyframes scroll-drop {
-            0% {
-                transform: scaleY(0);
-                opacity: 0;
-            }
-
-            30% {
-                opacity: 1;
-            }
-
-            100% {
-                transform: scaleY(1);
-                opacity: 0;
-            }
+            0% { transform: scaleY(0); opacity: 0; }
+            30% { opacity: 1; }
+            100% { transform: scaleY(1); opacity: 0; }
         }
 
         /* ── Section wrapper ── */
@@ -524,43 +455,19 @@
         }
 
         /* Yum theme */
-        .card-yum::before {
-            background: linear-gradient(90deg, #f97316, #fbbf24, transparent);
-        }
-
-        .card-yum::after {
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.18), transparent 65%);
-        }
-
-        .card-yum:hover {
-            box-shadow: 0 32px 80px rgba(249, 115, 22, 0.12), 0 0 0 1px rgba(249, 115, 22, 0.18);
-        }
+        .card-yum::before { background: linear-gradient(90deg, #f97316, #fbbf24, transparent); }
+        .card-yum::after { background: radial-gradient(circle, rgba(249, 115, 22, 0.18), transparent 65%); }
+        .card-yum:hover { box-shadow: 0 32px 80px rgba(249, 115, 22, 0.12), 0 0 0 1px rgba(249, 115, 22, 0.18); }
 
         /* Lotto theme */
-        .card-lotto::before {
-            background: linear-gradient(90deg, #8b5cf6, #c084fc, transparent);
-        }
-
-        .card-lotto::after {
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent 65%);
-        }
-
-        .card-lotto:hover {
-            box-shadow: 0 32px 80px rgba(139, 92, 246, 0.14), 0 0 0 1px rgba(139, 92, 246, 0.2);
-        }
+        .card-lotto::before { background: linear-gradient(90deg, #8b5cf6, #c084fc, transparent); }
+        .card-lotto::after { background: radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent 65%); }
+        .card-lotto:hover { box-shadow: 0 32px 80px rgba(139, 92, 246, 0.14), 0 0 0 1px rgba(139, 92, 246, 0.2); }
 
         /* Kok theme */
-        .card-kok::before {
-            background: linear-gradient(90deg, #06b6d4, #67e8f9, transparent);
-        }
-
-        .card-kok::after {
-            background: radial-gradient(circle, rgba(6, 182, 212, 0.2), transparent 65%);
-        }
-
-        .card-kok:hover {
-            box-shadow: 0 32px 80px rgba(6, 182, 212, 0.14), 0 0 0 1px rgba(6, 182, 212, 0.2);
-        }
+        .card-kok::before { background: linear-gradient(90deg, #06b6d4, #67e8f9, transparent); }
+        .card-kok::after { background: radial-gradient(circle, rgba(6, 182, 212, 0.2), transparent 65%); }
+        .card-kok:hover { box-shadow: 0 32px 80px rgba(6, 182, 212, 0.14), 0 0 0 1px rgba(6, 182, 212, 0.2); }
 
         /* App icon */
         .app-icon {
@@ -629,17 +536,9 @@
             margin-bottom: 2px;
         }
 
-        .card-yum .stat-val {
-            color: #fb923c;
-        }
-
-        .card-lotto .stat-val {
-            color: #a78bfa;
-        }
-
-        .card-kok .stat-val {
-            color: #22d3ee;
-        }
+        .card-yum .stat-val { color: #fb923c; }
+        .card-lotto .stat-val { color: #a78bfa; }
+        .card-kok .stat-val { color: #22d3ee; }
 
         .stat-lbl {
             font-size: 10.5px;
@@ -682,17 +581,9 @@
             flex-shrink: 0;
         }
 
-        .card-yum .feat-ico {
-            background: rgba(249, 115, 22, 0.14);
-        }
-
-        .card-lotto .feat-ico {
-            background: rgba(139, 92, 246, 0.14);
-        }
-
-        .card-kok .feat-ico {
-            background: rgba(6, 182, 212, 0.14);
-        }
+        .card-yum .feat-ico { background: rgba(249, 115, 22, 0.14); }
+        .card-lotto .feat-ico { background: rgba(139, 92, 246, 0.14); }
+        .card-kok .feat-ico { background: rgba(6, 182, 212, 0.14); }
 
         .feat-name {
             font-size: 12.5px;
@@ -722,23 +613,9 @@
             border-radius: 100px;
         }
 
-        .card-yum .tag {
-            background: rgba(249, 115, 22, 0.1);
-            border: 1px solid rgba(249, 115, 22, 0.2);
-            color: #fb923c;
-        }
-
-        .card-lotto .tag {
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.2);
-            color: #a78bfa;
-        }
-
-        .card-kok .tag {
-            background: rgba(6, 182, 212, 0.1);
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            color: #22d3ee;
-        }
+        .card-yum .tag { background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2); color: #fb923c; }
+        .card-lotto .tag { background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); color: #a78bfa; }
+        .card-kok .tag { background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.2); color: #22d3ee; }
 
         /* Store buttons */
         .store-btns {
@@ -775,6 +652,63 @@
             height: 17px;
             fill: currentColor;
             flex-shrink: 0;
+        }
+
+        /* Homepage button */
+        .site-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s;
+            letter-spacing: -0.1px;
+        }
+
+        .site-btn svg {
+            width: 17px;
+            height: 17px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        .card-yum .site-btn {
+            color: #fb923c;
+            background: rgba(249, 115, 22, 0.08);
+            border: 1px solid rgba(249, 115, 22, 0.22);
+        }
+
+        .card-yum .site-btn:hover {
+            background: rgba(249, 115, 22, 0.15);
+            border-color: rgba(249, 115, 22, 0.38);
+            transform: translateY(-2px);
+        }
+
+        .card-lotto .site-btn {
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.22);
+        }
+
+        .card-lotto .site-btn:hover {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.38);
+            transform: translateY(-2px);
+        }
+
+        .card-kok .site-btn {
+            color: #22d3ee;
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.22);
+        }
+
+        .card-kok .site-btn:hover {
+            background: rgba(6, 182, 212, 0.15);
+            border-color: rgba(6, 182, 212, 0.38);
+            transform: translateY(-2px);
         }
 
         /* Policy */
@@ -930,51 +864,20 @@
 
         /* ── Responsive ── */
         @media (max-width: 768px) {
-            nav {
-                padding: 0 20px;
-            }
-
-            .section {
-                padding: 80px 20px;
-            }
-
-            .apps-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .app-card {
-                padding: 36px 28px 32px;
-            }
-
-            .support-card {
-                padding: 40px 28px;
-            }
-
-            footer {
-                padding: 36px 20px;
-            }
-
-            .sec-title {
-                letter-spacing: -1px;
-            }
+            nav { padding: 0 20px; }
+            .section { padding: 80px 20px; }
+            .apps-grid { grid-template-columns: 1fr; }
+            .app-card { padding: 36px 28px 32px; }
+            .support-card { padding: 40px 28px; }
+            footer { padding: 36px 20px; }
+            .sec-title { letter-spacing: -1px; }
         }
 
         @media (max-width: 520px) {
-            .store-btns {
-                flex-direction: column;
-            }
-
-            .store-btn {
-                justify-content: center;
-            }
-
-            .feat-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero h1 {
-                letter-spacing: -2px;
-            }
+            .store-btns { flex-direction: column; }
+            .store-btn, .site-btn { justify-content: center; }
+            .feat-grid { grid-template-columns: 1fr; }
+            .hero h1 { letter-spacing: -2px; }
         }
 
         /* ── Scroll reveal (progressive enhancement) ── */
@@ -986,15 +889,8 @@
             }
 
             @keyframes card-reveal {
-                from {
-                    opacity: 0;
-                    transform: translateY(40px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
+                from { opacity: 0; transform: translateY(40px); }
+                to { opacity: 1; transform: translateY(0); }
             }
         }
     </style>
@@ -1059,8 +955,7 @@
                     </div>
                     <div class="app-name">얌플래너</div>
                     <div class="app-eng">YumPlanner &mdash; 우리 아이 이유식 플래너</div>
-                    <p class="app-desc">초기부터 완료기까지, 우리 아이 이유식을 체계적으로 관리하세요. AI 상담, 캘린더 식단, 알레르기 체크까지 한 번에 해결하는 육아 필수 앱.
-                    </p>
+                    <p class="app-desc">초기부터 완료기까지, 우리 아이 이유식을 체계적으로 관리하세요. AI 상담, 캘린더 식단, 알레르기 체크까지 한 번에 해결하는 육아 필수 앱.</p>
 
                     <div class="stats-bar">
                         <div class="stat">
@@ -1133,20 +1028,18 @@
 
                     <div class="store-btns">
                         <a href="https://apps.apple.com/kr/app/%EC%96%8C%ED%94%8C%EB%9E%98%EB%84%88-%EB%A7%9E%EC%B6%A4%ED%98%95-%EC%9D%B4%EC%9C%A0%EC%8B%9D-%EC%8B%9D%EB%8B%A8-%EB%B0%8F-%EB%A0%88%EC%8B%9C%ED%94%BC/id6758592607"
-                            class="store-btn">
-                            <svg viewBox="0 0 24 24">
-                                <path
-                                    d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                            </svg>
+                            class="store-btn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
                             App Store
                         </a>
                         <a href="https://play.google.com/store/search?q=%EC%96%8C%ED%94%8C%EB%9E%98%EB%84%88&c=apps&hl=ko"
-                            class="store-btn">
-                            <svg viewBox="0 0 24 24">
-                                <path
-                                    d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z" />
-                            </svg>
+                            class="store-btn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
                             Google Play
+                        </a>
+                        <a href="https://yumplanner.coderabbitapp.com/" class="site-btn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            홈페이지
                         </a>
                     </div>
 
@@ -1235,129 +1128,40 @@
                     </div>
 
                     <div class="store-btns">
-                        <a href="https://play.google.com/store/apps/details?id=com.arin.lotto&hl=ko" class="store-btn">
-                            <svg viewBox="0 0 24 24">
-                                <path
-                                    d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z" />
-                            </svg>
+                        <a href="https://play.google.com/store/apps/details?id=com.arin.lotto&hl=ko"
+                            class="store-btn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
                             Google Play
+                        </a>
+                        <span class="store-btn" style="opacity:0.4;cursor:default;">
+                            <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                            iOS 출시 예정
+                        </span>
+                        <a href="https://lottomoodang.coderabbitapp.com/" class="site-btn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            홈페이지
                         </a>
                     </div>
 
                     <div class="policy-links">
-                        <a href="https://rbjoon.github.io/lottomudang/privacy_policy.html"
-                            class="policy-link">개인정보처리방침</a>
-                        <a href="https://rbjoon.github.io/lottomudang/terms_of_service.html"
-                            class="policy-link">이용약관</a>
+                        <a href="https://rbjoon.github.io/lottomudang/privacy_policy.html" class="policy-link">개인정보처리방침</a>
+                        <a href="https://rbjoon.github.io/lottomudang/terms_of_service.html" class="policy-link">이용약관</a>
                     </div>
                 </div>
 
-            <!-- 콕 -->
-            <div class="app-card card-kok">
-                <!-- 앱 아이콘 이미지 준비 후 아래 주석 교체: <img src="image/kok_app.png" ...> -->
-                <div class="app-icon" style="font-size: 30px;">📌</div>
-                <h3>콕</h3>
-                <p class="app-subtitle">Kok &mdash; 콕 찍어서 복사</p>
-                <p class="app-desc">자주 쓰는 문구를 저장해두고 한 번의 탭으로 클립보드에 복사하세요. 카테고리 관리, 템플릿 가져오기, 다국어 지원까지. 타이핑 시간을 줄여주는 스마트 상용구 앱.</p>
-
-                <div class="app-stats">
-                    <div class="stat-item">
-                        <div class="stat-value">1탭</div>
-                        <div class="stat-label">즉시 복사</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">4개</div>
-                        <div class="stat-label">지원 언어</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">무제한</div>
-                        <div class="stat-label">상용구 등록</div>
-                    </div>
-                </div>
-
-                <div class="features-highlight">
-                    <div class="feature-item">
-                        <div class="feature-icon">📋</div>
-                        <div>
-                            <div class="feature-text">한 탭 복사</div>
-                            <div class="feature-sub">탭 한 번으로 클립보드 복사</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">📁</div>
-                        <div>
-                            <div class="feature-text">카테고리 관리</div>
-                            <div class="feature-sub">목적별 상용구 분류 & 정리</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🗂️</div>
-                        <div>
-                            <div class="feature-text">템플릿 갤러리</div>
-                            <div class="feature-sub">자주 쓰는 문구 한 번에 가져오기</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🌐</div>
-                        <div>
-                            <div class="feature-text">다국어 지원</div>
-                            <div class="feature-sub">한/영/일/중 4개 언어</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">☁️</div>
-                        <div>
-                            <div class="feature-text">백업 & 복원</div>
-                            <div class="feature-sub">데이터를 파일로 안전하게 보관</div>
-                        </div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🔍</div>
-                        <div>
-                            <div class="feature-text">빠른 검색</div>
-                            <div class="feature-sub">키워드로 상용구 즉시 탐색</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tags">
-                    <span class="tag">상용구</span>
-                    <span class="tag">클립보드</span>
-                    <span class="tag">텍스트 관리</span>
-                    <span class="tag">카테고리</span>
-                    <span class="tag">템플릿</span>
-                    <span class="tag">다국어</span>
-                </div>
-                <div class="store-buttons">
-                    <a href="#" class="store-btn">
-                        <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                        App Store
-                    </a>
-                    <a href="#" class="store-btn">
-                        <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
-                        Google Play
-                    </a>
-                </div>
-                <div class="policy-links">
-                    <a href="https://rbjoon.github.io/kok/privacy_policy.html" class="policy-link">개인정보처리방침</a>
-                    <a href="https://rbjoon.github.io/kok/terms_of_service.html" class="policy-link">이용약관</a>
-                </div>
-            </div>
-
-
-                <!-- Kok -->
+                <!-- 콕 -->
                 <div class="app-card card-kok">
                     <div class="app-icon">
-                        <img src="image/quicktext_app.png" alt="Kok - 복사">
+                        <img src="image/kok_app.png" alt="콕 아이콘">
                     </div>
-                    <div class="app-name">Kok - 복사</div>
-                    <div class="app-eng">Quick Text &amp; Snippets &mdash; 자주 쓰는 문구 빠른 복사</div>
-                    <p class="app-desc">자주 쓰는 문구를 카테고리별로 저장하고 한 번의 탭으로 복사하세요. 날짜·내 정보·입력값을 자동 치환하는 토큰 시스템으로 반복 타이핑을 끝내드립니다.</p>
+                    <div class="app-name">콕</div>
+                    <div class="app-eng">Kok &mdash; 자주 쓰는 문구 빠른 복사</div>
+                    <p class="app-desc">자주 쓰는 문구를 저장해두고 한 번의 탭으로 클립보드에 복사하세요. 카테고리 관리, 토큰 자동 치환, 민감 정보 보호까지. 반복 타이핑을 끝내드립니다.</p>
 
                     <div class="stats-bar">
                         <div class="stat">
-                            <div class="stat-val">토큰</div>
-                            <div class="stat-lbl">자동 치환 시스템</div>
+                            <div class="stat-val">1탭</div>
+                            <div class="stat-lbl">즉시 복사</div>
                         </div>
                         <div class="stat">
                             <div class="stat-val">4개</div>
@@ -1365,7 +1169,7 @@
                         </div>
                         <div class="stat">
                             <div class="stat-val">무료</div>
-                            <div class="stat-lbl">기본 기능 무료</div>
+                            <div class="stat-lbl">기본 기능</div>
                         </div>
                     </div>
 
@@ -1424,25 +1228,24 @@
                     </div>
 
                     <div class="store-btns">
-                        <span class="store-btn" style="opacity:0.45;cursor:default;">
+                        <a href="https://apps.apple.com/kr/app/%EC%BD%95-%EC%9E%90%EC%A3%BC%EC%93%B0%EB%8A%94%EB%AC%B8%EA%B5%AC%EB%B3%B5%EC%82%AC/id6762957091"
+                            class="store-btn" target="_blank" rel="noopener">
                             <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                            출시 예정
-                        </span>
-                        <span class="store-btn" style="opacity:0.45;cursor:default;">
+                            App Store
+                        </a>
+                        <span class="store-btn" style="opacity:0.4;cursor:default;">
                             <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
-                            출시 예정
+                            Android 출시 예정
                         </span>
+                        <a href="https://quicktext.coderabbitapp.com/" class="site-btn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            홈페이지
+                        </a>
                     </div>
 
                     <div class="policy-links">
-                        <a href="privacy-consent.html" class="policy-link">개인정보처리방침</a>
-                        <a href="terms_use.html" class="policy-link">이용약관</a>
-                    </div>
-                    <div class="policy-links">
-                        <a href="https://rbjoon.github.io/quicktext/privacy_policy.html"
-                            class="policy-link">개인정보처리방침</a>
-                        <a href="https://rbjoon.github.io/quicktext/terms_of_service.html"
-                            class="policy-link">이용약관</a>
+                        <a href="https://rbjoon.github.io/quicktext/privacy_policy.html" class="policy-link">개인정보처리방침</a>
+                        <a href="https://rbjoon.github.io/quicktext/terms_of_service.html" class="policy-link">이용약관</a>
                     </div>
                 </div>
 
