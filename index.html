@@ -32,6 +32,8 @@
             --lotto2: #c084fc;
             --kok: #06b6d4;
             --kok2: #67e8f9;
+            --nori: #22c55e;
+            --nori2: #86efac;
         }
 
         html {
@@ -469,6 +471,11 @@
         .card-kok::after { background: radial-gradient(circle, rgba(6, 182, 212, 0.2), transparent 65%); }
         .card-kok:hover { box-shadow: 0 32px 80px rgba(6, 182, 212, 0.14), 0 0 0 1px rgba(6, 182, 212, 0.2); }
 
+        /* Nori theme */
+        .card-nori::before { background: linear-gradient(90deg, #22c55e, #86efac, transparent); }
+        .card-nori::after { background: radial-gradient(circle, rgba(34, 197, 94, 0.2), transparent 65%); }
+        .card-nori:hover { box-shadow: 0 32px 80px rgba(34, 197, 94, 0.14), 0 0 0 1px rgba(34, 197, 94, 0.2); }
+
         /* App icon */
         .app-icon {
             width: 76px;
@@ -539,6 +546,7 @@
         .card-yum .stat-val { color: #fb923c; }
         .card-lotto .stat-val { color: #a78bfa; }
         .card-kok .stat-val { color: #22d3ee; }
+        .card-nori .stat-val { color: #4ade80; }
 
         .stat-lbl {
             font-size: 10.5px;
@@ -584,6 +592,7 @@
         .card-yum .feat-ico { background: rgba(249, 115, 22, 0.14); }
         .card-lotto .feat-ico { background: rgba(139, 92, 246, 0.14); }
         .card-kok .feat-ico { background: rgba(6, 182, 212, 0.14); }
+        .card-nori .feat-ico { background: rgba(34, 197, 94, 0.14); }
 
         .feat-name {
             font-size: 12.5px;
@@ -616,6 +625,7 @@
         .card-yum .tag { background: rgba(249, 115, 22, 0.1); border: 1px solid rgba(249, 115, 22, 0.2); color: #fb923c; }
         .card-lotto .tag { background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); color: #a78bfa; }
         .card-kok .tag { background: rgba(6, 182, 212, 0.1); border: 1px solid rgba(6, 182, 212, 0.2); color: #22d3ee; }
+        .card-nori .tag { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); color: #4ade80; }
 
         /* Store buttons */
         .store-btns {
@@ -708,6 +718,18 @@
         .card-kok .site-btn:hover {
             background: rgba(6, 182, 212, 0.15);
             border-color: rgba(6, 182, 212, 0.38);
+            transform: translateY(-2px);
+        }
+
+        .card-nori .site-btn {
+            color: #4ade80;
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.22);
+        }
+
+        .card-nori .site-btn:hover {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.38);
             transform: translateY(-2px);
         }
 
@@ -947,6 +969,120 @@
             </div>
 
             <div class="apps-grid">
+
+                <!-- 노리맵 (운영 배포 전 — 비노출)
+                <div class="app-card card-nori">
+                    <div class="app-icon">
+                        <img src="image/norimap_app.png" alt="노리맵 아이콘">
+                    </div>
+                    <div class="app-name">노리맵</div>
+                    <div class="app-eng">Norimap &mdash; 아이와 함께할 놀이터를 찾아요</div>
+                    <p class="app-desc">전국 놀이터를 지도에서 한눈에. 안전검사 합격 여부, 물놀이 시설, 바닥재 종류까지 바로 확인하세요. 아이와의 외출이 더 스마트해집니다.</p>
+
+                    <div class="stats-bar">
+                        <div class="stat">
+                            <div class="stat-val">전국</div>
+                            <div class="stat-lbl">놀이터 탐색</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val">로드뷰</div>
+                            <div class="stat-lbl">현장 미리보기</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val">무료</div>
+                            <div class="stat-lbl">무광고</div>
+                        </div>
+                    </div>
+
+                    <div class="feat-grid">
+                        <div class="feat-item">
+                            <div class="feat-ico">🗺️</div>
+                            <div>
+                                <div class="feat-name">지도 탐색</div>
+                                <div class="feat-sub">현재 위치 주변 놀이터 확인</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🔍</div>
+                            <div>
+                                <div class="feat-name">안전검사 정보</div>
+                                <div class="feat-sub">합격 여부 및 최근 검사일</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">💧</div>
+                            <div>
+                                <div class="feat-name">물놀이 필터</div>
+                                <div class="feat-sub">물놀이 시설 놀이터 검색</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🌤️</div>
+                            <div>
+                                <div class="feat-name">날씨·미세먼지</div>
+                                <div class="feat-sub">실시간 날씨 & 대기질 정보</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">⭐</div>
+                            <div>
+                                <div class="feat-name">즐겨찾기</div>
+                                <div class="feat-sub">북마크 & 정렬 관리</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🚻</div>
+                            <div>
+                                <div class="feat-name">화장실 안내</div>
+                                <div class="feat-sub">주변 공중화장실 위치</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">📷</div>
+                            <div>
+                                <div class="feat-name">로드뷰</div>
+                                <div class="feat-sub">현장 모습 미리 확인</div>
+                            </div>
+                        </div>
+                        <div class="feat-item">
+                            <div class="feat-ico">🔎</div>
+                            <div>
+                                <div class="feat-name">검색</div>
+                                <div class="feat-sub">이름·주소로 직접 검색</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tags">
+                        <span class="tag">놀이터 탐색</span>
+                        <span class="tag">안전검사</span>
+                        <span class="tag">물놀이</span>
+                        <span class="tag">날씨</span>
+                        <span class="tag">로드뷰</span>
+                        <span class="tag">화장실</span>
+                    </div>
+
+                    <div class="store-btns">
+                        <a href="#" class="store-btn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                            App Store
+                        </a>
+                        <a href="#" class="store-btn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
+                            Google Play
+                        </a>
+                        <a href="https://norimap.coderabbitapp.com/" class="site-btn" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                            홈페이지
+                        </a>
+                    </div>
+
+                    <div class="policy-links">
+                        <a href="https://rbjoon.github.io/norimap/privacy.html" class="policy-link">개인정보처리방침</a>
+                        <a href="https://rbjoon.github.io/norimap/terms_use.html" class="policy-link">이용약관</a>
+                    </div>
+                </div>
+                -->
 
                 <!-- 얌플래너 -->
                 <div class="app-card card-yum">
@@ -1233,10 +1369,11 @@
                             <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
                             App Store
                         </a>
-                        <span class="store-btn" style="opacity:0.4;cursor:default;">
+                        <a href="https://play.google.com/store/apps/details?id=com.arin.kok&hl=ko"
+                            class="store-btn" target="_blank" rel="noopener">
                             <svg viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-1.4l2.754 1.596a1 1 0 010 1.731l-2.754 1.595L15.1 12l2.598-2.693zM5.864 3.458L16.8 9.791l-2.302 2.302-8.634-8.635z"/></svg>
-                            Android 출시 예정
-                        </span>
+                            Google Play
+                        </a>
                         <a href="https://quicktext.coderabbitapp.com/" class="site-btn" target="_blank" rel="noopener">
                             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                             홈페이지
