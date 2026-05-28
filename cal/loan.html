@@ -218,6 +218,26 @@
     }
     .btn-del-sm:hover { color: #dc2626; background: #fef2f2; }
 
+    /* 이율 이력 */
+    .rate-list { display: flex; flex-direction: column; gap: 6px; }
+    .rate-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fffbeb; border: 1px solid #fde68a;
+      border-radius: 10px; padding: 9px 13px;
+    }
+    .rate-item-date { font-size: 0.73rem; color: #92400e; margin-bottom: 2px; }
+    .rate-item-value { font-size: 0.92rem; font-weight: 700; color: #d97706; }
+    .rate-count {
+      background: #fffbeb; color: #d97706;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 20px; margin-left: 6px;
+    }
+    .rate-empty { text-align: center; color: #b0bec5; font-size: 0.83rem; padding: 14px 0; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px; margin-top: 16px;
+    }
+    .section-label { font-size: 0.85rem; font-weight: 600; color: #1a2a3a; }
 
     /* 히스토리 카드 */
     .history-card {
@@ -313,18 +333,37 @@
 
       <div class="field-row">
         <div class="field">
-          <label for="annual-rate">연 이율</label>
+          <label for="annual-rate">새 연이율</label>
           <div class="input-wrap">
             <input type="text" id="annual-rate" value="5.2" inputmode="decimal">
             <span class="unit">%</span>
           </div>
         </div>
         <div class="field">
-          <label for="monthly">월 납입금액</label>
+          <label for="rate-date">적용일</label>
           <div class="input-wrap">
-            <input type="text" id="monthly" value="500,000" inputmode="numeric">
-            <span class="unit">원</span>
+            <input type="date" id="rate-date">
           </div>
+        </div>
+      </div>
+      <button class="btn-green" style="margin-top:0;margin-bottom:4px" onclick="saveRate()">이율 저장</button>
+
+      <div class="section-header">
+        <div>
+          <span class="section-label">이율 이력</span>
+          <span class="rate-count" id="rate-count">0</span>
+        </div>
+        <button class="btn-danger-sm" onclick="clearAllRates()">전체 삭제</button>
+      </div>
+      <div id="rate-list"></div>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <label for="monthly">월 납입금액</label>
+        <div class="input-wrap">
+          <input type="text" id="monthly" value="500,000" inputmode="numeric">
+          <span class="unit">원</span>
         </div>
       </div>
 
@@ -431,7 +470,7 @@
     const ORIGINAL_PRINCIPAL = 31243020;
     const DAYS_PER_MONTH = 30;
 
-    let state = { deposits: [], history: [] };
+    let state = { deposits: [], history: [], rates: [] };
     let lastResult = null;
     let scheduleVisible = true;
     let docRef = null;
@@ -455,29 +494,44 @@
       return Math.max(0, ORIGINAL_PRINCIPAL - total);
     }
 
-    // 대출일부터 오늘까지 기간별 일할 이자 합산
+    // 저장된 이율 중 현재 유효한 이율 반환 (없으면 input값)
+    function getEffectiveRate() {
+      if (!state.rates.length) return parseFloat(document.getElementById('annual-rate').value) || 5.2;
+      const sorted = [...state.rates].sort((a, b) => new Date(b.date) - new Date(a.date));
+      return sorted[0].rate;
+    }
+
+    // 대출일부터 오늘까지 기간별(이율+입금) 일할 이자 합산
     function calcAccruedInterest() {
-      const dailyRate = getDailyRate();
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      // 입금을 날짜 오름차순 정렬
-      const sorted = [...state.deposits]
-        .filter(d => d.date)
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
+      // 입금 이벤트 + 이율 변경 이벤트를 날짜순 정렬
+      const events = [
+        ...state.deposits.filter(d => d.date).map(d => ({ type: 'deposit', date: new Date(d.date), amount: d.amount })),
+        ...state.rates.filter(r => r.date).map(r => ({ type: 'rate', date: new Date(r.date), rate: r.rate }))
+      ].sort((a, b) => a.date - b.date);
+
+      // 초기 이율: 대출일 이전 가장 마지막 이율 기록 or input값
+      let dailyRate = (parseFloat(document.getElementById('annual-rate').value) || 5.2) / 100 / 365;
+      for (const ev of events) {
+        if (ev.type === 'rate' && ev.date <= new Date(LOAN_START)) dailyRate = ev.rate / 100 / 365;
+      }
 
       let principal = ORIGINAL_PRINCIPAL;
       let prevDate  = new Date(LOAN_START);
+      prevDate.setHours(0, 0, 0, 0);
       let interest  = 0;
 
-      for (const dep of sorted) {
-        const depDate = new Date(dep.date);
-        if (depDate > today) break;
-        const days = daysBetween(prevDate, depDate);
+      for (const ev of events) {
+        ev.date.setHours(0, 0, 0, 0);
+        if (ev.date <= new Date(LOAN_START)) continue; // 대출일 이전 이율은 위에서 처리
+        if (ev.date >= today) break;
+        const days = daysBetween(prevDate, ev.date);
         if (days > 0) interest += principal * dailyRate * days;
-        principal -= dep.amount;
-        if (principal < 0) principal = 0;
-        prevDate = depDate;
+        if (ev.type === 'deposit') principal = Math.max(0, principal - ev.amount);
+        if (ev.type === 'rate')    dailyRate = ev.rate / 100 / 365;
+        prevDate = ev.date;
       }
 
       const remainDays = daysBetween(prevDate, today);
@@ -501,9 +555,15 @@
     function applyState(data) {
       state.deposits = Array.isArray(data.deposits) ? data.deposits : [];
       state.history  = Array.isArray(data.history)  ? data.history  : [];
+      state.rates    = Array.isArray(data.rates)    ? data.rates    : [];
+      // 현재 유효 이율을 input에 반영
+      if (state.rates.length) {
+        document.getElementById('annual-rate').value = getEffectiveRate();
+      }
       document.getElementById('loading-overlay').style.display = 'none';
       updateBalanceDisplay();
       renderDepositList();
+      renderRateList();
       renderHistory();
     }
 
@@ -525,11 +585,12 @@
     }
 
     async function saveState() {
+      const data = { deposits: state.deposits, history: state.history, rates: state.rates };
       if (IS_LOCAL) {
-        localStorage.setItem(LS_KEY, JSON.stringify({ deposits: state.deposits, history: state.history }));
+        localStorage.setItem(LS_KEY, JSON.stringify(data));
       } else {
         setBadge('saving');
-        await docRef.set({ deposits: state.deposits, history: state.history });
+        await docRef.set(data);
         setBadge('synced');
       }
     }
@@ -547,7 +608,59 @@
     }
 
     // 오늘 날짜 기본값
-    document.getElementById('deposit-date').value = new Date().toISOString().slice(0, 10);
+    const todayStr = new Date().toISOString().slice(0, 10);
+    document.getElementById('deposit-date').value = todayStr;
+    document.getElementById('rate-date').value    = todayStr;
+
+    async function saveRate() {
+      const rate    = parseFloat(document.getElementById('annual-rate').value);
+      const dateVal = document.getElementById('rate-date').value;
+      if (!dateVal || !rate || rate <= 0) {
+        alert('이율과 적용일을 입력해 주세요.'); return;
+      }
+      state.rates.unshift({ id: Date.now(), date: dateVal, rate, savedAt: new Date().toLocaleString('ko-KR') });
+      await saveState();
+      renderRateList();
+      updateBalanceDisplay();
+    }
+
+    async function deleteRate(id, e) {
+      e.stopPropagation();
+      state.rates = state.rates.filter(r => r.id !== id);
+      // 남은 이율 중 최신값을 input에 반영
+      document.getElementById('annual-rate').value = getEffectiveRate();
+      await saveState();
+      renderRateList();
+      updateBalanceDisplay();
+    }
+
+    async function clearAllRates() {
+      if (!state.rates.length) return;
+      if (!confirm('이율 이력을 모두 삭제할까요?')) return;
+      state.rates = [];
+      await saveState();
+      renderRateList();
+      updateBalanceDisplay();
+    }
+
+    function renderRateList() {
+      const listEl = document.getElementById('rate-list');
+      document.getElementById('rate-count').textContent = state.rates.length;
+      if (!state.rates.length) {
+        listEl.innerHTML = '<div class="rate-empty">저장된 이율 이력이 없습니다</div>';
+        return;
+      }
+      const sorted = [...state.rates].sort((a, b) => new Date(b.date) - new Date(a.date));
+      listEl.innerHTML = '<div class="rate-list">' + sorted.map(r => `
+        <div class="rate-item">
+          <div>
+            <div class="rate-item-date">${r.date} · ${r.savedAt}</div>
+            <div class="rate-item-value">연 ${r.rate}%</div>
+          </div>
+          <button class="btn-del-sm" onclick="deleteRate(${r.id}, event)">✕</button>
+        </div>
+      `).join('') + '</div>';
+    }
 
     // 월납입금액 콤마 포맷
     document.getElementById('monthly').addEventListener('input', function () {
