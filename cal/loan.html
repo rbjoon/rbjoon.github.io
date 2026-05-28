@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이너스통장 관리</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+    .page-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .page-title { font-size: 1.4rem; font-weight: 700; color: #1a2a3a; }
+    .sync-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.72rem; color: #10b981; background: #ecfdf5;
+      border: 1px solid #6ee7b7; border-radius: 20px;
+      padding: 2px 10px; margin-left: 8px; vertical-align: middle;
+    }
+    .sync-badge.local { color: #f59e0b; background: #fffbeb; border-color: #fcd34d; }
+    .sync-badge.saving { color: #f59e0b; background: #fffbeb; border-color: #fcd34d; }
+    .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* 로딩 */
+    #loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(240,244,248,0.95);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999; flex-direction: column; gap: 12px;
+      font-size: 1rem; color: #6b7c93;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid #e0e7ef; border-top-color: #3b82f6;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 메인 레이아웃 */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 1060px;
+      margin: 0 auto;
+    }
+    @media (max-width: 700px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+    .result-row {
+      max-width: 1060px;
+      margin: 20px auto 0;
+    }
+
+    /* 카드 공통 */
+    .card {
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 28px 24px;
+    }
+    .card-title {
+      font-size: 1rem; font-weight: 700; color: #1a2a3a;
+      margin-bottom: 18px; padding-bottom: 14px;
+      border-bottom: 1px solid #f0f4f8;
+    }
+
+    /* 현황 정보 */
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px; background: #f7f9fb;
+      border-radius: 10px; margin-bottom: 8px;
+    }
+    .info-label { color: #6b7c93; font-size: 0.85rem; }
+    .info-value { color: #1a2a3a; font-weight: 600; font-size: 0.9rem; }
+    .info-value.highlight { color: #2563eb; font-size: 1rem; }
+    .info-value.reduced { color: #10b981; font-size: 1rem; }
+
+    .divider { border: none; border-top: 1px solid #e8edf2; margin: 18px 0; }
+
+    /* 입력 필드 */
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-size: 0.82rem; color: #6b7c93; margin-bottom: 6px; }
+    .input-wrap { position: relative; }
+    .input-wrap input {
+      width: 100%; padding: 11px 46px 11px 14px;
+      border: 2px solid #e0e7ef; border-radius: 10px;
+      font-size: 1rem; color: #1a2a3a; outline: none; transition: border 0.2s;
+    }
+    .input-wrap input:focus { border-color: #3b82f6; }
+    .input-wrap .unit {
+      position: absolute; right: 13px; top: 50%;
+      transform: translateY(-50%); color: #8a9ab0; font-size: 0.85rem; pointer-events: none;
+    }
+    .field-row { display: flex; gap: 12px; }
+    .field-row .field { flex: 1; }
+
+    /* 버튼 */
+    .btn-primary {
+      width: 100%; padding: 13px;
+      background: #3b82f6; color: #fff;
+      font-size: 0.95rem; font-weight: 600;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: background 0.2s; margin-top: 4px;
+    }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-green {
+      width: 100%; padding: 13px;
+      background: #10b981; color: #fff;
+      font-size: 0.95rem; font-weight: 600;
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: background 0.2s; margin-top: 8px;
+    }
+    .btn-green:hover { background: #059669; }
+    .btn-green:disabled { background: #a7f3d0; cursor: default; }
+    .btn-danger-sm {
+      padding: 4px 10px; background: #fef2f2; color: #dc2626;
+      font-size: 0.78rem; font-weight: 600;
+      border: 1px solid #fecaca; border-radius: 7px; cursor: pointer;
+    }
+    .btn-danger-sm:hover { background: #fee2e2; }
+
+    /* 오류 메시지 */
+    .error-msg {
+      margin-top: 12px; padding: 10px 14px;
+      background: #fef2f2; border-radius: 9px;
+      color: #dc2626; font-size: 0.84rem; display: none;
+    }
+
+    /* 계산 결과 카드 */
+    .result-card {
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 28px 24px; display: none;
+    }
+    .result-summary {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 600px) { .result-summary { grid-template-columns: 1fr 1fr; } }
+    .summary-box { background: #f7f9fb; border-radius: 12px; padding: 14px; text-align: center; }
+    .summary-box.main { background: #eff6ff; }
+    .summary-box .s-label { font-size: 0.75rem; color: #8a9ab0; margin-bottom: 5px; }
+    .summary-box .s-value { font-size: 1rem; font-weight: 700; color: #1a2a3a; }
+    .summary-box.main .s-value { font-size: 1.5rem; color: #2563eb; }
+    .schedule-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+    }
+    .schedule-label { font-size: 0.88rem; font-weight: 600; color: #1a2a3a; }
+    .btn-toggle {
+      background: none; border: 1px solid #e0e7ef; border-radius: 8px;
+      font-size: 0.78rem; color: #6b7c93; padding: 4px 10px; cursor: pointer; width: auto;
+    }
+    .btn-toggle:hover { background: #f7f9fb; }
+    .schedule-table-wrap {
+      max-height: 320px; overflow-y: auto;
+      border: 1px solid #e8edf2; border-radius: 10px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    thead th {
+      background: #f7f9fb; color: #6b7c93; font-weight: 600;
+      padding: 9px 10px; text-align: right; position: sticky; top: 0;
+      border-bottom: 1px solid #e8edf2;
+    }
+    thead th:first-child { text-align: center; }
+    tbody tr { border-bottom: 1px solid #f0f4f8; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f7f9fb; }
+    tbody td { padding: 8px 10px; text-align: right; color: #1a2a3a; }
+    tbody td:first-child { text-align: center; color: #8a9ab0; font-weight: 600; }
+    .td-interest { color: #dc2626; }
+    .td-principal { color: #2563eb; }
+    .td-balance { color: #6b7c93; }
+    .last-row td { font-weight: 700; }
+    .btn-save-wrap { margin-top: 14px; text-align: right; }
+    .btn-save {
+      padding: 10px 20px; background: #10b981; color: #fff;
+      font-size: 0.88rem; font-weight: 600; border: none; border-radius: 9px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .btn-save:hover { background: #059669; }
+    .btn-save:disabled { background: #a7f3d0; cursor: default; }
+
+    /* 입금 카드 */
+    .deposit-msg {
+      padding: 10px 14px; border-radius: 9px;
+      font-size: 0.84rem; display: none; margin-bottom: 14px;
+    }
+    .deposit-list-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; margin-top: 18px;
+    }
+    .deposit-list-label { font-size: 0.85rem; font-weight: 600; color: #1a2a3a; }
+    .deposit-count {
+      background: #ecfdf5; color: #10b981;
+      font-size: 0.7rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 20px; margin-left: 6px;
+    }
+    .deposit-empty { text-align: center; color: #b0bec5; font-size: 0.83rem; padding: 18px 0; }
+    .deposit-list { display: flex; flex-direction: column; gap: 7px; }
+    .deposit-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #f7f9fb; border-radius: 10px; padding: 10px 13px;
+    }
+    .deposit-item-date { font-size: 0.73rem; color: #8a9ab0; margin-bottom: 2px; }
+    .deposit-item-amount { font-size: 0.92rem; font-weight: 700; color: #10b981; }
+    .deposit-item-right { display: flex; align-items: center; gap: 8px; }
+    .deposit-item-balance { font-size: 0.75rem; color: #6b7c93; text-align: right; }
+    .btn-del-sm {
+      background: none; border: none; color: #c9d5e0;
+      font-size: 0.85rem; cursor: pointer; padding: 3px 6px;
+      border-radius: 6px; transition: color 0.15s, background 0.15s;
+    }
+    .btn-del-sm:hover { color: #dc2626; background: #fef2f2; }
+
+
+    /* 히스토리 카드 */
+    .history-card {
+      background: #fff; border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 28px 24px; margin-top: 20px;
+      max-width: 1060px; margin-left: auto; margin-right: auto;
+    }
+    .history-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+    }
+    .history-title { font-size: 1rem; font-weight: 700; color: #1a2a3a; }
+    .history-count {
+      background: #eff6ff; color: #2563eb;
+      font-size: 0.72rem; font-weight: 700;
+      padding: 2px 9px; border-radius: 20px; margin-left: 7px;
+    }
+    .history-empty { text-align: center; color: #b0bec5; font-size: 0.85rem; padding: 24px 0; }
+    .history-list { display: flex; flex-direction: column; gap: 10px; }
+    .history-item { border: 1px solid #e8edf2; border-radius: 12px; overflow: hidden; }
+    .hi-header {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px; cursor: pointer; background: #f7f9fb;
+      transition: background 0.15s; user-select: none;
+    }
+    .hi-header:hover { background: #eff6ff; }
+    .hi-header.open { background: #eff6ff; border-bottom: 1px solid #e0e7ef; }
+    .hi-header-body { flex: 1; min-width: 0; }
+    .hi-row1 { display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px; flex-wrap: wrap; }
+    .hi-monthly { font-size: 0.92rem; font-weight: 700; color: #1a2a3a; }
+    .hi-arrow { color: #b0bec5; font-size: 0.75rem; }
+    .hi-months { font-size: 0.92rem; font-weight: 700; color: #2563eb; }
+    .hi-row2 { display: flex; gap: 6px; flex-wrap: wrap; }
+    .hi-tag { font-size: 0.7rem; color: #6b7c93; background: #e8edf2; border-radius: 5px; padding: 2px 7px; }
+    .hi-tag.red { background: #fee2e2; color: #dc2626; }
+    .hi-date { font-size: 0.68rem; color: #b0bec5; margin-top: 3px; }
+    .hi-chevron { color: #b0bec5; font-size: 0.72rem; transition: transform 0.2s; flex-shrink: 0; }
+    .hi-header.open .hi-chevron { transform: rotate(180deg); }
+    .btn-del {
+      background: none; border: none; color: #c9d5e0;
+      font-size: 0.95rem; cursor: pointer; padding: 4px 6px;
+      border-radius: 6px; transition: color 0.15s, background 0.15s; flex-shrink: 0; width: auto;
+    }
+    .btn-del:hover { color: #dc2626; background: #fef2f2; }
+    .hi-detail { display: none; padding: 16px; background: #fff; }
+    .hi-detail.open { display: block; }
+    .hi-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    @media (max-width: 500px) { .hi-summary-grid { grid-template-columns: 1fr 1fr; } }
+    .hi-summary-box { background: #f7f9fb; border-radius: 10px; padding: 10px; text-align: center; }
+    .hi-summary-box .s-label { font-size: 0.7rem; color: #8a9ab0; margin-bottom: 3px; }
+    .hi-summary-box .s-value { font-size: 0.85rem; font-weight: 600; color: #1a2a3a; }
+    .hi-table-wrap { max-height: 260px; overflow-y: auto; border: 1px solid #e8edf2; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+    <span>연결 중...</span>
+  </div>
+
+  <div class="page-header">
+    <span class="page-title">마이너스통장 관리</span>
+    <span class="sync-badge" id="sync-badge"><span class="sync-dot"></span>로딩 중</span>
+  </div>
+
+  <div class="main-grid">
+
+    <!-- 왼쪽: 현황 + 계산 -->
+    <div class="card">
+      <div class="card-title">현황</div>
+
+      <div class="info-row">
+        <span class="info-label">최초 대출일</span>
+        <span class="info-value">2026.05.16</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">최초 대출금액</span>
+        <span class="info-value">31,243,020 원</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">현재 잔액</span>
+        <span class="info-value highlight" id="current-balance-display">-</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="annual-rate">연 이율</label>
+          <div class="input-wrap">
+            <input type="text" id="annual-rate" value="5.2" inputmode="decimal">
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="monthly">월 납입금액</label>
+          <div class="input-wrap">
+            <input type="text" id="monthly" value="500,000" inputmode="numeric">
+            <span class="unit">원</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="calculate()">총 상환기간 계산</button>
+      <div class="error-msg" id="error"></div>
+    </div>
+
+    <!-- 오른쪽: 입금 적용 -->
+    <div class="card">
+      <div class="card-title">입금 적용</div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="deposit-date">입금일</label>
+          <div class="input-wrap">
+            <input type="date" id="deposit-date">
+          </div>
+        </div>
+        <div class="field">
+          <label for="deposit-amount">금액</label>
+          <div class="input-wrap">
+            <input type="text" id="deposit-amount" placeholder="1,500,000" inputmode="numeric">
+            <span class="unit">원</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-green" onclick="applyDeposit()">현재 잔액에 적용</button>
+
+      <div class="deposit-msg" id="deposit-msg"></div>
+
+      <div class="deposit-list-header">
+        <div>
+          <span class="deposit-list-label">입금 이력</span>
+          <span class="deposit-count" id="deposit-count">0</span>
+        </div>
+        <button class="btn-danger-sm" onclick="clearAllDeposits()">전체 삭제</button>
+      </div>
+      <div id="deposit-list"></div>
+
+    </div>
+  </div>
+
+  <!-- 계산 결과 -->
+  <div class="result-row">
+    <div class="result-card" id="result-card">
+      <div class="card-title" style="margin-bottom:16px">
+        상환 계산 결과
+        <button class="btn-save" id="btn-save" onclick="saveHistory()" disabled style="float:right;margin-top:-4px">히스토리 저장</button>
+      </div>
+      <div class="result-summary">
+        <div class="summary-box main">
+          <div class="s-label">총 상환기간</div>
+          <div class="s-value" id="res-months">-</div>
+        </div>
+        <div class="summary-box">
+          <div class="s-label">총 납부금액</div>
+          <div class="s-value" id="res-total-pay">-</div>
+        </div>
+        <div class="summary-box">
+          <div class="s-label">총 이자</div>
+          <div class="s-value" style="color:#dc2626" id="res-total-interest">-</div>
+        </div>
+        <div class="summary-box">
+          <div class="s-label">마지막 납부액</div>
+          <div class="s-value" id="res-last-pay">-</div>
+        </div>
+      </div>
+      <div class="schedule-header">
+        <span class="schedule-label">월별 상환 스케줄</span>
+        <button class="btn-toggle" onclick="toggleSchedule()">접기</button>
+      </div>
+      <div class="schedule-table-wrap" id="schedule-wrap"></div>
+    </div>
+  </div>
+
+  <!-- 히스토리 -->
+  <div class="history-card">
+    <div class="history-header">
+      <div style="display:flex;align-items:center;">
+        <span class="history-title">계산 히스토리</span>
+        <span class="history-count" id="history-count">0</span>
+      </div>
+      <button class="btn-danger-sm" onclick="clearAll()">전체 삭제</button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDdRUBFui-3duDwWA3TbEFDA2l1ZUcKzQU",
+      authDomain: "rbjoonloan.firebaseapp.com",
+      projectId: "rbjoonloan",
+      storageBucket: "rbjoonloan.firebasestorage.app",
+      messagingSenderId: "96812045990",
+      appId: "1:96812045990:web:fa62bdd27d33d0d6a78667",
+      measurementId: "G-RCLE365EZ1"
+    };
+
+    const IS_LOCAL = location.protocol === 'file:';
+    const LS_KEY   = 'minus_loan_data_v1';
+    const ORIGINAL_PRINCIPAL = 31243020;
+    const DAYS_PER_MONTH = 30;
+
+    let state = { deposits: [], history: [] };
+    let lastResult = null;
+    let scheduleVisible = true;
+    let docRef = null;
+
+    function getDailyRate() {
+      const r = parseFloat(document.getElementById('annual-rate').value) || 5.2;
+      return r / 100 / 365;
+    }
+    function calcInterest(bal) { return bal * getDailyRate() * DAYS_PER_MONTH; }
+    function fmt(n) { return Math.round(n).toLocaleString('ko-KR') + ' 원'; }
+    function fmtNum(n) { return Math.round(n).toLocaleString('ko-KR'); }
+
+    function currentBalance() {
+      const total = state.deposits.reduce((s, d) => s + d.amount, 0);
+      return Math.max(0, ORIGINAL_PRINCIPAL - total);
+    }
+
+    function setBadge(mode) {
+      const b = document.getElementById('sync-badge');
+      const labels = { synced: '실시간 동기화', local: '로컬 모드', saving: '저장 중...' };
+      b.className = 'sync-badge' + (mode !== 'synced' ? ' ' + mode : '');
+      b.innerHTML = `<span class="sync-dot"></span>${labels[mode] || mode}`;
+    }
+
+    function applyState(data) {
+      state.deposits = Array.isArray(data.deposits) ? data.deposits : [];
+      state.history  = Array.isArray(data.history)  ? data.history  : [];
+      document.getElementById('loading-overlay').style.display = 'none';
+      updateBalanceDisplay();
+      renderDepositList();
+      renderHistory();
+    }
+
+    if (IS_LOCAL) {
+      setBadge('local');
+      try { applyState(JSON.parse(localStorage.getItem(LS_KEY)) || {}); }
+      catch { applyState({}); }
+    } else {
+      firebase.initializeApp(firebaseConfig);
+      docRef = firebase.firestore().collection('loan').doc('main');
+      docRef.onSnapshot(snap => {
+        applyState(snap.exists ? snap.data() : {});
+        setBadge('synced');
+      }, () => {
+        const el = document.getElementById('loading-overlay');
+        el.querySelector('span').textContent = 'Firebase 연결 실패 — Firestore 활성화 여부를 확인해주세요.';
+        el.querySelector('.spinner').style.display = 'none';
+      });
+    }
+
+    async function saveState() {
+      if (IS_LOCAL) {
+        localStorage.setItem(LS_KEY, JSON.stringify({ deposits: state.deposits, history: state.history }));
+      } else {
+        setBadge('saving');
+        await docRef.set({ deposits: state.deposits, history: state.history });
+        setBadge('synced');
+      }
+    }
+
+    function updateBalanceDisplay() {
+      const bal = currentBalance();
+      const el  = document.getElementById('current-balance-display');
+      el.textContent = fmt(bal);
+      el.className = 'info-value ' + (bal < ORIGINAL_PRINCIPAL ? 'reduced' : 'highlight');
+    }
+
+    // 오늘 날짜 기본값
+    document.getElementById('deposit-date').value = new Date().toISOString().slice(0, 10);
+
+    // 월납입금액 콤마 포맷
+    document.getElementById('monthly').addEventListener('input', function () {
+      const raw = this.value.replace(/,/g, '').replace(/[^0-9]/g, '');
+      this.value = raw ? Number(raw).toLocaleString('ko-KR') : '';
+      lastResult = null;
+      document.getElementById('btn-save').disabled = true;
+    });
+    document.getElementById('monthly').addEventListener('keydown', e => {
+      if (e.key === 'Enter') calculate();
+    });
+
+    // 입금금액 콤마 포맷
+    document.getElementById('deposit-amount').addEventListener('input', function () {
+      const raw = this.value.replace(/,/g, '').replace(/[^0-9]/g, '');
+      this.value = raw ? Number(raw).toLocaleString('ko-KR') : '';
+    });
+
+    function buildSchedule(M, startBalance, dailyRate) {
+      const rows = [];
+      let balance = startBalance;
+      let month   = 0;
+      while (balance > 0 && month < 1200) {
+        month++;
+        const interest      = balance * dailyRate * DAYS_PER_MONTH;
+        const payment       = Math.min(M, balance + interest);
+        const principalPart = payment - interest;
+        balance = Math.max(0, balance - principalPart);
+        rows.push({ month, payment, interest, principalPart, balance });
+      }
+      return rows;
+    }
+
+    function scheduleTableHtml(schedule) {
+      return `<table>
+        <thead><tr><th>월차</th><th>납입액</th><th>이자</th><th>원금상환</th><th>잔액</th></tr></thead>
+        <tbody>${schedule.map(r => `
+          <tr class="${r.balance === 0 ? 'last-row' : ''}">
+            <td>${r.month}</td>
+            <td>${fmtNum(r.payment)}</td>
+            <td class="td-interest">${fmtNum(r.interest)}</td>
+            <td class="td-principal">${fmtNum(r.principalPart)}</td>
+            <td class="td-balance">${fmtNum(r.balance)}</td>
+          </tr>`).join('')}
+        </tbody></table>`;
+    }
+
+    function calculate() {
+      const errorEl = document.getElementById('error');
+      errorEl.style.display = 'none';
+      lastResult = null;
+      document.getElementById('btn-save').disabled = true;
+
+      const M        = parseFloat(document.getElementById('monthly').value.replace(/,/g, ''));
+      const balance  = currentBalance();
+      const dailyRate = getDailyRate();
+
+      if (!M || M <= 0) {
+        errorEl.textContent = '월 납입금액을 입력해 주세요.';
+        errorEl.style.display = 'block'; return;
+      }
+      const minPay = balance * dailyRate * DAYS_PER_MONTH;
+      if (M <= minPay) {
+        errorEl.textContent = `이자만 ${fmt(minPay)} 입니다. 그 이상 납입해야 원금이 줄어듭니다.`;
+        errorEl.style.display = 'block'; return;
+      }
+
+      const schedule      = buildSchedule(M, balance, dailyRate);
+      const months        = schedule.length;
+      const totalPaid     = schedule.reduce((s, r) => s + r.payment, 0);
+      const totalInterest = totalPaid - balance;
+      const lastPayment   = schedule[months - 1].payment;
+      const years         = Math.floor(months / 12);
+      const remMonths     = months % 12;
+      const yearsText     = years > 0 && remMonths > 0 ? `(${years}년 ${remMonths}개월)`
+                          : years > 0 ? `(${years}년)` : '';
+      const annualRate    = parseFloat(document.getElementById('annual-rate').value) || 5.2;
+
+      document.getElementById('res-months').textContent = `${months}개월 ${yearsText}`;
+      document.getElementById('res-total-pay').textContent = fmt(totalPaid);
+      document.getElementById('res-total-interest').textContent = fmt(totalInterest);
+      document.getElementById('res-last-pay').textContent = fmt(lastPayment);
+      document.getElementById('schedule-wrap').innerHTML = scheduleTableHtml(schedule);
+
+      const resultCard = document.getElementById('result-card');
+      resultCard.style.display = 'block';
+      scheduleVisible = true;
+      document.querySelector('.btn-toggle').textContent = '접기';
+
+      lastResult = { monthly: M, months, yearsText, totalPaid, totalInterest, lastPayment, balance, annualRate };
+      document.getElementById('btn-save').disabled = false;
+      resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function toggleSchedule() {
+      scheduleVisible = !scheduleVisible;
+      document.getElementById('schedule-wrap').style.display = scheduleVisible ? 'block' : 'none';
+      document.querySelector('.btn-toggle').textContent = scheduleVisible ? '접기' : '펼치기';
+    }
+
+    async function applyDeposit() {
+      const dateVal = document.getElementById('deposit-date').value;
+      const amount  = parseInt(document.getElementById('deposit-amount').value.replace(/,/g, ''), 10);
+      const msgEl   = document.getElementById('deposit-msg');
+
+      if (!dateVal || !amount || amount <= 0) {
+        msgEl.textContent = !dateVal ? '입금일을 선택해 주세요.' : '금액을 입력해 주세요.';
+        msgEl.style.cssText = 'display:block;background:#fef2f2;border:1px solid #fecaca;color:#dc2626';
+        return;
+      }
+
+      const prev = currentBalance();
+      state.deposits.unshift({ id: Date.now(), date: dateVal, amount, appliedAt: new Date().toLocaleString('ko-KR') });
+      await saveState();
+      renderDepositList();
+
+      msgEl.textContent = `${fmt(prev)} → ${fmt(currentBalance())} (${fmt(amount)} 입금 적용)`;
+      msgEl.style.cssText = 'display:block;background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46';
+      document.getElementById('deposit-amount').value = '';
+
+      lastResult = null;
+      document.getElementById('btn-save').disabled = true;
+      document.getElementById('result-card').style.display = 'none';
+    }
+
+    async function deleteDeposit(id, e) {
+      e.stopPropagation();
+      state.deposits = state.deposits.filter(d => d.id !== id);
+      await saveState();
+      renderDepositList();
+      document.getElementById('deposit-msg').style.display = 'none';
+      lastResult = null;
+      document.getElementById('btn-save').disabled = true;
+      document.getElementById('result-card').style.display = 'none';
+    }
+
+    async function clearAllDeposits() {
+      if (!state.deposits.length) return;
+      if (!confirm('입금 이력을 모두 삭제할까요?')) return;
+      state.deposits = [];
+      await saveState();
+      renderDepositList();
+      document.getElementById('deposit-msg').style.display = 'none';
+    }
+
+    function renderDepositList() {
+      updateBalanceDisplay();
+      const listEl = document.getElementById('deposit-list');
+      document.getElementById('deposit-count').textContent = state.deposits.length;
+
+      if (!state.deposits.length) {
+        listEl.innerHTML = '<div class="deposit-empty">입금 이력이 없습니다</div>';
+        return;
+      }
+
+      let running = ORIGINAL_PRINCIPAL;
+      const withBal = [...state.deposits].reverse().map(d => {
+        running -= d.amount;
+        return { ...d, balanceAfter: Math.max(0, running) };
+      }).reverse();
+
+      listEl.innerHTML = '<div class="deposit-list">' + withBal.map(d => `
+        <div class="deposit-item">
+          <div>
+            <div class="deposit-item-date">${d.date} · ${d.appliedAt}</div>
+            <div class="deposit-item-amount">-${fmtNum(d.amount)} 원</div>
+          </div>
+          <div class="deposit-item-right">
+            <div class="deposit-item-balance">잔액<br>${fmtNum(d.balanceAfter)} 원</div>
+            <button class="btn-del-sm" onclick="deleteDeposit(${d.id}, event)">✕</button>
+          </div>
+        </div>
+      `).join('') + '</div>';
+    }
+
+    async function saveHistory() {
+      if (!lastResult) return;
+      state.history.unshift({ id: Date.now(), ...lastResult, savedAt: new Date().toLocaleString('ko-KR') });
+      await saveState();
+      renderHistory();
+      document.getElementById('btn-save').disabled = true;
+    }
+
+    async function deleteHistory(id, e) {
+      e.stopPropagation();
+      state.history = state.history.filter(h => h.id !== id);
+      await saveState();
+      renderHistory();
+    }
+
+    async function clearAll() {
+      if (!state.history.length) return;
+      if (!confirm('히스토리를 모두 삭제할까요?')) return;
+      state.history = [];
+      await saveState();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const listEl = document.getElementById('history-list');
+      document.getElementById('history-count').textContent = state.history.length;
+
+      if (!state.history.length) {
+        listEl.innerHTML = '<div class="history-empty">저장된 계산 내역이 없습니다</div>';
+        return;
+      }
+
+      listEl.innerHTML = '<div class="history-list">' + state.history.map(h => `
+        <div class="history-item">
+          <div class="hi-header" id="hi-h-${h.id}" onclick="toggleHi(${h.id})">
+            <div class="hi-header-body">
+              <div class="hi-row1">
+                <span class="hi-monthly">${fmtNum(h.monthly)}원/월</span>
+                <span class="hi-arrow">→</span>
+                <span class="hi-months">${h.months}개월 ${h.yearsText || ''}</span>
+              </div>
+              <div class="hi-row2">
+                <span class="hi-tag">이율 ${h.annualRate || 5.2}%</span>
+                <span class="hi-tag">총납부 ${fmtNum(h.totalPaid)}원</span>
+                <span class="hi-tag red">이자 ${fmtNum(h.totalInterest)}원</span>
+                ${h.balance !== ORIGINAL_PRINCIPAL ? `<span class="hi-tag" style="background:#ecfdf5;color:#10b981">잔액 ${fmtNum(h.balance)}원 기준</span>` : ''}
+              </div>
+              <div class="hi-date">${h.savedAt}</div>
+            </div>
+            <span class="hi-chevron">▼</span>
+            <button class="btn-del" onclick="deleteHistory(${h.id}, event)">✕</button>
+          </div>
+          <div class="hi-detail" id="hi-d-${h.id}">
+            <div class="hi-summary-grid">
+              <div class="hi-summary-box"><div class="s-label">월 납입액</div><div class="s-value">${fmtNum(h.monthly)}원</div></div>
+              <div class="hi-summary-box"><div class="s-label">연 이율</div><div class="s-value">${h.annualRate || 5.2}%</div></div>
+              <div class="hi-summary-box"><div class="s-label">총 상환기간</div><div class="s-value">${h.months}개월 ${h.yearsText || ''}</div></div>
+              <div class="hi-summary-box"><div class="s-label">총 납부금액</div><div class="s-value">${fmtNum(h.totalPaid)}원</div></div>
+              <div class="hi-summary-box"><div class="s-label">총 이자</div><div class="s-value" style="color:#dc2626">${fmtNum(h.totalInterest)}원</div></div>
+              <div class="hi-summary-box"><div class="s-label">기준 잔액</div><div class="s-value">${fmtNum(h.balance || ORIGINAL_PRINCIPAL)}원</div></div>
+            </div>
+            <div class="hi-table-wrap" id="hi-t-${h.id}"></div>
+          </div>
+        </div>
+      `).join('') + '</div>';
+    }
+
+    function toggleHi(id) {
+      const header = document.getElementById(`hi-h-${id}`);
+      const detail = document.getElementById(`hi-d-${id}`);
+      const open   = detail.classList.toggle('open');
+      header.classList.toggle('open', open);
+      if (open) {
+        const wrap = document.getElementById(`hi-t-${id}`);
+        if (!wrap.dataset.rendered) {
+          const h = state.history.find(h => h.id === id);
+          if (h) {
+            const rate = (h.annualRate || 5.2) / 100 / 365;
+            wrap.innerHTML = scheduleTableHtml(buildSchedule(h.monthly, h.balance || ORIGINAL_PRINCIPAL, rate));
+            wrap.dataset.rendered = '1';
+          }
+        }
+      }
+    }
+
+  </script>
+</body>
+</html>
