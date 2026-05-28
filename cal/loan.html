@@ -298,9 +298,15 @@
         <span class="info-label">최초 대출금액</span>
         <span class="info-value">31,243,020 원</span>
       </div>
-      <div class="info-row">
-        <span class="info-label">현재 잔액</span>
-        <span class="info-value highlight" id="current-balance-display">-</span>
+      <div class="info-row" style="flex-direction:column;gap:6px;align-items:stretch;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="info-label">현재 잔액 (이자 포함)</span>
+          <span class="info-value highlight" id="current-balance-display">-</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:#8a9ab0;padding:0 2px;">
+          <span>원금 <span id="display-principal">-</span></span>
+          <span>대출 후 <span id="display-days">-</span>일치 이자 <span id="display-interest">-</span></span>
+        </div>
       </div>
 
       <div class="divider"></div>
@@ -430,6 +436,8 @@
     let scheduleVisible = true;
     let docRef = null;
 
+    const LOAN_START = new Date('2026-05-16');
+
     function getDailyRate() {
       const r = parseFloat(document.getElementById('annual-rate').value) || 5.2;
       return r / 100 / 365;
@@ -437,10 +445,50 @@
     function calcInterest(bal) { return bal * getDailyRate() * DAYS_PER_MONTH; }
     function fmt(n) { return Math.round(n).toLocaleString('ko-KR') + ' 원'; }
     function fmtNum(n) { return Math.round(n).toLocaleString('ko-KR'); }
+    function daysBetween(a, b) {
+      return Math.floor((b - a) / (1000 * 60 * 60 * 24));
+    }
 
-    function currentBalance() {
+    // 원금만 (입금 차감)
+    function principalOnly() {
       const total = state.deposits.reduce((s, d) => s + d.amount, 0);
       return Math.max(0, ORIGINAL_PRINCIPAL - total);
+    }
+
+    // 대출일부터 오늘까지 기간별 일할 이자 합산
+    function calcAccruedInterest() {
+      const dailyRate = getDailyRate();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // 입금을 날짜 오름차순 정렬
+      const sorted = [...state.deposits]
+        .filter(d => d.date)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      let principal = ORIGINAL_PRINCIPAL;
+      let prevDate  = new Date(LOAN_START);
+      let interest  = 0;
+
+      for (const dep of sorted) {
+        const depDate = new Date(dep.date);
+        if (depDate > today) break;
+        const days = daysBetween(prevDate, depDate);
+        if (days > 0) interest += principal * dailyRate * days;
+        principal -= dep.amount;
+        if (principal < 0) principal = 0;
+        prevDate = depDate;
+      }
+
+      const remainDays = daysBetween(prevDate, today);
+      if (remainDays > 0) interest += principal * dailyRate * remainDays;
+
+      return { interest: Math.max(0, interest), days: daysBetween(LOAN_START, today) };
+    }
+
+    function currentBalance() {
+      const { interest } = calcAccruedInterest();
+      return principalOnly() + interest;
     }
 
     function setBadge(mode) {
@@ -487,10 +535,15 @@
     }
 
     function updateBalanceDisplay() {
-      const bal = currentBalance();
-      const el  = document.getElementById('current-balance-display');
-      el.textContent = fmt(bal);
-      el.className = 'info-value ' + (bal < ORIGINAL_PRINCIPAL ? 'reduced' : 'highlight');
+      const principal = principalOnly();
+      const { interest, days } = calcAccruedInterest();
+      const total = principal + interest;
+      const el = document.getElementById('current-balance-display');
+      el.textContent = fmt(total);
+      el.className = 'info-value ' + (principal < ORIGINAL_PRINCIPAL ? 'reduced' : 'highlight');
+      document.getElementById('display-principal').textContent = fmt(principal);
+      document.getElementById('display-interest').textContent = fmt(interest);
+      document.getElementById('display-days').textContent = days;
     }
 
     // 오늘 날짜 기본값
