@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>주식 관리 시스템</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+    .nav { background: #1e293b; display: flex; align-items: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 50; overflow-x: auto; }
+    .nav-logo { font-size: 14px; font-weight: 700; color: #3b82f6; padding: 0 14px; white-space: nowrap; line-height: 48px; border-right: 1px solid #334155; flex-shrink: 0; }
+    .nav-btn { padding: 0 14px; border: none; background: transparent; color: #64748b; cursor: pointer; font-size: 13px; font-weight: 600; border-bottom: 2px solid transparent; height: 48px; white-space: nowrap; transition: all 0.2s; }
+    .nav-btn.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+    .nav-btn:hover:not(.active) { color: #e2e8f0; }
+
+    .page { display: none; padding: 20px; max-width: 1100px; margin: 0 auto; }
+    .page.active { display: block; }
+
+    /* Dashboard */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+    .stat-card { background: #1e293b; border-radius: 12px; padding: 16px; border: 1px solid #334155; }
+    .stat-label { font-size: 12px; color: #64748b; margin-bottom: 8px; font-weight: 600; }
+    .stat-value { font-size: 28px; font-weight: 700; color: #3b82f6; }
+    .section-title { font-size: 13px; font-weight: 700; color: #64748b; margin-bottom: 10px; letter-spacing: 0.5px; }
+    .dash-ev { display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: #1e293b; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #334155; }
+    .dash-ev.imp-상 { border-left-color: #ef4444; }
+    .dash-ev.imp-중 { border-left-color: #f59e0b; }
+    .dash-ev.imp-하 { border-left-color: #22c55e; }
+    .dash-date { font-size: 12px; color: #3b82f6; font-weight: 600; min-width: 70px; flex-shrink: 0; }
+    .dash-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+
+    /* Calendar */
+    .cal-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .cal-nav { background: #334155; border: none; color: #e2e8f0; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 18px; flex-shrink: 0; }
+    .cal-nav:hover { background: #475569; }
+    .cal-title { font-size: 22px; font-weight: 700; flex: 1; text-align: center; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day-header { text-align: center; padding: 8px 4px; font-size: 12px; font-weight: 600; color: #64748b; }
+    .cal-day-header:first-child { color: #f87171; }
+    .cal-day-header:last-child { color: #60a5fa; }
+    .cal-cell { background: #1e293b; border-radius: 8px; padding: 8px; min-height: 90px; cursor: pointer; transition: background 0.15s; border: 2px solid transparent; }
+    .cal-cell:hover { background: #2d3f55; }
+    .cal-cell.other-month { opacity: 0.2; pointer-events: none; }
+    .cal-cell.today { border-color: #3b82f6; }
+    .cal-day-num { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .cal-cell.sun .cal-day-num { color: #f87171; }
+    .cal-cell.sat .cal-day-num { color: #60a5fa; }
+    .cal-chip { border-left: 3px solid #22c55e; background: #0d1f12; border-radius: 4px; padding: 2px 5px; font-size: 10px; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; color: #86efac; }
+    .cal-chip.imp-상 { border-left-color: #ef4444; background: #1c0a0a; color: #fca5a5; }
+    .cal-chip.imp-중 { border-left-color: #f59e0b; background: #1c120a; color: #fde68a; }
+    .cal-chip.imp-하 { border-left-color: #22c55e; background: #0d1f12; color: #86efac; }
+    .cal-chip.done { opacity: 0.4; text-decoration: line-through; }
+    .cal-more { font-size: 10px; color: #64748b; margin-top: 2px; }
+
+    /* List */
+    .list-controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+    .period-btn { padding: 7px 14px; border-radius: 8px; border: 1px solid #334155; background: transparent; color: #94a3b8; cursor: pointer; font-size: 13px; font-weight: 600; }
+    .period-btn.active { background: #3b82f6; border-color: #3b82f6; color: white; }
+    .list-search { flex: 1; min-width: 160px; background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 8px 14px; border-radius: 8px; font-size: 14px; }
+    .list-search:focus { outline: none; border-color: #3b82f6; }
+    .list-card { background: #1e293b; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid #334155; border-left: 4px solid #334155; display: flex; gap: 14px; align-items: flex-start; }
+    .list-card.imp-상 { border-left-color: #ef4444; }
+    .list-card.imp-중 { border-left-color: #f59e0b; }
+    .list-card.imp-하 { border-left-color: #22c55e; }
+    .list-card.done { opacity: 0.5; }
+    .list-date-col { min-width: 76px; flex-shrink: 0; }
+    .list-date-main { font-size: 13px; color: #3b82f6; font-weight: 700; }
+    .list-date-dow { font-size: 11px; color: #64748b; }
+    .list-body { flex: 1; min-width: 0; }
+    .list-text { font-size: 14px; margin-bottom: 6px; }
+    .list-card.done .list-text { text-decoration: line-through; }
+    .list-meta { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+    .realize-btn { font-size: 11px; padding: 2px 8px; border-radius: 4px; border: none; cursor: pointer; font-weight: 600; flex-shrink: 0; }
+    .realize-btn.off { background: #334155; color: #94a3b8; }
+    .realize-btn.on { background: #14532d; color: #86efac; }
+
+    /* Tags */
+    .tag { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+    .tag-imp-상 { background: #7f1d1d; color: #fca5a5; }
+    .tag-imp-중 { background: #78350f; color: #fde68a; }
+    .tag-imp-하 { background: #14532d; color: #86efac; }
+    .tag-company { background: #1e3a5f; color: #60a5fa; }
+    .tag-cat { background: #2d1b69; color: #c4b5fd; }
+    .tag-source { background: #1a2a3a; color: #7dd3fc; }
+    .tag-price-up { background: #14532d; color: #86efac; }
+    .tag-price-down { background: #7f1d1d; color: #fca5a5; }
+    .tag-sector { background: #4a1d96; color: #c4b5fd; }
+    .ticker-badge { background: #1e3a5f; color: #60a5fa; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+    .sector-badge { background: #4a1d96; color: #c4b5fd; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+
+    /* Modal */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; padding: 16px; }
+    .overlay.open { display: flex; }
+    .modal { background: #1e293b; border-radius: 16px; padding: 24px; width: 100%; max-width: 520px; max-height: 88vh; overflow-y: auto; border: 1px solid #334155; }
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+    .add-label { font-size: 12px; font-weight: 600; color: #64748b; margin-bottom: 8px; }
+    .divider { border: none; border-top: 1px solid #334155; margin: 14px 0; }
+
+    /* Event items in modal */
+    .ev-item { display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; background: #0f172a; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #334155; }
+    .ev-item.imp-상 { border-left-color: #ef4444; }
+    .ev-item.imp-중 { border-left-color: #f59e0b; }
+    .ev-item.imp-하 { border-left-color: #22c55e; }
+    .ev-item.done { opacity: 0.5; }
+    .ev-body { flex: 1; min-width: 0; }
+    .ev-text { font-size: 14px; }
+    .ev-item.done .ev-text { text-decoration: line-through; }
+    .ev-meta { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; align-items: center; }
+    .ev-link { color: #60a5fa; font-size: 11px; text-decoration: none; }
+    .ev-link:hover { text-decoration: underline; }
+    .ev-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .del-btn { background: #7f1d1d; border: none; color: #fca5a5; width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+    .del-btn:hover { background: #991b1b; }
+
+    /* Company checklist */
+    .checklist-wrap { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 8px; max-height: 110px; overflow-y: auto; margin-bottom: 8px; }
+    .check-item { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 4px; cursor: pointer; }
+    .check-item:hover { background: #1e293b; }
+    .check-item input[type=checkbox] { accent-color: #3b82f6; cursor: pointer; }
+    .check-item label { font-size: 13px; cursor: pointer; flex: 1; }
+    .price-reaction-row { display: none; }
+    .price-reaction-row.visible { display: flex; }
+
+    /* Form */
+    .input-full { width: 100%; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 9px 12px; border-radius: 8px; font-size: 14px; margin-bottom: 8px; }
+    .input-full:focus { outline: none; border-color: #3b82f6; }
+    .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .form-row input, .form-row select { background: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 9px 12px; border-radius: 8px; font-size: 14px; flex: 1; min-width: 0; }
+    .form-row input:focus, .form-row select:focus { outline: none; border-color: #3b82f6; }
+    .form-row select option { background: #1e293b; }
+    .btn-primary { background: #3b82f6; border: none; color: white; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; white-space: nowrap; flex-shrink: 0; }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-secondary { background: #334155; border: none; color: #e2e8f0; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    .btn-close { width: 100%; background: #334155; border: none; color: #94a3b8; padding: 10px; border-radius: 8px; cursor: pointer; margin-top: 12px; font-size: 14px; }
+    .btn-close:hover { background: #475569; }
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 13px; color: #94a3b8; margin-bottom: 5px; font-weight: 500; }
+    .form-input { width: 100%; background: #0f172a; border: 1px solid #334155; color: #e2e8f0; padding: 9px 12px; border-radius: 8px; font-size: 14px; }
+    .form-input:focus { outline: none; border-color: #3b82f6; }
+    .form-actions { display: flex; gap: 8px; margin-top: 16px; }
+
+    /* Company page */
+    .page-header { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+    .search-box { flex: 1; min-width: 160px; background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 10px 16px; border-radius: 10px; font-size: 14px; }
+    .search-box:focus { outline: none; border-color: #3b82f6; }
+    .sector-filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .sector-btn { padding: 5px 12px; border-radius: 20px; border: 1px solid #334155; background: transparent; color: #94a3b8; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .sector-btn.active { background: #4a1d96; border-color: #7c3aed; color: #c4b5fd; }
+    .company-card { background: #1e293b; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; border: 1px solid #334155; }
+    .company-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+    .company-info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .company-name-text { font-size: 17px; font-weight: 700; }
+    .action-btns { display: flex; gap: 6px; }
+    .btn-edit { background: #334155; border: none; color: #94a3b8; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+    .btn-edit:hover { background: #475569; color: #e2e8f0; }
+    .btn-danger { background: #7f1d1d; border: none; color: #fca5a5; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+    .btn-danger:hover { background: #991b1b; }
+    .btn-timeline { background: #1e3a5f; border: none; color: #60a5fa; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+    .btn-timeline:hover { background: #1e4a7f; }
+    .btn-finnhub { background: #1a3a2a; border: none; color: #34d399; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .btn-insider { background: #2a1a3a; border: none; color: #a78bfa; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .btn-rating  { background: #1a2a3a; border: none; color: #60a5fa; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .rating-item { display:flex; justify-content:space-between; align-items:flex-start; padding:10px 12px; background:#1e293b; border-radius:8px; margin-bottom:8px; gap:12px; }
+    .rating-item.up   { border-left:3px solid #34d399; }
+    .rating-item.down { border-left:3px solid #f87171; }
+    .rating-item.init { border-left:3px solid #60a5fa; }
+    .rating-badge.up   { background:#14532d; color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+    .rating-badge.down { background:#450a0a; color:#f87171; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+    .rating-badge.init { background:#1e3a5f; color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+    .grade-arrow { color:#94a3b8; font-size:12px; }
+    .btn-short { background:#2a1a1a; border:none; color:#fb923c; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:600; }
+    .short-bar-wrap { background:#1e293b; border-radius:6px; height:10px; margin:6px 0; overflow:hidden; }
+    .short-bar { height:100%; border-radius:6px; transition:width .4s; }
+    .short-item { padding:10px 12px; background:#1e293b; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; gap:12px; }
+    .short-pct.danger { color:#f87171; font-weight:700; }
+    .short-pct.warn   { color:#fb923c; font-weight:700; }
+    .short-pct.ok     { color:#34d399; font-weight:700; }
+    .insider-item { display:flex; justify-content:space-between; align-items:flex-start; padding:10px 12px; background:#1e293b; border-radius:8px; margin-bottom:8px; gap:12px; }
+    .insider-item.buy { border-left:3px solid #34d399; }
+    .insider-item.sell { border-left:3px solid #f87171; }
+    .insider-badge.buy { background:#14532d; color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+    .insider-badge.sell { background:#450a0a; color:#f87171; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+    .insider-name { font-size:14px; font-weight:600; color:#e2e8f0; }
+    .insider-detail { font-size:12px; color:#94a3b8; margin-top:3px; }
+    .btn-finnhub:hover { background: #1a4a3a; }
+    .company-desc { font-size: 13px; color: #64748b; margin-bottom: 10px; }
+    .upcoming-label { font-size: 12px; color: #64748b; margin-bottom: 6px; font-weight: 600; }
+    .upcoming-item { font-size: 13px; color: #94a3b8; padding: 5px 0; border-bottom: 1px solid #334155; display: flex; gap: 10px; }
+    .upcoming-date { color: #3b82f6; font-weight: 600; min-width: 88px; flex-shrink: 0; }
+    .no-upcoming { font-size: 12px; color: #475569; padding: 4px 0; }
+
+    /* Timeline */
+    .timeline-item { padding: 12px 14px; background: #0f172a; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid #334155; }
+    .timeline-item.imp-상 { border-left-color: #ef4444; }
+    .timeline-item.imp-중 { border-left-color: #f59e0b; }
+    .timeline-item.imp-하 { border-left-color: #22c55e; }
+    .timeline-item.done { opacity: 0.5; }
+    .timeline-date { font-size: 12px; color: #3b82f6; font-weight: 700; margin-bottom: 4px; }
+    .timeline-text { font-size: 14px; margin-bottom: 6px; }
+    .timeline-item.done .timeline-text { text-decoration: line-through; }
+    .timeline-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    /* Partners inline */
+    .partner-toggle-btn { width: 100%; margin-top: 12px; background: #0f172a; border: 1px solid #334155; color: #64748b; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; text-align: left; display: flex; justify-content: space-between; align-items: center; }
+    .partner-toggle-btn:hover { border-color: #475569; color: #94a3b8; }
+    .partner-toggle-btn.open { border-color: #3b82f6; color: #3b82f6; }
+    .partner-expand { margin-top: 8px; padding: 12px; background: #0f172a; border-radius: 8px; border: 1px solid #334155; }
+    .partner-add-inline { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .partner-add-inline input { background: #1e293b; border: 1px solid #334155; color: #e2e8f0; padding: 7px 10px; border-radius: 6px; font-size: 13px; flex: 1; min-width: 100px; }
+    .partner-add-inline input:focus { outline: none; border-color: #3b82f6; }
+    .partner-add-inline .btn-sm { background: #3b82f6; border: none; color: white; padding: 7px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
+    .partner-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: #1e293b; border-radius: 6px; margin-bottom: 6px; }
+    .partner-item-info { flex: 1; }
+    .partner-name-text { font-size: 14px; font-weight: 600; }
+    .partner-rel-text { font-size: 12px; color: #64748b; margin-top: 2px; }
+
+    /* Portfolio */
+    .portfolio-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .portfolio-card { background: #1e293b; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; border: 1px solid #334155; }
+    .portfolio-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+    .portfolio-name { font-size: 17px; font-weight: 700; }
+    .portfolio-badges { display: flex; gap: 6px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
+    .portfolio-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; margin-bottom: 10px; }
+    .portfolio-stat { background: #0f172a; border-radius: 8px; padding: 10px; }
+    .portfolio-stat-label { font-size: 11px; color: #64748b; margin-bottom: 3px; }
+    .portfolio-stat-value { font-size: 15px; font-weight: 700; }
+    .profit-up { color: #22c55e; }
+    .profit-down { color: #ef4444; }
+    .portfolio-memo { font-size: 13px; color: #64748b; margin-bottom: 8px; }
+    .portfolio-upcoming-label { font-size: 12px; color: #64748b; margin-bottom: 6px; font-weight: 600; }
+
+    /* Util */
+    .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty-msg { color: #64748b; font-size: 14px; text-align: center; padding: 24px; }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #166534; color: #86efac; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+    .toast.error { background: #7f1d1d; color: #fca5a5; }
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 640px) {
+      .nav-btn { padding: 0 10px; font-size: 12px; }
+      .page { padding: 12px; }
+      .cal-cell { min-height: 56px; padding: 4px; }
+      .cal-chip { display: none; }
+      .cal-cell.has-events .cal-day-num::after { content: ' *'; color: #22c55e; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">주식 관리</div>
+  <button class="nav-btn active" data-page="home">홈</button>
+  <button class="nav-btn" data-page="calendar">달력</button>
+  <button class="nav-btn" data-page="list">목록</button>
+  <button class="nav-btn" data-page="companies">업체관리</button>
+  <button class="nav-btn" data-page="portfolio">포트폴리오</button>
+</nav>
+
+<!-- 홈 -->
+<div id="page-home" class="page active">
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">오늘 호재</div><div class="stat-value" id="stat-today">-</div></div>
+    <div class="stat-card"><div class="stat-label">이번주 호재</div><div class="stat-value" id="stat-week">-</div></div>
+    <div class="stat-card"><div class="stat-label">이번달 호재</div><div class="stat-value" id="stat-month">-</div></div>
+    <div class="stat-card"><div class="stat-label">등록 업체</div><div class="stat-value" id="stat-companies">-</div></div>
+  </div>
+  <div class="section-title">오늘 호재</div>
+  <div id="dash-today"></div>
+  <div class="section-title" style="margin-top:20px">앞으로 7일 예정</div>
+  <div id="dash-week"></div>
+</div>
+
+<!-- 달력 -->
+<div id="page-calendar" class="page">
+  <div class="cal-header">
+    <button class="cal-nav" id="btn-prev">&#8592;</button>
+    <div class="cal-title" id="cal-title"></div>
+    <button class="cal-nav" id="btn-next">&#8594;</button>
+  </div>
+  <div class="cal-grid" id="cal-grid"></div>
+</div>
+
+<!-- 목록 -->
+<div id="page-list" class="page">
+  <div class="list-controls">
+    <button class="period-btn active" data-period="week">이번주</button>
+    <button class="period-btn" data-period="month">이번달</button>
+    <button class="period-btn" data-period="all">전체</button>
+    <input type="text" class="list-search" id="list-search" placeholder="호재 검색...">
+  </div>
+  <div id="list-container"></div>
+</div>
+
+<!-- 업체관리 -->
+<div id="page-companies" class="page">
+  <div class="page-header">
+    <input type="text" class="search-box" id="company-search" placeholder="업체명 또는 티커 검색...">
+    <button class="btn-primary" id="btn-add-company">+ 업체 추가</button>
+  </div>
+  <div class="sector-filters" id="sector-filters"></div>
+  <div id="company-list"></div>
+</div>
+
+<!-- 포트폴리오 -->
+<div id="page-portfolio" class="page">
+  <div class="portfolio-header">
+    <div class="section-title" style="margin:0">보유 종목</div>
+    <button class="btn-primary" id="btn-add-portfolio">+ 종목 추가</button>
+  </div>
+  <div id="portfolio-list"></div>
+</div>
+
+<!-- 날짜 모달 -->
+<div class="overlay" id="day-modal">
+  <div class="modal">
+    <div class="modal-title" id="day-modal-title"></div>
+    <div id="day-event-list"></div>
+    <hr class="divider">
+    <div class="add-label">호재 추가</div>
+    <input type="text" class="input-full" id="event-content-input" placeholder="호재 내용...">
+    <div class="form-row">
+      <select id="event-importance">
+        <option value="하">하 (낮음)</option>
+        <option value="중" selected>중 (보통)</option>
+        <option value="상">상 (높음)</option>
+      </select>
+      <select id="event-category">
+        <option value="">카테고리</option>
+        <option value="실적발표">실적발표</option>
+        <option value="정부정책">정부정책</option>
+        <option value="계약체결">계약체결</option>
+        <option value="배당">배당</option>
+        <option value="주식분할">주식분할</option>
+        <option value="기타">기타</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <input type="text" id="event-source-input" list="source-list" placeholder="출처 (예: 한국경제)">
+      <datalist id="source-list">
+        <option value="네이버뉴스">
+        <option value="한국경제">
+        <option value="매일경제">
+        <option value="조선비즈">
+        <option value="연합뉴스">
+        <option value="뉴스1">
+        <option value="머니투데이">
+        <option value="이데일리">
+        <option value="서울경제">
+        <option value="파이낸셜뉴스">
+      </datalist>
+      <input type="url" id="event-url-input" placeholder="뉴스 URL">
+    </div>
+    <div class="add-label">연관 업체 (복수 선택 가능)</div>
+    <div class="checklist-wrap" id="event-company-checklist"></div>
+    <div class="form-row price-reaction-row" id="price-reaction-row">
+      <input type="number" id="event-price-reaction" placeholder="주가 반응 %" step="0.1">
+      <span style="color:#64748b;font-size:13px;line-height:38px;white-space:nowrap">% (실제 주가 반응)</span>
+    </div>
+    <div class="form-row">
+      <button class="btn-primary" id="btn-add-event" style="width:100%">추가</button>
+    </div>
+    <button class="btn-close" id="btn-close-day-modal">닫기</button>
+  </div>
+</div>
+
+<!-- 업체 모달 -->
+<div class="overlay" id="company-modal">
+  <div class="modal">
+    <div class="modal-title" id="company-modal-title">업체 추가</div>
+    <div class="form-group">
+      <label class="form-label">업체명 *</label>
+      <input type="text" class="form-input" id="cm-name" placeholder="예: 테슬라">
+    </div>
+    <div class="form-group">
+      <label class="form-label">티커</label>
+      <input type="text" class="form-input" id="cm-ticker" placeholder="예: TSLA">
+    </div>
+    <div class="form-group">
+      <label class="form-label">섹터/테마</label>
+      <input type="text" class="form-input" id="cm-sector" list="sector-list" placeholder="예: 2차전지">
+      <datalist id="sector-list">
+        <option value="반도체">
+        <option value="2차전지">
+        <option value="AI">
+        <option value="바이오">
+        <option value="자동차">
+        <option value="금융">
+        <option value="에너지">
+        <option value="통신">
+        <option value="소비재">
+        <option value="방산">
+      </datalist>
+    </div>
+    <div class="form-group">
+      <label class="form-label">설명</label>
+      <input type="text" class="form-input" id="cm-desc" placeholder="간단한 설명 (선택사항)">
+    </div>
+    <div class="form-actions">
+      <button class="btn-secondary" id="btn-cancel-company" style="flex:1">취소</button>
+      <button class="btn-primary" id="btn-save-company" style="flex:1">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 타임라인 모달 -->
+<div class="overlay" id="timeline-modal">
+  <div class="modal">
+    <div class="modal-title" id="timeline-modal-title"></div>
+    <div id="timeline-list"></div>
+    <button class="btn-close" id="btn-close-timeline">닫기</button>
+  </div>
+</div>
+
+<!-- 포트폴리오 모달 -->
+<div class="overlay" id="portfolio-modal">
+  <div class="modal">
+    <div class="modal-title" id="portfolio-modal-title">종목 추가</div>
+    <div class="form-group">
+      <label class="form-label">업체 *</label>
+      <select class="form-input" id="pm-company">
+        <option value="">업체 선택...</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div style="flex:1">
+        <label class="form-label">매수가 (원)</label>
+        <input type="number" class="form-input" id="pm-buy" placeholder="0">
+      </div>
+      <div style="flex:1">
+        <label class="form-label">목표가 (원)</label>
+        <input type="number" class="form-input" id="pm-target" placeholder="0">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">수량 (주)</label>
+      <input type="number" class="form-input" id="pm-qty" placeholder="0">
+    </div>
+    <div class="form-group">
+      <label class="form-label">메모</label>
+      <input type="text" class="form-input" id="pm-memo" placeholder="투자 이유, 리스크 등">
+    </div>
+    <div class="form-actions">
+      <button class="btn-secondary" id="btn-cancel-portfolio" style="flex:1">취소</button>
+      <button class="btn-primary" id="btn-save-portfolio" style="flex:1">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 내부자거래 모달 -->
+<div class="overlay" id="insider-modal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-title" id="insider-modal-title"></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <select id="insider-filter" style="background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:6px 10px;font-size:13px">
+        <option value="all">전체</option>
+        <option value="buy">매수만</option>
+        <option value="sell">매도만</option>
+      </select>
+      <span style="color:#64748b;font-size:12px;align-self:center">최근 12개월 SEC 신고 기준</span>
+    </div>
+    <div id="insider-list"></div>
+    <button class="btn-close" id="btn-close-insider">닫기</button>
+  </div>
+</div>
+
+<!-- 공매도 모달 -->
+<div class="overlay" id="short-modal">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-title" id="short-modal-title"></div>
+    <div id="short-summary" style="margin-bottom:14px"></div>
+    <div id="short-list"></div>
+    <button class="btn-close" id="btn-close-short">닫기</button>
+  </div>
+</div>
+
+<!-- 목표주가 모달 -->
+<div class="overlay" id="rating-modal">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-title" id="rating-modal-title"></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <select id="rating-filter" style="background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:6px 10px;font-size:13px">
+        <option value="all">전체</option>
+        <option value="up">상향만</option>
+        <option value="down">하향만</option>
+        <option value="init">신규커버리지만</option>
+      </select>
+      <span style="color:#64748b;font-size:12px;align-self:center">최근 12개월 기준</span>
+    </div>
+    <div id="rating-list"></div>
+    <button class="btn-close" id="btn-close-rating">닫기</button>
+  </div>
+</div>
+
+<!-- 실적발표 모달 -->
+<div class="overlay" id="earnings-modal">
+  <div class="modal">
+    <div class="modal-title" id="earnings-modal-title"></div>
+    <div id="earnings-list"></div>
+    <button class="btn-close" id="btn-close-earnings">닫기</button>
+  </div>
+</div>
+
+<!-- 협력업체 수정 모달 -->
+<div class="overlay" id="partner-modal">
+  <div class="modal">
+    <div class="modal-title">협력업체 수정</div>
+    <div class="form-group">
+      <label class="form-label">업체명</label>
+      <input type="text" class="form-input" id="pm-partner-name" placeholder="협력업체명">
+    </div>
+    <div class="form-group">
+      <label class="form-label">관계</label>
+      <input type="text" class="form-input" id="pm-partner-rel" placeholder="예: 배터리 공급">
+    </div>
+    <div class="form-actions">
+      <button class="btn-secondary" id="btn-cancel-partner" style="flex:1">취소</button>
+      <button class="btn-primary" id="btn-save-partner" style="flex:1">저장</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import {
+  getFirestore, collection, addDoc, getDocs, deleteDoc,
+  doc, updateDoc, query, where, orderBy, serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const FINNHUB_KEY = 'd8tob4pr01qhcnk51vkgd8tob4pr01qhcnk51vl0';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDdRUBFui-3duDwWA3TbEFDA2l1ZUcKzQU",
+  authDomain: "rbjoonloan.firebaseapp.com",
+  projectId: "rbjoonloan",
+  storageBucket: "rbjoonloan.firebasestorage.app",
+  messagingSenderId: "96812045990",
+  appId: "1:96812045990:web:fa62bdd27d33d0d6a78667",
+  measurementId: "G-RCLE365EZ1"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const today = new Date();
+const todayStr = fmtDate(today);
+
+let calYear = today.getFullYear();
+let calMonth = today.getMonth();
+let monthEventsMap = {};
+let companies = [];
+let companyUpcoming = {};
+let editingCompanyId = null;
+let currentModalDate = null;
+let listPeriod = 'week';
+let listEvents = [];
+let partnerList = [];
+let currentSector = '';
+let portfolios = [];
+let editingPortfolioId = null;
+
+// ── 유틸 ──────────────────────────────────
+function fmtDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return fmtDate(d);
+}
+function getWeekStart(s) { const d = new Date(s + 'T00:00:00'); d.setDate(d.getDate() - d.getDay()); return fmtDate(d); }
+function getWeekEnd(s)   { const d = new Date(s + 'T00:00:00'); d.setDate(d.getDate() + (6 - d.getDay())); return fmtDate(d); }
+function getMonthStart(s) { return s.slice(0,8) + '01'; }
+function getMonthEnd(s)   { const [y,m] = s.split('-'); return fmtDate(new Date(+y, +m, 0)); }
+function dowKo(s) { return ['일','월','화','수','목','금','토'][new Date(s + 'T00:00:00').getDay()]; }
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function numFmt(n) { return n ? Number(n).toLocaleString('ko-KR') : '-'; }
+function refreshDashboard() {
+  if (document.getElementById('page-home').classList.contains('active')) loadDashboard();
+}
+
+async function deleteExistingFinnhubEvents(companyId, category) {
+  try {
+    const snap = await getDocs(query(
+      collection(db, 'events'),
+      where('companyIds', 'array-contains', companyId),
+      where('category', '==', category),
+      where('source', '==', 'Finnhub')
+    ));
+    await Promise.all(snap.docs.map(d => deleteDoc(doc(db, 'events', d.id))));
+  } catch(e) { console.log('기존 데이터 삭제 오류', e); }
+}
+
+function showToast(msg, isErr = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isErr ? ' error' : '') + ' show';
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.className = 'toast' + (isErr ? ' error' : ''); }, 2000);
+}
+function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+
+function tagsHtml(ev) {
+  let h = '';
+  if (ev.importance) h += `<span class="tag tag-imp-${ev.importance}">${ev.importance}</span>`;
+  if (ev.category)   h += `<span class="tag tag-cat">${escHtml(ev.category)}</span>`;
+  if (ev.source)     h += `<span class="tag tag-source">${escHtml(ev.source)}</span>`;
+  const names = ev.companyNames || (ev.companyName ? [ev.companyName] : []);
+  names.forEach(n => { h += `<span class="tag tag-company">${escHtml(n)}</span>`; });
+  if (ev.priceReaction != null && ev.priceReaction !== '') {
+    const v = parseFloat(ev.priceReaction);
+    h += `<span class="tag ${v >= 0 ? 'tag-price-up' : 'tag-price-down'}">${v > 0 ? '+' : ''}${v}%</span>`;
+  }
+  if (ev.url) h += `<a class="ev-link" href="${escHtml(ev.url)}" target="_blank" rel="noopener">링크</a>`;
+  return h;
+}
+
+// ── 네비게이션 ──────────────────────────────
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('page-' + btn.dataset.page).classList.add('active');
+    if (btn.dataset.page === 'home')       loadDashboard();
+    if (btn.dataset.page === 'companies')  loadCompanies();
+    if (btn.dataset.page === 'list')       loadListView();
+    if (btn.dataset.page === 'portfolio')  loadPortfolio();
+  });
+});
+
+// ── 홈 대시보드 ──────────────────────────────
+async function loadDashboard() {
+  const weekEnd    = addDays(todayStr, 7);
+  const monthStart = getMonthStart(todayStr);
+  const monthEnd   = getMonthEnd(todayStr);
+  try {
+    const [weekSnap, monthSnap, compSnap] = await Promise.all([
+      getDocs(query(collection(db, 'events'), where('date', '>=', todayStr), where('date', '<=', weekEnd), orderBy('date'))),
+      getDocs(query(collection(db, 'events'), where('date', '>=', monthStart), where('date', '<=', monthEnd))),
+      getDocs(collection(db, 'companies'))
+    ]);
+    const weekEvs   = weekSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const todayEvs  = weekEvs.filter(e => e.date === todayStr);
+    const futureEvs = weekEvs.filter(e => e.date > todayStr);
+
+    document.getElementById('stat-today').textContent     = todayEvs.length;
+    document.getElementById('stat-week').textContent      = weekEvs.length;
+    document.getElementById('stat-month').textContent     = monthSnap.size;
+    document.getElementById('stat-companies').textContent = compSnap.size;
+
+    document.getElementById('dash-today').innerHTML = todayEvs.length
+      ? todayEvs.map(e => `<div class="dash-ev imp-${e.importance || '하'}">
+          <div style="flex:1"><div style="font-size:14px">${escHtml(e.content)}</div>
+          <div class="dash-tags">${tagsHtml(e)}</div></div></div>`).join('')
+      : '<div class="empty-msg">오늘 호재 없음</div>';
+
+    document.getElementById('dash-week').innerHTML = futureEvs.length
+      ? futureEvs.map(e => `<div class="dash-ev imp-${e.importance || '하'}">
+          <div class="dash-date">${e.date}<br><span style="color:#64748b;font-size:11px">${dowKo(e.date)}요일</span></div>
+          <div style="flex:1"><div style="font-size:14px">${escHtml(e.content)}</div>
+          <div class="dash-tags">${tagsHtml(e)}</div></div></div>`).join('')
+      : '<div class="empty-msg">예정된 호재 없음</div>';
+  } catch(e) { console.log('대시보드 오류', e); }
+}
+
+// ── 달력 ──────────────────────────────────
+document.getElementById('btn-prev').addEventListener('click', () => {
+  calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; } loadMonthAndRender();
+});
+document.getElementById('btn-next').addEventListener('click', () => {
+  calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; } loadMonthAndRender();
+});
+
+async function loadMonthAndRender() {
+  monthEventsMap = {};
+  const mm = String(calMonth + 1).padStart(2, '0');
+  try {
+    const snap = await getDocs(query(
+      collection(db, 'events'),
+      where('date', '>=', `${calYear}-${mm}-01`),
+      where('date', '<=', `${calYear}-${mm}-31`)
+    ));
+    snap.forEach(d => {
+      const data = { id: d.id, ...d.data() };
+      if (!monthEventsMap[data.date]) monthEventsMap[data.date] = [];
+      monthEventsMap[data.date].push(data);
+    });
+  } catch(e) { console.log('달력 로드 오류', e); }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  document.getElementById('cal-title').textContent = `${calYear}년 ${months[calMonth]}`;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const lastDate = new Date(calYear, calMonth + 1, 0).getDate();
+  const prevLast = new Date(calYear, calMonth, 0).getDate();
+
+  let html = ['일','월','화','수','목','금','토'].map(d => `<div class="cal-day-header">${d}</div>`).join('');
+  for (let i = firstDay - 1; i >= 0; i--)
+    html += `<div class="cal-cell other-month"><div class="cal-day-num">${prevLast - i}</div></div>`;
+
+  for (let d = 1; d <= lastDate; d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dow  = new Date(calYear, calMonth, d).getDay();
+    const evs  = monthEventsMap[dateStr] || [];
+    let cls = 'cal-cell';
+    if (dow === 0) cls += ' sun';
+    if (dow === 6) cls += ' sat';
+    if (dateStr === todayStr) cls += ' today';
+    if (evs.length > 0) cls += ' has-events';
+
+    let chips = evs.slice(0, 2).map(ev =>
+      `<span class="cal-chip imp-${ev.importance || '하'}${ev.realized ? ' done' : ''}">${escHtml(ev.content)}</span>`
+    ).join('');
+    if (evs.length > 2) chips += `<div class="cal-more">+${evs.length - 2}개</div>`;
+    html += `<div class="${cls}" data-date="${dateStr}"><div class="cal-day-num">${d}</div>${chips}</div>`;
+  }
+
+  const remaining = 42 - firstDay - lastDate;
+  for (let i = 1; i <= remaining; i++)
+    html += `<div class="cal-cell other-month"><div class="cal-day-num">${i}</div></div>`;
+
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = html;
+  grid.querySelectorAll('.cal-cell:not(.other-month)').forEach(cell => {
+    cell.addEventListener('click', () => openDayModal(cell.dataset.date));
+  });
+}
+
+// ── 목록 ──────────────────────────────────
+document.querySelectorAll('.period-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    listPeriod = btn.dataset.period;
+    loadListView();
+  });
+});
+document.getElementById('list-search').addEventListener('input', renderList);
+
+async function loadListView() {
+  document.getElementById('list-container').innerHTML = '<div class="empty-msg"><span class="spinner"></span></div>';
+  let startDate, endDate;
+  if (listPeriod === 'week')       { startDate = getWeekStart(todayStr); endDate = getWeekEnd(todayStr); }
+  else if (listPeriod === 'month') { startDate = getMonthStart(todayStr); endDate = getMonthEnd(todayStr); }
+  else                             { startDate = addDays(todayStr, -180); endDate = addDays(todayStr, 180); }
+  try {
+    const snap = await getDocs(query(
+      collection(db, 'events'),
+      where('date', '>=', startDate),
+      where('date', '<=', endDate),
+      orderBy('date')
+    ));
+    listEvents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderList();
+  } catch(e) {
+    document.getElementById('list-container').innerHTML = '<div class="empty-msg">로드 오류</div>';
+    console.log('목록 로드 오류', e);
+  }
+}
+
+function renderList() {
+  const kw = document.getElementById('list-search').value.toLowerCase();
+  const filtered = kw ? listEvents.filter(e =>
+    e.content.toLowerCase().includes(kw) ||
+    (e.companyNames || []).join(' ').toLowerCase().includes(kw) ||
+    (e.companyName || '').toLowerCase().includes(kw) ||
+    (e.category || '').toLowerCase().includes(kw) ||
+    (e.source || '').toLowerCase().includes(kw)
+  ) : listEvents;
+
+  const container = document.getElementById('list-container');
+  if (filtered.length === 0) { container.innerHTML = '<div class="empty-msg">결과 없음</div>'; return; }
+
+  container.innerHTML = filtered.map(ev => {
+    const isPast = ev.date < todayStr;
+    const realBtn = isPast
+      ? `<button class="realize-btn ${ev.realized ? 'on' : 'off'}" data-id="${ev.id}" data-realized="${ev.realized ? '1' : '0'}">${ev.realized ? '실현됨' : '미실현'}</button>`
+      : '';
+    return `<div class="list-card imp-${ev.importance || '하'}${ev.realized ? ' done' : ''}">
+      <div class="list-date-col">
+        <div class="list-date-main">${ev.date}</div>
+        <div class="list-date-dow">${dowKo(ev.date)}요일</div>
+      </div>
+      <div class="list-body">
+        <div class="list-text">${escHtml(ev.content)}</div>
+        <div class="list-meta">${tagsHtml(ev)}${realBtn}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.querySelectorAll('.realize-btn').forEach(btn => {
+    btn.addEventListener('click', () => toggleRealize(btn.dataset.id, btn.dataset.realized === '1', 'list'));
+  });
+}
+
+// ── 날짜 모달 ──────────────────────────────
+async function openDayModal(dateStr) {
+  currentModalDate = dateStr;
+  const [y, m, d] = dateStr.split('-');
+  document.getElementById('day-modal-title').textContent = `${y}년 ${m}월 ${d}일 (${dowKo(dateStr)}) 호재`;
+  document.getElementById('event-content-input').value = '';
+  document.getElementById('event-source-input').value  = '';
+  document.getElementById('event-url-input').value     = '';
+  document.getElementById('event-price-reaction').value = '';
+
+  const isPast = dateStr < todayStr;
+  document.getElementById('price-reaction-row').classList.toggle('visible', isPast);
+
+  if (companies.length === 0) {
+    try {
+      const snap = await getDocs(query(collection(db, 'companies'), orderBy('name')));
+      companies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch(e) {}
+  }
+
+  const checklist = document.getElementById('event-company-checklist');
+  checklist.innerHTML = companies.length === 0
+    ? '<div style="color:#64748b;font-size:13px;padding:4px">등록된 업체 없음</div>'
+    : companies.map(c => `
+      <label class="check-item">
+        <input type="checkbox" value="${c.id}" data-name="${escHtml(c.name)}">
+        <span>${escHtml(c.name)}${c.ticker ? ' (' + c.ticker + ')' : ''}</span>
+      </label>`).join('');
+
+  renderDayEvents(dateStr);
+  document.getElementById('day-modal').classList.add('open');
+}
+
+function renderDayEvents(dateStr) {
+  const list = document.getElementById('day-event-list');
+  const evs  = monthEventsMap[dateStr] || [];
+  const isPast = dateStr < todayStr;
+
+  if (evs.length === 0) { list.innerHTML = '<div class="empty-msg">등록된 호재가 없습니다</div>'; return; }
+
+  list.innerHTML = evs.map(ev => {
+    const realBtn = isPast
+      ? `<button class="realize-btn ${ev.realized ? 'on' : 'off'}" data-id="${ev.id}" data-realized="${ev.realized ? '1' : '0'}">${ev.realized ? '실현됨' : '미실현'}</button>`
+      : '';
+    return `<div class="ev-item imp-${ev.importance || '하'}${ev.realized ? ' done' : ''}">
+      <div class="ev-body">
+        <div class="ev-text">${escHtml(ev.content)}</div>
+        <div class="ev-meta">${tagsHtml(ev)}${realBtn}</div>
+      </div>
+      <div class="ev-actions">
+        <button class="del-btn" data-id="${ev.id}" data-date="${dateStr}">x</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.del-btn').forEach(btn => {
+    btn.addEventListener('click', () => deleteEvent(btn.dataset.id, btn.dataset.date));
+  });
+  list.querySelectorAll('.realize-btn').forEach(btn => {
+    btn.addEventListener('click', () => toggleRealize(btn.dataset.id, btn.dataset.realized === '1', 'modal', dateStr));
+  });
+}
+
+document.getElementById('btn-add-event').addEventListener('click', async () => {
+  const content = document.getElementById('event-content-input').value.trim();
+  if (!content) return;
+
+  const importance = document.getElementById('event-importance').value;
+  const category   = document.getElementById('event-category').value || null;
+  const source     = document.getElementById('event-source-input').value.trim() || null;
+  const url        = document.getElementById('event-url-input').value.trim() || null;
+  const prRaw      = document.getElementById('event-price-reaction').value;
+  const priceReaction = prRaw !== '' ? parseFloat(prRaw) : null;
+
+  const checked = document.querySelectorAll('#event-company-checklist input:checked');
+  const companyIds   = Array.from(checked).map(cb => cb.value);
+  const companyNames = Array.from(checked).map(cb => cb.dataset.name);
+
+  try {
+    const ref = await addDoc(collection(db, 'events'), {
+      date: currentModalDate, content, importance, category, source, url,
+      companyIds, companyNames,
+      priceReaction, realized: false, createdAt: serverTimestamp()
+    });
+    const newEv = { id: ref.id, date: currentModalDate, content, importance, category, source, url, companyIds, companyNames, priceReaction, realized: false };
+    if (!monthEventsMap[currentModalDate]) monthEventsMap[currentModalDate] = [];
+    monthEventsMap[currentModalDate].push(newEv);
+    document.getElementById('event-content-input').value = '';
+    document.getElementById('event-source-input').value  = '';
+    document.getElementById('event-url-input').value     = '';
+    document.getElementById('event-price-reaction').value = '';
+    document.querySelectorAll('#event-company-checklist input').forEach(cb => cb.checked = false);
+    renderDayEvents(currentModalDate);
+    renderCalendar();
+    refreshDashboard();
+    showToast('호재 추가');
+  } catch(e) { showToast('오류', true); console.log('추가 오류', e); }
+});
+
+document.getElementById('event-content-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btn-add-event').click();
+});
+
+async function deleteEvent(eventId, dateStr) {
+  try {
+    await deleteDoc(doc(db, 'events', eventId));
+    monthEventsMap[dateStr] = (monthEventsMap[dateStr] || []).filter(e => e.id !== eventId);
+    listEvents = listEvents.filter(e => e.id !== eventId);
+    renderDayEvents(dateStr);
+    renderCalendar();
+    refreshDashboard();
+    showToast('삭제');
+  } catch(e) { showToast('오류', true); }
+}
+
+async function toggleRealize(eventId, current, from, dateStr) {
+  const newVal = !current;
+  try {
+    await updateDoc(doc(db, 'events', eventId), { realized: newVal });
+    if (from === 'modal' && dateStr) {
+      const ev = (monthEventsMap[dateStr] || []).find(e => e.id === eventId);
+      if (ev) ev.realized = newVal;
+      renderDayEvents(dateStr);
+      renderCalendar();
+    }
+    const lev = listEvents.find(e => e.id === eventId);
+    if (lev) lev.realized = newVal;
+    if (from === 'list') renderList();
+    showToast(newVal ? '실현됨' : '미실현');
+  } catch(e) { showToast('오류', true); }
+}
+
+document.getElementById('btn-close-day-modal').addEventListener('click', () => closeOverlay('day-modal'));
+document.getElementById('day-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOverlay('day-modal'); });
+
+// ── 업체관리 ──────────────────────────────
+async function loadCompanies() {
+  document.getElementById('company-list').innerHTML = '<div class="empty-msg"><span class="spinner"></span></div>';
+  try {
+    const [compSnap, evSnap] = await Promise.all([
+      getDocs(query(collection(db, 'companies'), orderBy('name'))),
+      getDocs(query(collection(db, 'events'), where('date', '>=', todayStr), orderBy('date')))
+    ]);
+    companies = compSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    companyUpcoming = {};
+    evSnap.forEach(d => {
+      const data = d.data();
+      const ids = data.companyIds || (data.companyId ? [data.companyId] : []);
+      ids.forEach(cid => {
+        if (!companyUpcoming[cid]) companyUpcoming[cid] = [];
+        companyUpcoming[cid].push({...data, id: d.id});
+      });
+    });
+    renderSectorFilters();
+    applyCompanyFilters();
+  } catch(e) {
+    document.getElementById('company-list').innerHTML = '<div class="empty-msg">로드 오류 - Firestore 규칙 확인</div>';
+    console.log('업체 로드 오류', e);
+  }
+}
+
+function renderSectorFilters() {
+  const sectors = [...new Set(companies.map(c => c.sector).filter(Boolean))].sort();
+  const f = document.getElementById('sector-filters');
+  f.innerHTML = `<button class="sector-btn active" data-sector="">전체</button>` +
+    sectors.map(s => `<button class="sector-btn" data-sector="${escHtml(s)}">${escHtml(s)}</button>`).join('');
+  f.querySelectorAll('.sector-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      f.querySelectorAll('.sector-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentSector = btn.dataset.sector;
+      applyCompanyFilters();
+    });
+  });
+}
+
+function applyCompanyFilters() {
+  const q = document.getElementById('company-search').value.toLowerCase();
+  let filtered = companies;
+  if (currentSector) filtered = filtered.filter(c => c.sector === currentSector);
+  if (q) filtered = filtered.filter(c =>
+    c.name.toLowerCase().includes(q) || (c.ticker || '').toLowerCase().includes(q)
+  );
+  renderCompanies(filtered);
+}
+
+document.getElementById('company-search').addEventListener('input', applyCompanyFilters);
+
+function renderCompanies(list) {
+  const container = document.getElementById('company-list');
+  if (list.length === 0) { container.innerHTML = '<div class="empty-msg">업체 없음</div>'; return; }
+  container.innerHTML = list.map(c => {
+    const upcoming = (companyUpcoming[c.id] || []).slice(0, 4);
+    const upHtml = upcoming.length > 0
+      ? upcoming.map(e => `<div class="upcoming-item"><span class="upcoming-date">${e.date}</span><span>${escHtml(e.content)}</span></div>`).join('')
+      : '<div class="no-upcoming">예정된 호재 없음</div>';
+    return `<div class="company-card">
+      <div class="company-card-top">
+        <div class="company-info">
+          <span class="company-name-text">${escHtml(c.name)}</span>
+          ${c.ticker ? `<span class="ticker-badge">${escHtml(c.ticker)}</span>` : ''}
+          ${c.sector ? `<span class="sector-badge">${escHtml(c.sector)}</span>` : ''}
+        </div>
+        <div class="action-btns">
+          ${c.ticker ? `<button class="btn-finnhub" data-id="${c.id}" data-ticker="${escHtml(c.ticker)}" data-name="${escHtml(c.name)}">실적</button>` : ''}
+          ${c.ticker ? `<button class="btn-insider" data-id="${c.id}" data-ticker="${escHtml(c.ticker)}" data-name="${escHtml(c.name)}">내부자거래</button>` : ''}
+          ${c.ticker ? `<button class="btn-rating" data-id="${c.id}" data-ticker="${escHtml(c.ticker)}" data-name="${escHtml(c.name)}">목표주가</button>` : ''}
+          ${c.ticker ? `<button class="btn-short" data-id="${c.id}" data-ticker="${escHtml(c.ticker)}" data-name="${escHtml(c.name)}">공매도</button>` : ''}
+          <button class="btn-timeline" data-id="${c.id}" data-name="${escHtml(c.name)}">이력</button>
+          <button class="btn-edit" data-id="${c.id}">수정</button>
+          <button class="btn-danger" data-del="${c.id}">삭제</button>
+        </div>
+      </div>
+      ${c.description ? `<div class="company-desc">${escHtml(c.description)}</div>` : ''}
+      <div class="upcoming-label">앞으로의 호재</div>
+      <div>${upHtml}</div>
+      <button class="partner-toggle-btn" data-cid="${c.id}">
+        <span>협력업체</span><span class="ptoggle-arrow">▼</span>
+      </button>
+      <div class="partner-expand" id="pexpand-${c.id}" style="display:none">
+        <div class="partner-add-inline">
+          <input type="text" id="pname-${c.id}" placeholder="협력업체명">
+          <input type="text" id="prel-${c.id}" placeholder="관계 (예: 배터리 공급)">
+          <button class="btn-sm" data-cid="${c.id}">추가</button>
+        </div>
+        <div id="plist-${c.id}"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  container.querySelectorAll('.btn-finnhub').forEach(btn => {
+    btn.addEventListener('click', () => openEarningsModal(btn.dataset.id, btn.dataset.ticker, btn.dataset.name));
+  });
+  container.querySelectorAll('.btn-insider').forEach(btn => {
+    btn.addEventListener('click', () => openInsiderModal(btn.dataset.id, btn.dataset.ticker, btn.dataset.name));
+  });
+  container.querySelectorAll('.btn-rating').forEach(btn => {
+    btn.addEventListener('click', () => openRatingModal(btn.dataset.id, btn.dataset.ticker, btn.dataset.name));
+  });
+  container.querySelectorAll('.btn-short').forEach(btn => {
+    btn.addEventListener('click', () => openShortModal(btn.dataset.id, btn.dataset.ticker, btn.dataset.name));
+  });
+  container.querySelectorAll('.btn-timeline').forEach(btn => {
+    btn.addEventListener('click', () => openTimeline(btn.dataset.id, btn.dataset.name));
+  });
+  container.querySelectorAll('.btn-edit[data-id]').forEach(btn => {
+    btn.addEventListener('click', () => openEditCompany(btn.dataset.id));
+  });
+  container.querySelectorAll('.btn-danger[data-del]').forEach(btn => {
+    btn.addEventListener('click', () => deleteCompany(btn.dataset.del));
+  });
+  container.querySelectorAll('.partner-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', () => togglePartners(btn.dataset.cid, btn));
+  });
+  container.querySelectorAll('.partner-add-inline .btn-sm').forEach(btn => {
+    btn.addEventListener('click', () => addInlinePartner(btn.dataset.cid));
+  });
+  container.querySelectorAll('.partner-add-inline input').forEach(inp => {
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') inp.closest('.partner-add-inline').querySelector('.btn-sm').click();
+    });
+  });
+}
+
+document.getElementById('btn-add-company').addEventListener('click', () => {
+  editingCompanyId = null;
+  document.getElementById('company-modal-title').textContent = '업체 추가';
+  ['cm-name','cm-ticker','cm-sector','cm-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('company-modal').classList.add('open');
+});
+
+function openEditCompany(id) {
+  const c = companies.find(c => c.id === id);
+  if (!c) return;
+  editingCompanyId = id;
+  document.getElementById('company-modal-title').textContent = '업체 수정';
+  document.getElementById('cm-name').value   = c.name;
+  document.getElementById('cm-ticker').value = c.ticker || '';
+  document.getElementById('cm-sector').value = c.sector || '';
+  document.getElementById('cm-desc').value   = c.description || '';
+  document.getElementById('company-modal').classList.add('open');
+}
+
+document.getElementById('btn-save-company').addEventListener('click', async () => {
+  const name = document.getElementById('cm-name').value.trim();
+  if (!name) { showToast('업체명 필요', true); return; }
+  const ticker = document.getElementById('cm-ticker').value.trim().toUpperCase();
+  const data = {
+    name, ticker,
+    sector:      document.getElementById('cm-sector').value.trim(),
+    description: document.getElementById('cm-desc').value.trim()
+  };
+
+  const saveBtn = document.getElementById('btn-save-company');
+  saveBtn.disabled = true;
+  saveBtn.textContent = '저장 중...';
+
+  try {
+    let companyId;
+    if (editingCompanyId) {
+      await updateDoc(doc(db, 'companies', editingCompanyId), data);
+      companyId = editingCompanyId;
+    } else {
+      data.createdAt = serverTimestamp();
+      const ref = await addDoc(collection(db, 'companies'), data);
+      companyId = ref.id;
+    }
+
+    closeOverlay('company-modal');
+
+    if (ticker) {
+      showToast('업체 저장 - 데이터 가져오는 중...');
+      const [earningsCount, ratingCount, shortCount, insiderCount] = await Promise.all([
+        autoImportEarnings(companyId, ticker, name),
+        autoImportRatings(companyId, ticker, name),
+        autoImportShortInterest(companyId, ticker, name),
+        autoImportInsider(companyId, ticker, name)
+      ]);
+      const parts = [];
+      if (earningsCount > 0) parts.push('실적 ' + earningsCount + '건');
+      if (ratingCount   > 0) parts.push('목표주가 ' + ratingCount + '건');
+      if (shortCount    > 0) parts.push('공매도 ' + shortCount + '건');
+      if (insiderCount  > 0) parts.push('내부자거래 ' + insiderCount + '건');
+      showToast(parts.length > 0 ? parts.join(' / ') + ' 자동 등록' : '예정 데이터 없음');
+    } else {
+      showToast(editingCompanyId ? '수정' : '추가');
+    }
+
+    loadCompanies();
+  } catch(e) {
+    showToast('오류', true);
+    console.log('저장 오류', e);
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = '저장';
+  }
+});
+
+async function autoImportEarnings(companyId, ticker, companyName) {
+  const fromDate = todayStr;
+  const toDate   = fmtDate(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
+  try {
+    const res  = await fetch(`https://finnhub.io/api/v1/calendar/earnings?from=${fromDate}&to=${toDate}&symbol=${ticker}&token=${FINNHUB_KEY}`);
+    const data = await res.json();
+    const items = data.earningsCalendar || [];
+    for (const item of items) {
+      const hourLabel = item.hour === 'amc' ? ' (장 마감 후)' : item.hour === 'bmo' ? ' (장 시작 전)' : '';
+      const content   = `Q${item.quarter} ${item.year} 실적발표${hourLabel}`;
+      await saveEarningsEvent(companyId, companyName, item.date, content);
+    }
+    return items.length;
+  } catch(e) {
+    console.log('Finnhub 자동 가져오기 오류', e);
+    return 0;
+  }
+}
+
+async function autoImportRatings(companyId, ticker, companyName) {
+  const cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() - 1);
+  const cutoffStr = fmtDate(cutoff);
+  const actionLabel = a => a === 'up' ? '상향' : a === 'down' ? '하향' : a === 'init' ? '신규커버리지' : '유지';
+  try {
+    const res  = await fetch(`https://finnhub.io/api/v1/stock/upgrade-downgrade?symbol=${ticker}&token=${FINNHUB_KEY}`);
+    const data = await res.json();
+    const items = (data || []).filter(r => r.gradeDate >= cutoffStr);
+    for (const r of items) {
+      const gradeStr = (r.fromGrade && r.toGrade && r.fromGrade !== r.toGrade) ? r.fromGrade + '->' + r.toGrade : r.toGrade || '';
+      const content    = `[목표주가${actionLabel(r.action)}] ${r.company || '기관'}${gradeStr ? ' ' + gradeStr : ''}`;
+      const importance = r.action === 'up' ? '상' : r.action === 'down' ? '중' : '하';
+      const category   = r.action === 'up' ? '목표주가상향' : r.action === 'down' ? '목표주가하향' : '목표주가신규';
+      await addDoc(collection(db, 'events'), {
+        date: r.gradeDate, content, importance, category,
+        source: 'Finnhub', url: null,
+        companyIds: [companyId], companyNames: [companyName],
+        priceReaction: null, realized: false, createdAt: serverTimestamp()
+      });
+    }
+    return items.length;
+  } catch(e) {
+    console.log('목표주가 자동 가져오기 오류', e);
+    return 0;
+  }
+}
+
+async function deleteCompany(id) {
+  if (!confirm('업체를 삭제하면 연결된 달력 호재와 협력업체도 함께 삭제됩니다.\n계속하시겠습니까?')) return;
+  try {
+    // 이벤트 처리: 단독 연결이면 삭제, 복수 업체면 이 업체만 제거
+    const evSnap = await getDocs(query(collection(db, 'events'), where('companyIds', 'array-contains', id)));
+    const evDeletes = evSnap.docs.map(d => {
+      const data = d.data();
+      const ids   = data.companyIds || [];
+      const names = data.companyNames || [];
+      if (ids.length <= 1) {
+        return deleteDoc(doc(db, 'events', d.id));
+      } else {
+        const idx = ids.indexOf(id);
+        const newIds   = ids.filter((_, i) => i !== idx);
+        const newNames = names.filter((_, i) => i !== idx);
+        return updateDoc(doc(db, 'events', d.id), { companyIds: newIds, companyNames: newNames });
+      }
+    });
+
+    // 협력업체 삭제
+    const partSnap = await getDocs(query(collection(db, 'partners'), where('companyId', '==', id)));
+    const partDeletes = partSnap.docs.map(d => deleteDoc(doc(db, 'partners', d.id)));
+
+    await Promise.all([...evDeletes, ...partDeletes, deleteDoc(doc(db, 'companies', id))]);
+    showToast('삭제');
+    monthEventsMap = {};
+    renderCalendar();
+    loadCompanies();
+  } catch(e) { showToast('오류', true); console.log('업체 삭제 오류', e); }
+}
+
+document.getElementById('btn-cancel-company').addEventListener('click', () => closeOverlay('company-modal'));
+document.getElementById('company-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOverlay('company-modal'); });
+
+// ── 타임라인 ──────────────────────────────
+async function openTimeline(companyId, companyName) {
+  document.getElementById('timeline-modal-title').textContent = companyName + ' 호재 이력';
+  document.getElementById('timeline-list').innerHTML = '<div class="empty-msg"><span class="spinner"></span></div>';
+  document.getElementById('timeline-modal').classList.add('open');
+  try {
+    const snap = await getDocs(query(collection(db, 'events'), where('companyIds', 'array-contains', companyId)));
+    const evs = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => b.date.localeCompare(a.date));
+    if (evs.length === 0) {
+      document.getElementById('timeline-list').innerHTML = '<div class="empty-msg">등록된 호재 없음</div>';
+      return;
+    }
+    document.getElementById('timeline-list').innerHTML = evs.map(ev => `
+      <div class="timeline-item imp-${ev.importance || '하'}${ev.realized ? ' done' : ''}">
+        <div class="timeline-date">${ev.date} (${dowKo(ev.date)})</div>
+        <div class="timeline-text">${escHtml(ev.content)}</div>
+        <div class="timeline-tags">${tagsHtml(ev)}</div>
+      </div>`).join('');
+  } catch(e) {
+    document.getElementById('timeline-list').innerHTML = '<div class="empty-msg">로드 오류</div>';
+    console.log('타임라인 오류', e);
+  }
+}
+
+document.getElementById('btn-close-timeline').addEventListener('click', () => closeOverlay('timeline-modal'));
+document.getElementById('timeline-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOverlay('timeline-modal'); });
+
+// ── Finnhub 실적 ──────────────────────────────
+async function openEarningsModal(companyId, ticker, companyName) {
+  document.getElementById('earnings-modal-title').textContent = companyName + ' (' + ticker + ') 실적발표 일정';
+  document.getElementById('earnings-list').innerHTML = '<div class="empty-msg"><span class="spinner"></span> Finnhub에서 가져오는 중...</div>';
+  document.getElementById('earnings-modal').classList.add('open');
+
+  const fromDate = todayStr;
+  const toDate   = fmtDate(new Date(today.getFullYear() + 1, today.getMonth(), today.getDate()));
+
+  try {
+    const res  = await fetch(`https://finnhub.io/api/v1/calendar/earnings?from=${fromDate}&to=${toDate}&symbol=${ticker}&token=${FINNHUB_KEY}`);
+    const data = await res.json();
+    const items = (data.earningsCalendar || []).sort((a, b) => a.date.localeCompare(b.date));
+
+    if (items.length === 0) {
+      document.getElementById('earnings-list').innerHTML = '<div class="empty-msg">예정된 실적발표 없음</div>';
+      return;
+    }
+
+    const hourLabel = h => h === 'amc' ? '장 마감 후' : h === 'bmo' ? '장 시작 전' : '';
+    const revFmt = v => v ? (v / 1e8).toFixed(0) + '억' : '-';
+
+    document.getElementById('earnings-list').innerHTML = `
+      <div style="margin-bottom:12px">
+        <button class="btn-primary" id="btn-resync-earnings" style="width:100%;background:#1e3a5f;color:#60a5fa">재동기화 (달력 덮어쓰기)</button>
+      </div>
+      ${items.map((item) => `
+        <div class="timeline-item imp-상" style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="timeline-date">${item.date} (${dowKo(item.date)}) ${hourLabel(item.hour) ? '- ' + hourLabel(item.hour) : ''}</div>
+            <div style="font-size:14px;margin:4px 0">Q${item.quarter} ${item.year} 실적발표</div>
+            <div style="font-size:12px;color:#64748b">
+              EPS 예측: ${item.epsEstimate != null ? '$' + item.epsEstimate.toFixed(2) : '-'}
+              &nbsp; 매출 예측: ${revFmt(item.revenueEstimate)}
+            </div>
+          </div>
+        </div>`).join('')}`;
+
+    document.getElementById('btn-resync-earnings').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-resync-earnings');
+      btn.disabled = true; btn.textContent = '동기화 중...';
+      await deleteExistingFinnhubEvents(companyId, '실적발표');
+      for (const item of items) {
+        const content = `Q${item.quarter} ${item.year} 실적발표${hourLabel(item.hour) ? ' (' + hourLabel(item.hour) + ')' : ''}`;
+        await saveEarningsEvent(companyId, companyName, item.date, content);
+      }
+      showToast('실적 재동기화 완료');
+      closeOverlay('earnings-modal');
+      loadMonthAndRender();
+      refreshDashboard();
+    });
+
+  } catch(e) {
+    document.getElementById('earnings-list').innerHTML = '<div class="empty-msg">API 오류</div>';
+    console.log('Finnhub 오류', e);
+  }
+}
+
+async function saveEarningsEvent(companyId, companyName, date, content) {
+  try {
+    await addDoc(collection(db, 'events'), {
+      date, content,
+      importance: '상',
+      category: '실적발표',
+      source: 'Finnhub',
+      url: null,
+      companyIds: [companyId],
+      companyNames: [companyName],
+      priceReaction: null,
+      realized: false,
+      createdAt: serverTimestamp()
+    });
+    if (monthEventsMap[date]) {
+      monthEventsMap[date].push({ date, content, importance: '상', category: '실적발표', source: 'Finnhub', companyIds: [companyId], companyNames: [companyName] });
+    }
+  } catch(e) { console.log('이벤트 저장 오류', e); }
+}
+
+document.getElementById('btn-close-earnings').addEventListener('click', () => closeOverlay('earnings-modal'));
+document.getElementById('earnings-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOverlay('earnings-modal'); });
+
+// ── 내부자거래 ──────────────────────────────
+let insiderAll = [];
+let insiderCompanyId = '', insiderCompanyName = '';
+let usdKrwRate = 0;
+
+async function openInsiderModal(companyId, ticker, companyName) {
+  insiderCompanyId   = companyId;
+  insiderCompanyName = companyName;
+  document.getElementById('insider-modal-title').textContent = companyName + ' (' + ticker + ') 내부자거래';
+  document.getElementById('insider-list').innerHTML = '<div class="empty-msg"><span class="spinner"></span> 가져오는 중...</div>';
+  document.getElementById('insider-modal').classList.add('open');
+
+  try {
+    const [txRes, fxRes] = await Promise.all([
+      fetch(`https://finnhub.io/api/v1/stock/insider-transactions?symbol=${ticker}&token=${FINNHUB_KEY}`),
+      usdKrwRate ? null : fetch(`https://finnhub.io/api/v1/forex/rates?base=USD&token=${FINNHUB_KEY}`)
+    ]);
+
+    const data = await txRes.json();
+    if (fxRes) {
+      const fxData = await fxRes.json();
+      usdKrwRate = fxData.quote && fxData.quote.KRW ? fxData.quote.KRW : 0;
+    }
+
+    const cutoff = new Date();
+    cutoff.setFullYear(cutoff.getFullYear() - 1);
+    const cutoffStr = fmtDate(cutoff);
+
+    insiderAll = (data.data || [])
+      .filter(t => (t.transactionCode === 'P' || t.transactionCode === 'S') && t.transactionDate >= cutoffStr)
+      .sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));
+
+    renderInsiderList(document.getElementById('insider-filter').value);
+  } catch(e) {
+    document.getElementById('insider-list').innerHTML = '<div class="empty-msg">API 오류</div>';
+    console.log('내부자거래 오류', e);
+  }
+}
+
+function renderInsiderList(filter) {
+  const items = insiderAll.filter(t =>
+    filter === 'all' || (filter === 'buy' && t.transactionCode === 'P') || (filter === 'sell' && t.transactionCode === 'S')
+  );
+
+  if (items.length === 0) {
+    document.getElementById('insider-list').innerHTML = '<div class="empty-msg">데이터 없음</div>';
+    return;
+  }
+
+  const fmtShares = n => n >= 10000 ? (n / 10000).toFixed(1) + '만주' : n.toLocaleString() + '주';
+  const fmtPrice  = p => p ? '$' + p.toFixed(2) : '';
+  const fmtAmt    = t => {
+    if (!t.transactionPrice || !t.change) return '';
+    const usd = Math.abs(t.change) * t.transactionPrice;
+    const usdStr = '$' + (Math.round(usd / 1e5) / 10).toFixed(1) + 'M';
+    if (!usdKrwRate) return ' (~' + usdStr + ')';
+    const krw = usd * usdKrwRate;
+    const krwStr = krw >= 1e8 ? (Math.round(krw / 1e8 * 10) / 10) + '억원' : Math.round(krw / 1e4) + '만원';
+    return ' (~' + usdStr + ' / ' + krwStr + ')';
+  };
+
+  document.getElementById('insider-list').innerHTML = `
+    <div style="margin-bottom:12px">
+      <button class="btn-primary" id="btn-resync-insider" style="width:100%;background:#1e3a5f;color:#60a5fa">재동기화 (달력 덮어쓰기)</button>
+    </div>
+    ${items.map((t) => {
+      const isBuy  = t.transactionCode === 'P';
+      const label  = isBuy ? '매수' : '매도';
+      const shares = Math.abs(t.change || t.share || 0);
+      return `<div class="insider-item ${isBuy ? 'buy' : 'sell'}">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span class="insider-badge ${isBuy ? 'buy' : 'sell'}">${label}</span>
+            <span class="insider-name">${t.name || '이름없음'}</span>
+          </div>
+          <div class="insider-detail">${fmtShares(shares)} ${fmtPrice(t.transactionPrice)}${fmtAmt(t)}</div>
+          <div class="insider-detail">${t.transactionDate}${t.filingDate && t.filingDate !== t.transactionDate ? ' (신고: ' + t.filingDate + ')' : ''}</div>
+        </div>
+      </div>`;
+    }).join('')}`;
+
+  document.getElementById('btn-resync-insider').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-resync-insider');
+    btn.disabled = true; btn.textContent = '동기화 중...';
+    await deleteExistingFinnhubEvents(insiderCompanyId, '내부자매수');
+    await deleteExistingFinnhubEvents(insiderCompanyId, '내부자매도');
+    for (const t of items) await saveInsiderEvent(t);
+    showToast('내부자거래 재동기화 완료');
+    closeOverlay('insider-modal');
+    loadMonthAndRender();
+    refreshDashboard();
+  });
+}
+
+async function saveInsiderEvent(t) {
+  const isBuy  = t.transactionCode === 'P';
+  const shares = Math.abs(t.change || t.share || 0);
+  const fmtShares = n => n >= 10000 ? (n / 10000).toFixed(1) + '만주' : n.toLocaleString() + '주';
+  const priceStr = t.transactionPrice ? ' @$' + t.transactionPrice.toFixed(0) : '';
+  const content = `[내부자${isBuy ? '매수' : '매도'}] ${t.name || '임원'} ${fmtShares(shares)}${priceStr}`;
+  try {
+    await addDoc(collection(db, 'events'), {
+      date: t.transactionDate,
+      content,
+      importance: isBuy ? '상' : '중',
+      category: isBuy ? '내부자매수' : '내부자매도',
+      source: 'Finnhub',
+      url: null,
+      companyIds:   [insiderCompanyId],
+      companyNames: [insiderCompanyName],
+      priceReaction: null,
+      realized: false,
+      createdAt: serverTimestamp()
+    });
+  } catch(e) { console.log('내부자거래 저장 오류', e); }
+}
+
+document.getElementById('insider-filter').addEventListener('change', e => renderInsiderList(e.target.value));
+document.getElementById('btn-close-insider').addEventListener('click', () => closeOverlay('insider-modal'));
+document.getElementById('insider-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOverlay('insider-modal'); });
+
+// ── 목표주가 등급변경 ──────────────────────────────
+let ratingAll = [];
+let ratingCompanyId = '', ratingCompanyName = '';
+
+async function openRatingModal(companyId, ticker, companyName) {
+  ratingCompanyId   = companyId;
+  ratingCompanyName = companyName;
+  document.getElementById('rating-modal-title').textContent = companyName + ' (' + ticker + ') 목표주가/등급변경';
+  document.getElementById('rating-list').innerHTML = '<div class="empty-msg"><span class="spinner"></span> 가져오는 중...</div>';
+  document.getElementById('rating-modal').classList.add('open');
+
+  try {
+    const res  = await fetch(`https://finnhub.io/api/v1/stock/upgrade-downgrade?symbol=${ticker}&token=${FINNHUB_KEY}`);
+    const data = await res.json();
+
+    const cutoff = new Date();
+    cutoff.setFullYear(cutoff.getFullYear() - 1);
+    const cutoffStr = fmtDate(cutoff);
+
+    ratingAll = (data || [])
+      .filter(r => r.gradeDate >= cutoffStr)
+      .sort((a, b) => b.gradeDate.localeCompare(a.gradeDate));
+
+    renderRatingList(document.getElementById('rating-filter').value);
+  } catch(e) {
+    document.getElementById('rating-list').innerHTML = '<div class="empty-msg">API 오류</div>';
+    console.log('목표주가 오류', e);
+  }
+}
+
+function renderRatingList(filter) {
+  const items = ratingAll.filter(r => {
+    if (filter === 'all')  return true;
+    if (filter === 'up')   return r.action === 'up';
+    if (filter === 'down') return r.action === 'down';
+    if (filter === 'init') return r.action === 'init';
+    return true;
+  });
+
+  if (items.length === 0) {
+    document.getElementById('rating-list').innerHTML = '<div class="empty-msg">데이터 없음</div>';
+    return;
+  }
+
+  const actionClass = a => a === 'up' ? 'up' : a === 'down' ? 'down' : 'init';
+  const actionLabel = a => a === 'up' ? '상향' : a === 'down' ? '하향' : a === 'init' ? '신규' : '유지';
+
+  document.getElementById('rating-list').innerHTML = `
+    <div style="margin-bottom:12px">
+      <button class="btn-primary" id="btn-resync-rating" style="width:100%;background:#1e3a5f;color:#60a5fa">재동기화 (달력 덮어쓰기)</button>
+    </div>
+    ${items.map((r) => {
+      const cls = actionClass(r.action);
+      const lbl = actionLabel(r.action);
+      const gradeChange = (r.fromGrade && r.toGrade && r.fromGrade !== r.toGrade)
+        ? `<span class="grade-arrow">${escHtml(r.fromGrade)} -> ${escHtml(r.toGrade)}</span>`
+        : r.toGrade ? `<span class="grade-arrow">${escHtml(r.toGrade)}</span>` : '';
+      return `<div class="rating-item ${cls}">
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+            <span class="rating-badge ${cls}">${lbl}</span>
+            <span style="font-size:14px;font-weight:600;color:#e2e8f0">${escHtml(r.company || '')}</span>
+          </div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px">${gradeChange}</div>
+          <div style="font-size:12px;color:#64748b;margin-top:2px">${r.gradeDate}</div>
+        </div>
+      </div>`;
+    }).join('')}`;
+
+  document.getElementById('btn-resync-rating').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-resync-rating');
+    btn.disabled = true; btn.textContent = '동기화 중...';
+    await deleteExistingFinnhubEvents(ratingCompanyId, '목표주가상향');
+    await deleteExistingFinnhubEvents(ratingCompanyId, '목표주가하향');
+    await deleteExistingFinnhubEvents(ratingCompanyId, '목표주가신규');
+    for (const r of items) await saveRatingEvent(r);
+    showToast('목표주가 재동기화 완료');
+    closeOverlay('rating-modal');
+    loadMonthAndRender();
+    refreshDashboard();
+  });
+
+  // removed individual import buttons
+  });
+}
+
+async function saveRatingEvent(r) {
+  const actionLabel = a => a === 'up' ? '상향' : a === 'down' ? '하향' : a === 'init' ? '신규커버리지' : '유지';
+  const gradeStr = (r.fromGrade && r.toGrade && r.fromGrade !== r.toGrade)
+    ? r.fromGrade + '->' + r.toGrade
+    : r.toGrade || '';
+  const content = `[목표주가${actionLabel(r.action)}] ${r.company || '기관'}${gradeStr ? ' ' + gradeStr : ''}`;
+  const importance = r.action === 'up' ? '상' : r.action === 'down' ? '중' : '하';
+  const category   = r.action === 'up' ? '목표주가상향' : r.action === 'down' ? '목표주가하향' : '목표주가신규';
+  try {
+    await addDoc(collection(db, 'events'), {
+      date: r.gradeDate, content, importance, category,
+      source: 'Finnhub', url: null,
+      companyIds:   [ratingCompanyId],
+      companyNames: [ratingCompanyName],
+      priceReaction: null, realized: false, createdAt: serverTimestamp()
+    });
+  } catch(e) { console.log('목표주가 저장 오류', e); }
+}
+
+document.getElementById('rating-filter').addEventListener('change', e => renderRatingList(e.target.value));
+document.getElementById('btn-close-rating').addEventListener('click', () => closeOverlay('rating-modal'));
+document.getElementById('rating-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOverlay('rating-modal'); });
+
+// ── 공매도 잔고 ──────────────────────────────
+let shortCompanyId = '', shortCompanyName = '';
+
+async function openShortModal(companyId, ticker, companyName) {
+  shortCompanyId   = companyId;
+  shortCompanyName = companyName;
+  document.getElementById('short-modal-title').textContent = companyName + ' (' + ticker + ') 공매도 잔고';
+  document.getElementById('short-summary').innerHTML = '';
+  document.getElementById('short-list').innerHTML = '<div class="empty-msg"><span class="spinner"></span> 가져오는 중...</div>';
+  document.getElementById('short-modal').classList.add('open');
+
+  const toDate   = todayStr;
+  const fromDate = fmtDate(new Date(today.getFullYear(), today.getMonth() - 12, today.getDate()));
+
+  try {
+    const res  = await fetch(`https://finnhub.io/api/v1/stock/short-interest?symbol=${ticker}&from=${fromDate}&to=${toDate}&token=${FINNHUB_KEY}`);
+    const data = await res.json();
+    const items = (data.data || []).sort((a, b) => b.date.localeCompare(a.date));
+
+    if (items.length === 0) {
+      document.getElementById('short-list').innerHTML = '<div class="empty-msg">데이터 없음 (Finnhub 무료 플랜 미지원 종목일 수 있음)</div>';
+      return;
+    }
+
+    const latest = items[0];
+    const pct    = latest.shortPercent ? (latest.shortPercent * 100).toFixed(1) : null;
+    const pctNum = pct ? parseFloat(pct) : 0;
+    const level  = pctNum >= 20 ? 'danger' : pctNum >= 10 ? 'warn' : 'ok';
+    const levelLabel = pctNum >= 20 ? '숏스퀴즈 위험 구간' : pctNum >= 10 ? '주의 구간' : '안전 구간';
+    const barColor   = pctNum >= 20 ? '#f87171' : pctNum >= 10 ? '#fb923c' : '#34d399';
+
+    document.getElementById('short-summary').innerHTML = pct ? `
+      <div style="background:#1e293b;border-radius:10px;padding:14px 16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="color:#94a3b8;font-size:13px">최신 공매도 비율 (${latest.date})</span>
+          <span class="short-pct ${level}">${pct}% - ${levelLabel}</span>
+        </div>
+        <div class="short-bar-wrap"><div class="short-bar" style="width:${Math.min(pctNum, 100)}%;background:${barColor}"></div></div>
+        <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;color:#64748b">
+          ${latest.shortInterest ? '<span>공매도 잔고: ' + (latest.shortInterest / 1e6).toFixed(1) + 'M주</span>' : ''}
+          ${latest.daysToClose   ? '<span>커버리지 기간: ' + latest.daysToClose.toFixed(1) + '일</span>' : ''}
+        </div>
+      </div>` : '';
+
+    const fmtShares = n => n ? (n / 1e6).toFixed(2) + 'M' : '-';
+
+    document.getElementById('short-list').innerHTML = `
+      <div style="margin:12px 0 8px;color:#94a3b8;font-size:12px">전체 내역 (${items.length}건)</div>
+      <div style="margin-bottom:12px">
+        <button class="btn-primary" id="btn-resync-short" style="width:100%;background:#1e3a5f;color:#60a5fa">재동기화 (달력 덮어쓰기)</button>
+      </div>
+      ${items.map((t) => {
+        const p   = t.shortPercent ? (t.shortPercent * 100).toFixed(1) : null;
+        const pn  = p ? parseFloat(p) : 0;
+        const cls = pn >= 20 ? 'danger' : pn >= 10 ? 'warn' : 'ok';
+        return `<div class="short-item">
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+              <span style="font-size:13px;color:#cbd5e1">${t.date}</span>
+              ${p ? `<span class="short-pct ${cls}">${p}%</span>` : ''}
+            </div>
+            <div style="font-size:12px;color:#64748b">
+              잔고: ${fmtShares(t.shortInterest)}
+              ${t.daysToClose ? ' / 커버: ' + t.daysToClose.toFixed(1) + '일' : ''}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}`;
+
+    document.getElementById('btn-resync-short').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-resync-short');
+      btn.disabled = true; btn.textContent = '동기화 중...';
+      await deleteExistingFinnhubEvents(shortCompanyId, '공매도잔고');
+      for (const t of items) await saveShortEvent(t);
+      showToast('공매도 재동기화 완료');
+      closeOverlay('short-modal');
+      loadMonthAndRender();
+      refreshDashboard();
+    });
+
+  } catch(e) {
+    document.getElementById('short-list').innerHTML = '<div class="empty-msg">API 오류</div>';
+    console.log('공매도 오류', e);
+  }
+}
+
+async function saveShortEvent(t) {
+  const pct = t.shortPercent ? (t.shortPercent * 100).toFixed(1) + '%' : '';
+  const shares = t.shortInterest ? ' (' + (t.shortInterest / 1e6).toFixed(1) + 'M주)' : '';
+  const content = `[공매도잔고] ${pct}${shares}`;
+  const pctNum  = t.shortPercent ? t.shortPercent * 100 : 0;
+  const importance = pctNum >= 20 ? '상' : pctNum >= 10 ? '중' : '하';
+  try {
+    await addDoc(collection(db, 'events'), {
+      date: t.date, content, importance,
+      category: '공매도잔고', source: 'Finnhub', url: null,
+      companyIds:   [shortCompanyId],
+      companyNames: [shortCompanyName],
+      priceReaction: null, realized: false, createdAt: serverTimestamp()
+    });
+  } catch(e) { console.log('공매도 저장 오류', e); }
+}
+
+async function autoImportInsider(companyId, ticker, companyName) {
+  const cutoff = new Date();
+  cutoff.setFullYear(cutoff.getFullYear() - 1);
+  const cutoffStr = fmtDate(cutoff);
+  try {
+    const res  = await fetch(`https://finnhub.io/api/v1/stock/insider-transactions?symbol=${ticker}&token=${FINNHUB_KEY}`);
+    const data = await res.json();
+    const items = (data.data || []).filter(t =>
+      (t.transactionCode === 'P' || t.transactionCode === 'S') && t.transactionDate >= cutoffStr
+    );
+    const fmtShares = n => n >= 10000 ? (n / 10000).toFixed(1) + '만주' : n.toLocaleString() + '주';
+    for (const t of items) {
+      const isBuy  = t.transactionCode === 'P';
+      const shares = Math.abs(t.change || t.share || 0);
+      const priceStr = t.transactionPrice ? ' @$' + t.transactionPrice.toFixed(0) : '';
+      const content  = `[내부자${isBuy ? '매수' : '매도'}] ${t.name || '임원'} ${fmtShares(shares)}${priceStr}`;
+      await addDoc(collection(db, 'events'), {
+        date: t.transactionDate, content,
+        importance: isBuy ? '상' : '중',
+        category:   isBuy ? '내부자매수' : '내부자매도',
+        source: 'Finnhub', url: null,
+        companyIds: [companyId], companyNames: [companyName],
+        priceReaction: null, realized: false, createdAt: serverTimestamp()
+      });
+    }
+    return items.length;
+  } catch(e) {
+    console.log('내부자거래 자동 가져오기 오류', e);
+    return 0;
+  }
+}
+
+async function autoImportShortInterest(companyId, ticker, companyName) {
+  const toDate   = todayStr;
+  const fromDate = fmtDate(new Date(today.getFullYear(), today.getMonth() - 12, today.getDate()));
+  shortCompanyId   = companyId;
+  shortCompanyName = companyName;
+  try {
+    const res  = await fetch(`https://finnhub.io/api/v1/stock/short-interest?symbol=${ticker}&from=${fromDate}&to=${toDate}&token=${FINNHUB_KEY}`);
+    const data = await res.json();
+    const items = data.data || [];
+    for (const t of items) await saveShortEvent(t);
+    return items.length;
+  } catch(e) {
+    console.log('공매도 자동 가져오기 오류', e);
+    return 0;
+  }
+}
+
+document.getElementById('btn-close-short').addEventListener('click', () => closeOverlay('short-modal'));
+document.getElementById('short-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOverlay('short-modal'); });
+
+// ── 협력업체 (인라인) ──────────────────────────────
+const partnersByCompany = {};
+
+async function togglePartners(companyId, btn) {
+  const expand = document.getElementById('pexpand-' + companyId);
+  const arrow  = btn.querySelector('.ptoggle-arrow');
+  const isOpen = expand.style.display !== 'none';
+  if (isOpen) {
+    expand.style.display = 'none';
+    arrow.textContent = '▼';
+    btn.classList.remove('open');
+  } else {
+    expand.style.display = 'block';
+    arrow.textContent = '▲';
+    btn.classList.add('open');
+    await loadInlinePartners(companyId);
+  }
+}
+
+async function loadInlinePartners(companyId) {
+  const listEl = document.getElementById('plist-' + companyId);
+  listEl.innerHTML = '<div class="empty-msg" style="padding:8px"><span class="spinner"></span></div>';
+  try {
+    const snap = await getDocs(query(collection(db, 'partners'), where('companyId', '==', companyId)));
+    partnersByCompany[companyId] = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => a.partnerName.localeCompare(b.partnerName, 'ko'));
+    renderInlinePartners(companyId);
+  } catch(e) { listEl.innerHTML = '<div class="empty-msg">로드 오류</div>'; }
+}
+
+function renderInlinePartners(companyId) {
+  const partners = partnersByCompany[companyId] || [];
+  const listEl   = document.getElementById('plist-' + companyId);
+  if (partners.length === 0) {
+    listEl.innerHTML = '<div class="empty-msg" style="padding:8px;font-size:13px">등록된 협력업체 없음</div>';
+    return;
+  }
+  listEl.innerHTML = partners.map(p => `
+    <div class="partner-item">
+      <div class="partner-item-info">
+        <div class="partner-name-text">${escHtml(p.partnerName)}</div>
+        ${p.relationship ? `<div class="partner-rel-text">${escHtml(p.relationship)}</div>` : ''}
+      </div>
+      <div class="ev-actions">
+        <button class="btn-edit" data-pid="${p.id}" data-cid="${companyId}" style="padding:4px 10px;font-size:12px">수정</button>
+        <button class="del-btn" data-pid="${p.id}" data-cid="${companyId}">x</button>
+      </div>
+    </div>`).join('');
+  listEl.querySelectorAll('.btn-edit[data-pid]').forEach(btn => {
+    btn.addEventListener('click', () => openEditPartner(btn.dataset.pid, btn.dataset.cid));
+  });
+  listEl.querySelectorAll('.del-btn[data-pid]').forEach(btn => {
+    btn.addEventListener('click', () => deletePartner(btn.dataset.pid, btn.dataset.cid));
+  });
+  const toggleBtn = document.querySelector(`.partner-toggle-btn[data-cid="${companyId}"] span:first-child`);
+  if (toggleBtn) toggleBtn.textContent = `협력업체 (${partners.length}개)`;
+}
+
+async function addInlinePartner(companyId) {
+  const nameEl = document.getElementById('pname-' + companyId);
+  const relEl  = document.getElementById('prel-'  + companyId);
+  const partnerName  = nameEl.value.trim();
+  const relationship = relEl.value.trim();
+  if (!partnerName) return;
+  try {
+    await addDoc(collection(db, 'partners'), { companyId, partnerName, relationship, createdAt: serverTimestamp() });
+    nameEl.value = '';
+    relEl.value  = '';
+    await loadInlinePartners(companyId);
+    showToast('협력업체 추가');
+  } catch(e) { showToast('오류', true); }
+}
+
+let editingPartnerId = null;
+let editingPartnerCompanyId = null;
+
+function openEditPartner(partnerId, companyId) {
+  const p = (partnersByCompany[companyId] || []).find(p => p.id === partnerId);
+  if (!p) return;
+  editingPartnerId = partnerId;
+  editingPartnerCompanyId = companyId;
+  document.getElementById('pm-partner-name').value = p.partnerName;
+  document.getElementById('pm-partner-rel').value  = p.relationship || '';
+  document.getElementById('partner-modal').classList.add('open');
+}
+
+document.getElementById('btn-save-partner').addEventListener('click', async () => {
+  const partnerName  = document.getElementById('pm-partner-name').value.trim();
+  const relationship = document.getElementById('pm-partner-rel').value.trim();
+  if (!partnerName) { showToast('업체명 필요', true); return; }
+  try {
+    await updateDoc(doc(db, 'partners', editingPartnerId), { partnerName, relationship });
+    showToast('수정');
+    closeOverlay('partner-modal');
+    await loadInlinePartners(editingPartnerCompanyId);
+  } catch(e) { showToast('오류', true); console.log('협력업체 수정 오류', e); }
+});
+
+document.getElementById('btn-cancel-partner').addEventListener('click', () => closeOverlay('partner-modal'));
+document.getElementById('partner-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOverlay('partner-modal'); });
+
+async function deletePartner(partnerId, companyId) {
+  try {
+    await deleteDoc(doc(db, 'partners', partnerId));
+    await loadInlinePartners(companyId);
+    showToast('삭제');
+  } catch(e) { showToast('오류', true); }
+}
+
+// ── 포트폴리오 ──────────────────────────────
+async function loadPortfolio() {
+  document.getElementById('portfolio-list').innerHTML = '<div class="empty-msg"><span class="spinner"></span></div>';
+  try {
+    if (companies.length === 0) {
+      const snap = await getDocs(query(collection(db, 'companies'), orderBy('name')));
+      companies = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    }
+    const [pfSnap, evSnap] = await Promise.all([
+      getDocs(query(collection(db, 'portfolio'), orderBy('createdAt'))),
+      getDocs(query(collection(db, 'events'), where('date', '>=', todayStr), orderBy('date')))
+    ]);
+    portfolios = pfSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    companyUpcoming = {};
+    evSnap.forEach(d => {
+      const data = d.data();
+      const ids = data.companyIds || (data.companyId ? [data.companyId] : []);
+      ids.forEach(cid => {
+        if (!companyUpcoming[cid]) companyUpcoming[cid] = [];
+        companyUpcoming[cid].push({...data, id: d.id});
+      });
+    });
+    renderPortfolio();
+  } catch(e) {
+    document.getElementById('portfolio-list').innerHTML = '<div class="empty-msg">로드 오류</div>';
+    console.log('포트폴리오 로드 오류', e);
+  }
+}
+
+function renderPortfolio() {
+  const container = document.getElementById('portfolio-list');
+  if (portfolios.length === 0) { container.innerHTML = '<div class="empty-msg">보유 종목이 없습니다</div>'; return; }
+
+  container.innerHTML = portfolios.map(p => {
+    const buyPrice    = parseFloat(p.buyPrice)    || 0;
+    const targetPrice = parseFloat(p.targetPrice) || 0;
+    const qty         = parseFloat(p.qty)         || 0;
+    const profitPct   = buyPrice > 0 && targetPrice > 0 ? ((targetPrice - buyPrice) / buyPrice * 100).toFixed(1) : null;
+    const totalBuy    = buyPrice * qty;
+    const profitClass = profitPct != null ? (parseFloat(profitPct) >= 0 ? 'profit-up' : 'profit-down') : '';
+
+    const upcoming = (companyUpcoming[p.companyId] || []).slice(0, 3);
+    const upHtml = upcoming.length > 0
+      ? upcoming.map(e => `<div class="upcoming-item"><span class="upcoming-date">${e.date}</span><span>${escHtml(e.content)}</span></div>`).join('')
+      : '<div class="no-upcoming">예정된 호재 없음</div>';
+
+    const c = companies.find(c => c.id === p.companyId);
+
+    return `<div class="portfolio-card">
+      <div class="portfolio-top">
+        <div>
+          <div class="portfolio-name">${escHtml(p.companyName || (c && c.name) || '-')}</div>
+          <div class="portfolio-badges">
+            ${p.ticker ? `<span class="ticker-badge">${escHtml(p.ticker)}</span>` : ''}
+            ${(c && c.sector) ? `<span class="sector-badge">${escHtml(c.sector)}</span>` : ''}
+          </div>
+        </div>
+        <div class="action-btns">
+          <button class="btn-edit" data-pfid="${p.id}">수정</button>
+          <button class="btn-danger" data-pfdel="${p.id}">삭제</button>
+        </div>
+      </div>
+      <div class="portfolio-stats">
+        <div class="portfolio-stat">
+          <div class="portfolio-stat-label">매수가</div>
+          <div class="portfolio-stat-value">${numFmt(buyPrice)}원</div>
+        </div>
+        <div class="portfolio-stat">
+          <div class="portfolio-stat-label">목표가</div>
+          <div class="portfolio-stat-value">${numFmt(targetPrice)}원</div>
+        </div>
+        <div class="portfolio-stat">
+          <div class="portfolio-stat-label">수량</div>
+          <div class="portfolio-stat-value">${numFmt(qty)}주</div>
+        </div>
+        <div class="portfolio-stat">
+          <div class="portfolio-stat-label">매수 총액</div>
+          <div class="portfolio-stat-value">${numFmt(totalBuy)}원</div>
+        </div>
+        ${profitPct != null ? `<div class="portfolio-stat">
+          <div class="portfolio-stat-label">목표 수익</div>
+          <div class="portfolio-stat-value ${profitClass}">${profitPct > 0 ? '+' : ''}${profitPct}%</div>
+        </div>` : ''}
+      </div>
+      ${p.memo ? `<div class="portfolio-memo">${escHtml(p.memo)}</div>` : ''}
+      <div class="portfolio-upcoming-label">연결 업체 앞으로의 호재</div>
+      <div>${upHtml}</div>
+    </div>`;
+  }).join('');
+
+  container.querySelectorAll('.btn-edit[data-pfid]').forEach(btn => {
+    btn.addEventListener('click', () => openEditPortfolio(btn.dataset.pfid));
+  });
+  container.querySelectorAll('.btn-danger[data-pfdel]').forEach(btn => {
+    btn.addEventListener('click', () => deletePortfolio(btn.dataset.pfdel));
+  });
+}
+
+document.getElementById('btn-add-portfolio').addEventListener('click', () => {
+  editingPortfolioId = null;
+  document.getElementById('portfolio-modal-title').textContent = '종목 추가';
+  ['pm-buy','pm-target','pm-qty','pm-memo'].forEach(id => document.getElementById(id).value = '');
+
+  const sel = document.getElementById('pm-company');
+  sel.innerHTML = '<option value="">업체 선택...</option>';
+  companies.forEach(c => {
+    sel.innerHTML += `<option value="${c.id}" data-name="${escHtml(c.name)}" data-ticker="${escHtml(c.ticker || '')}">${escHtml(c.name)}${c.ticker ? ' (' + c.ticker + ')' : ''}</option>`;
+  });
+  sel.value = '';
+  document.getElementById('portfolio-modal').classList.add('open');
+});
+
+function openEditPortfolio(id) {
+  const p = portfolios.find(p => p.id === id);
+  if (!p) return;
+  editingPortfolioId = id;
+  document.getElementById('portfolio-modal-title').textContent = '종목 수정';
+
+  const sel = document.getElementById('pm-company');
+  sel.innerHTML = '<option value="">업체 선택...</option>';
+  companies.forEach(c => {
+    sel.innerHTML += `<option value="${c.id}" data-name="${escHtml(c.name)}" data-ticker="${escHtml(c.ticker || '')}">${escHtml(c.name)}${c.ticker ? ' (' + c.ticker + ')' : ''}</option>`;
+  });
+  sel.value = p.companyId || '';
+  document.getElementById('pm-buy').value    = p.buyPrice || '';
+  document.getElementById('pm-target').value = p.targetPrice || '';
+  document.getElementById('pm-qty').value    = p.qty || '';
+  document.getElementById('pm-memo').value   = p.memo || '';
+  document.getElementById('portfolio-modal').classList.add('open');
+}
+
+document.getElementById('btn-save-portfolio').addEventListener('click', async () => {
+  const sel         = document.getElementById('pm-company');
+  const companyId   = sel.value;
+  const opt         = sel.options[sel.selectedIndex];
+  const companyName = companyId ? opt.dataset.name : '';
+  const ticker      = companyId ? opt.dataset.ticker : '';
+
+  const data = {
+    companyId: companyId || null,
+    companyName,
+    ticker,
+    buyPrice:    parseFloat(document.getElementById('pm-buy').value)    || 0,
+    targetPrice: parseFloat(document.getElementById('pm-target').value) || 0,
+    qty:         parseFloat(document.getElementById('pm-qty').value)    || 0,
+    memo:        document.getElementById('pm-memo').value.trim()
+  };
+
+  try {
+    if (editingPortfolioId) {
+      await updateDoc(doc(db, 'portfolio', editingPortfolioId), data);
+      showToast('수정');
+    } else {
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db, 'portfolio'), data);
+      showToast('추가');
+    }
+    closeOverlay('portfolio-modal');
+    loadPortfolio();
+  } catch(e) { showToast('오류', true); console.log('포트폴리오 저장 오류', e); }
+});
+
+async function deletePortfolio(id) {
+  if (!confirm('종목을 삭제하시겠습니까?')) return;
+  try {
+    await deleteDoc(doc(db, 'portfolio', id));
+    showToast('삭제');
+    loadPortfolio();
+  } catch(e) { showToast('오류', true); }
+}
+
+document.getElementById('btn-cancel-portfolio').addEventListener('click', () => closeOverlay('portfolio-modal'));
+document.getElementById('portfolio-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOverlay('portfolio-modal'); });
+
+// ── 초기화 ──────────────────────────────
+loadDashboard();
+loadMonthAndRender();
+</script>
+</body>
+</html>
