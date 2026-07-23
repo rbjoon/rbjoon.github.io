@@ -371,13 +371,13 @@
       <div class="error-msg" id="error"></div>
     </div>
 
-    <!-- 오른쪽: 입금 적용 -->
+    <!-- 오른쪽: 입출금 적용 -->
     <div class="card">
-      <div class="card-title">입금 적용</div>
+      <div class="card-title">입출금 적용</div>
 
       <div class="field-row">
         <div class="field">
-          <label for="deposit-date">입금일</label>
+          <label for="deposit-date">일자</label>
           <div class="input-wrap">
             <input type="date" id="deposit-date">
           </div>
@@ -390,18 +390,49 @@
           </div>
         </div>
       </div>
-      <button class="btn-green" onclick="applyDeposit()">현재 잔액에 적용</button>
+      <div style="display:flex;gap:12px;margin-top:8px">
+        <button class="btn-green" style="flex:1;margin-top:0" onclick="applyDeposit(true)">입금 (대출상환)</button>
+        <button class="btn-danger-sm" style="flex:1;margin-top:0;padding:13px;font-size:0.95rem" onclick="applyDeposit(false)">출금 (대출실행)</button>
+      </div>
 
       <div class="deposit-msg" id="deposit-msg"></div>
 
+      <div style="background:#f7f9fb;padding:12px;border-radius:10px;margin-bottom:14px;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select id="filter-type" style="padding:6px;border:1px solid #e0e7ef;border-radius:6px;font-size:0.85rem;outline:none;" onchange="renderDepositList()">
+            <option value="all">전체 내역</option>
+            <option value="deposit">입금만</option>
+            <option value="withdraw">출금만</option>
+          </select>
+          <div style="flex:1;display:flex;gap:4px;align-items:center;">
+            <input type="date" id="filter-date-from" style="flex:1;padding:5px;border:1px solid #e0e7ef;border-radius:6px;font-size:0.75rem;outline:none;min-width:0;" onchange="renderDepositList()">
+            <span style="color:#8a9ab0;font-size:0.75rem;">~</span>
+            <input type="date" id="filter-date-to" style="flex:1;padding:5px;border:1px solid #e0e7ef;border-radius:6px;font-size:0.75rem;outline:none;min-width:0;" onchange="renderDepositList()">
+          </div>
+          <button style="padding:6px 8px;border:1px solid #e0e7ef;border-radius:6px;background:#fff;cursor:pointer;font-size:0.75rem;color:#6b7c93;white-space:nowrap;" onclick="document.getElementById('filter-date-from').value='';document.getElementById('filter-date-to').value='';renderDepositList()">초기화</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;font-size:0.82rem;margin-top:2px;">
+          <div style="display:flex;justify-content:space-between;">
+            <span>입금 합계:</span>
+            <span id="filter-sum-dep" style="color:#10b981;font-weight:700">0 원</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span>출금 합계:</span>
+            <span id="filter-sum-wit" style="color:#dc2626;font-weight:700">0 원</span>
+          </div>
+        </div>
+      </div>
+
       <div class="deposit-list-header">
         <div>
-          <span class="deposit-list-label">입금 이력</span>
+          <span class="deposit-list-label">입출금 이력</span>
           <span class="deposit-count" id="deposit-count">0</span>
         </div>
         <button class="btn-danger-sm" onclick="clearAllDeposits()">전체 삭제</button>
       </div>
-      <div id="deposit-list"></div>
+      <div style="max-height: 310px; overflow-y: auto; padding-right: 4px;">
+        <div id="deposit-list"></div>
+      </div>
 
     </div>
   </div>
@@ -474,6 +505,7 @@
     let lastResult = null;
     let scheduleVisible = true;
     let docRef = null;
+    let deleteTimers = {};
 
     const LOAN_START = new Date('2026-05-16');
 
@@ -761,15 +793,19 @@
       document.querySelector('.btn-toggle').textContent = scheduleVisible ? '접기' : '펼치기';
     }
 
-    async function applyDeposit() {
+    async function applyDeposit(isDeposit = true) {
       const dateVal = document.getElementById('deposit-date').value;
-      const amount  = parseInt(document.getElementById('deposit-amount').value.replace(/,/g, ''), 10);
+      let amount  = parseInt(document.getElementById('deposit-amount').value.replace(/,/g, ''), 10);
       const msgEl   = document.getElementById('deposit-msg');
 
       if (!dateVal || !amount || amount <= 0) {
-        msgEl.textContent = !dateVal ? '입금일을 선택해 주세요.' : '금액을 입력해 주세요.';
+        msgEl.textContent = !dateVal ? '일자를 선택해 주세요.' : '금액을 입력해 주세요.';
         msgEl.style.cssText = 'display:block;background:#fef2f2;border:1px solid #fecaca;color:#dc2626';
         return;
+      }
+
+      if (!isDeposit) {
+        amount = -amount;
       }
 
       const prev = currentBalance();
@@ -777,13 +813,49 @@
       await saveState();
       renderDepositList();
 
-      msgEl.textContent = `${fmt(prev)} → ${fmt(currentBalance())} (${fmt(amount)} 입금 적용)`;
-      msgEl.style.cssText = 'display:block;background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46';
+      const typeStr = isDeposit ? '입금' : '출금';
+      const absAmount = Math.abs(amount);
+      msgEl.textContent = `${fmt(prev)} → ${fmt(currentBalance())} (${fmt(absAmount)} ${typeStr} 적용)`;
+      msgEl.style.cssText = isDeposit 
+        ? 'display:block;background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46'
+        : 'display:block;background:#fef2f2;border:1px solid #fecaca;color:#dc2626';
+      
       document.getElementById('deposit-amount').value = '';
 
       lastResult = null;
       document.getElementById('btn-save').disabled = true;
       document.getElementById('result-card').style.display = 'none';
+    }
+
+    function requestDeleteDeposit(id, e) {
+      e.stopPropagation();
+      const item = state.deposits.find(d => d.id === id);
+      if (item) {
+        item.pendingDelete = true;
+        renderDepositList();
+
+        deleteTimers[id] = setTimeout(async () => {
+          state.deposits = state.deposits.filter(d => d.id !== id);
+          delete deleteTimers[id];
+          await saveState();
+          renderDepositList();
+          document.getElementById('deposit-msg').style.display = 'none';
+          lastResult = null;
+          document.getElementById('btn-save').disabled = true;
+          document.getElementById('result-card').style.display = 'none';
+        }, 10000);
+      }
+    }
+
+    function undoDeleteDeposit(id, e) {
+      e.stopPropagation();
+      const item = state.deposits.find(d => d.id === id);
+      if (item) {
+        item.pendingDelete = false;
+        clearTimeout(deleteTimers[id]);
+        delete deleteTimers[id];
+        renderDepositList();
+      }
     }
 
     async function deleteDeposit(id, e) {
@@ -799,7 +871,7 @@
 
     async function clearAllDeposits() {
       if (!state.deposits.length) return;
-      if (!confirm('입금 이력을 모두 삭제할까요?')) return;
+      if (!confirm('입출금 이력을 모두 삭제할까요?')) return;
       state.deposits = [];
       await saveState();
       renderDepositList();
@@ -809,12 +881,10 @@
     function renderDepositList() {
       updateBalanceDisplay();
       const listEl = document.getElementById('deposit-list');
-      document.getElementById('deposit-count').textContent = state.deposits.length;
-
-      if (!state.deposits.length) {
-        listEl.innerHTML = '<div class="deposit-empty">입금 이력이 없습니다</div>';
-        return;
-      }
+      
+      const filterType = document.getElementById('filter-type') ? document.getElementById('filter-type').value : 'all';
+      const filterFrom = document.getElementById('filter-date-from') ? document.getElementById('filter-date-from').value : '';
+      const filterTo = document.getElementById('filter-date-to') ? document.getElementById('filter-date-to').value : '';
 
       let running = ORIGINAL_PRINCIPAL;
       const withBal = [...state.deposits].reverse().map(d => {
@@ -822,15 +892,43 @@
         return { ...d, balanceAfter: Math.max(0, running) };
       }).reverse();
 
-      listEl.innerHTML = '<div class="deposit-list">' + withBal.map(d => `
-        <div class="deposit-item">
+      const filtered = withBal.filter(d => {
+        if (filterType === 'deposit' && d.amount < 0) return false;
+        if (filterType === 'withdraw' && d.amount > 0) return false;
+        if (filterFrom && d.date < filterFrom) return false;
+        if (filterTo && d.date > filterTo) return false;
+        return true;
+      });
+
+      document.getElementById('deposit-count').textContent = filtered.length;
+
+      let sumDep = 0, sumWit = 0;
+      filtered.forEach(d => {
+        if (d.amount > 0) sumDep += d.amount;
+        else sumWit += Math.abs(d.amount);
+      });
+      if (document.getElementById('filter-sum-dep')) {
+        document.getElementById('filter-sum-dep').textContent = fmt(sumDep);
+        document.getElementById('filter-sum-wit').textContent = fmt(sumWit);
+      }
+
+      if (!filtered.length) {
+        listEl.innerHTML = '<div class="deposit-empty">조건에 맞는 이력이 없습니다</div>';
+        return;
+      }
+
+      listEl.innerHTML = '<div class="deposit-list">' + filtered.map(d => `
+        <div class="deposit-item" style="${d.pendingDelete ? 'opacity:0.5;background:#f3f4f6' : ''}">
           <div>
             <div class="deposit-item-date">${d.date} · ${d.appliedAt}</div>
-            <div class="deposit-item-amount">-${fmtNum(d.amount)} 원</div>
+            <div class="deposit-item-amount" style="color:${d.amount > 0 ? '#10b981' : '#dc2626'}">${d.amount > 0 ? '-' : '+'}${fmtNum(Math.abs(d.amount))} 원</div>
           </div>
           <div class="deposit-item-right">
             <div class="deposit-item-balance">잔액<br>${fmtNum(d.balanceAfter)} 원</div>
-            <button class="btn-del-sm" onclick="deleteDeposit(${d.id}, event)">✕</button>
+            ${d.pendingDelete 
+              ? `<button class="btn-green" style="padding:4px 8px;font-size:0.75rem;background:#3b82f6" onclick="undoDeleteDeposit(${d.id}, event)">원복(10s)</button>`
+              : `<button class="btn-del-sm" onclick="requestDeleteDeposit(${d.id}, event)">✕</button>`
+            }
           </div>
         </div>
       `).join('') + '</div>';
