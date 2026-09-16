@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>다운로드 파일 목록</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .file-list {
+            list-style: none;
+            padding: 0;
+        }
+        .file-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+        .file-link {
+            text-decoration: none;
+            color: #0066cc;
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .file-link:hover {
+            color: #004499;
+            text-decoration: underline;
+        }
+        .icon {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📂 다운로드 파일 목록</h1>
+    <ul class="file-list">
+        <!-- 파일 목록을 아래에 추가하세요 -->
+        <li class="file-item">
+            <a href="화담숲_new.exe" class="file-link" download>
+                <span class="icon">💾</span> 화담숲_new.exe
+            </a>
+        </li>
+    </ul>
+    
+    <p style="margin-top:30px; font-size:14px; color:#666;">
+        💡 새 파일을 업로드한 후에는 이 html 파일(index.html)에도 위 형식처럼 링크를 추가해주셔야 화면에 나타납니다.
+    </p>
+</body>
+</html>
