@@ -17,3 +17,5 @@
 - 20260723_164102_git_push_및_기존데이터_유지_안내: 코드 Github 반영 및 기존 이력 보존 안내
 - 20260723_164515_Github_Pages_배포_지연_안내: 푸시 후 Github Pages 배포 지연 및 캐시 갱신 안내
 - 20260723_164650_Github_Actions_배포_과정_안내: 기본 Github Pages 배포 방식과 Actions 노출 여부 설명
+- 20260723_164811_Github_Pages_배포_오류_수정: .nojekyll 파일 추가를 통한 Pages 배포 강제 트리거
+- 20260723_165429_Github_Pages_배포_지연_해결: 빈 커밋 푸시로 배포 재트리거 및 상태 안내
